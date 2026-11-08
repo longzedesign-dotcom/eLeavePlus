@@ -74,8 +74,8 @@ function seedDefaults_() {
   }
   if (Db.readAll(SHEET.USERS).length === 0) {
     createUserRecord_({
-      username: 'admin', email: 'admin@eleave.local', password: 'Admin@1234', name: 'ผู้ดูแลระบบ',
-      role: ROLE.ADMIN, departmentId: 'DEP001', position: 'System Administrator', mustChangePassword: true
+      username: 'admin', email: 'c.thakot@gmail.com', password: 'Admin@1234', name: 'ผู้ดูแลระบบ',
+      role: ROLE.ADMIN, departmentId: 'DEP001', position: 'System Administrator', mustChangePassword: false
     });
   }
 }
