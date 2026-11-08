@@ -320,12 +320,27 @@
               <input type="hidden" id="req-id" value="">
 
               <!-- Leave Type Selection -->
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">ประเภทการลา <span class="text-red-500">*</span></label>
-                <div id="req-leave-types-radio" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <!-- Rendered via JS radio cards -->
+              <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <label for="req-leave-type-select" class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                    ประเภทการลา <span class="text-red-500">*</span>
+                  </label>
+                  <span class="text-[11px] text-slate-400">เลือกจากรายการหรือคลิกการ์ดด้านล่าง</span>
                 </div>
-                <div id="req-type-desc" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 leading-relaxed"></div>
+
+                <!-- Dropdown Selector (Accessible & Mobile Friendly) -->
+                <select id="req-leave-type-select" onchange="App.handleTypeChange(this.value)" class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all">
+                  <option value="">-- กำลังโหลดประเภทการลา... --</option>
+                </select>
+
+                <!-- Visual Radio Cards Grid -->
+                <div id="req-leave-types-radio" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <!-- Rendered via JS -->
+                </div>
+
+                <!-- Active Policy Banner & Description -->
+                <div id="req-type-banner" class="hidden"></div>
+                <div id="req-type-desc" class="hidden p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 leading-relaxed"></div>
               </div>
 
               <!-- Date & Period Range -->
@@ -926,16 +941,290 @@
 
 
   <!-- ======================================================== -->
-  <!-- MODAL: ALERT / CONFIRM                                   -->
+  <!-- MODAL: ALERT & IN-APP CONFIRMATION                       -->
   <!-- ======================================================== -->
-  <div id="modal-alert" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+  <div id="modal-alert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in">
       <div id="modal-alert-icon" class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">ℹ️</div>
       <h4 id="modal-alert-title" class="text-base font-bold text-slate-900 mb-1.5">แจ้งเตือน</h4>
-      <p id="modal-alert-msg" class="text-xs text-slate-500 mb-5 leading-relaxed">-</p>
-      <button type="button" onclick="App.closeAlertModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer">
+      <p id="modal-alert-msg" class="text-xs text-slate-500 mb-5 leading-relaxed whitespace-pre-line">-</p>
+      <button type="button" onclick="App.closeAlertModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
         ตกลง
       </button>
+    </div>
+  </div>
+
+  <div id="modal-confirm" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in">
+      <div id="modal-confirm-icon" class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">⚠️</div>
+      <h4 id="modal-confirm-title" class="text-base font-bold text-slate-900 mb-1.5">ยืนยันการดำเนินการ</h4>
+      <p id="modal-confirm-msg" class="text-xs text-slate-500 mb-6 leading-relaxed whitespace-pre-line">-</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="modal-confirm-cancel-btn" type="button" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-all">
+          ยกเลิก
+        </button>
+        <button id="modal-confirm-ok-btn" type="button" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
+          ยืนยัน
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT USER                                   -->
+  <!-- ======================================================== -->
+  <div id="modal-user" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="modal-user-title" class="text-base font-bold text-slate-900">เพิ่มพนักงานใหม่</h3>
+        <button type="button" onclick="App.closeUserModal()" class="text-slate-400 hover:text-slate-600 p-2 text-base cursor-pointer">✕</button>
+      </div>
+      <form id="modal-user-form" onsubmit="return App.handleSaveUserSubmit(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+        <input type="hidden" id="user-form-id" value="">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Username <span class="text-red-500">*</span></label>
+            <input id="user-form-username" type="text" required placeholder="เช่น somchai.k" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">อีเมล <span class="text-red-500">*</span></label>
+            <input id="user-form-email" type="email" required placeholder="somchai@company.com" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ชื่อ-นามสกุล <span class="text-red-500">*</span></label>
+          <input id="user-form-name" type="text" required placeholder="นายสมชาย ใจดี" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">แผนก / ฝ่าย <span class="text-red-500">*</span></label>
+            <select id="user-form-dept" required class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+              <!-- populated dynamically -->
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">สิทธิ์การใช้งาน (Role) <span class="text-red-500">*</span></label>
+            <select id="user-form-role" required class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+              <option value="EMPLOYEE">พนักงาน (EMPLOYEE)</option>
+              <option value="APPROVER">ผู้อนุมัติ / หัวหน้า (APPROVER)</option>
+              <option value="HR">ฝ่ายบุคคล (HR)</option>
+              <option value="ADMIN">ผู้ดูแลระบบ (ADMIN)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ตำแหน่งงาน</label>
+            <input id="user-form-position" type="text" placeholder="เช่น Senior Developer" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เบอร์โทรศัพท์</label>
+            <input id="user-form-phone" type="text" placeholder="0812345678" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">วันที่เริ่มงาน</label>
+            <input id="user-form-hiredate" type="date" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">รหัสผ่าน <span id="user-form-pwd-label" class="text-slate-400 font-normal"></span></label>
+            <input id="user-form-password" type="password" placeholder="••••••••" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 pt-1">
+          <input id="user-form-active" type="checkbox" checked class="rounded w-4 h-4 text-blue-600 focus:ring-blue-500">
+          <label for="user-form-active" class="font-semibold text-slate-700 cursor-pointer">เปิดใช้งานบัญชีนี้ (Active)</label>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="App.closeUserModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold cursor-pointer">
+            ยกเลิก
+          </button>
+          <button id="user-form-submit-btn" type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer">
+            บันทึกข้อมูลพนักงาน
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: RESET PASSWORD                                    -->
+  <!-- ======================================================== -->
+  <div id="modal-reset-pwd" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
+      <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">🔑</div>
+      <h4 class="text-base font-bold text-slate-900 text-center mb-1">รีเซ็ตรหัสผ่าน</h4>
+      <div id="reset-pwd-info" class="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-xs text-slate-600 mb-4"></div>
+      
+      <form id="modal-reset-pwd-form" onsubmit="return App.handleResetPasswordSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="reset-pwd-user-id" value="">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ตั้งรหัสผ่านใหม่ <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <input id="reset-pwd-new" type="password" required placeholder="อย่างน้อย 8 ตัวอักษร (มีตัวเลข)" class="w-full px-3 py-2.5 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm">
+            <button type="button" onclick="App.togglePassword('reset-pwd-new')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-[11px]">
+              แสดง
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-400 mt-1">ผู้ใช้จะต้องเปลี่ยนรหัสผ่านใหม่เมื่อเข้าสู่ระบบครั้งถัดไป</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="App.closeResetPasswordModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold cursor-pointer">
+            ยกเลิก
+          </button>
+          <button type="submit" class="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold cursor-pointer">
+            รีเซ็ตรหัสผ่าน
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT DEPARTMENT                             -->
+  <!-- ======================================================== -->
+  <div id="modal-dept" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h4 id="modal-dept-title" class="text-base font-bold text-slate-900">เพิ่มแผนกใหม่</h4>
+        <button type="button" onclick="App.closeDeptModal()" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">✕</button>
+      </div>
+      <form id="modal-dept-form" onsubmit="return App.handleSaveDeptSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="dept-form-id" value="">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ชื่อแผนก / ฝ่าย <span class="text-red-500">*</span></label>
+          <input id="dept-form-name" type="text" required placeholder="เช่น ฝ่ายพัฒนาธุรกิจ" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm">
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="dept-form-active" type="checkbox" checked class="rounded w-4 h-4 text-blue-600">
+          <label for="dept-form-active" class="font-semibold text-slate-700 cursor-pointer">เปิดใช้งานแผนกนี้</label>
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="App.closeDeptModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold cursor-pointer">
+            ยกเลิก
+          </button>
+          <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer">
+            บันทึกแผนก
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT LEAVE TYPE                             -->
+  <!-- ======================================================== -->
+  <div id="modal-leave-type" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="modal-type-title" class="text-base font-bold text-slate-900">เพิ่มประเภทการลา</h3>
+        <button type="button" onclick="App.closeLeaveTypeModal()" class="text-slate-400 hover:text-slate-600 p-2 text-base cursor-pointer">✕</button>
+      </div>
+      <form id="modal-type-form" onsubmit="return App.handleSaveLeaveTypeSubmit(event)" class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+        <input type="hidden" id="type-form-id" value="">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ชื่อประเภทการลา <span class="text-red-500">*</span></label>
+            <input id="type-form-name" type="text" required placeholder="เช่น ลาพักผ่อนประจำปี" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">โควตาวันต่อปี (0 = ไม่จำกัด) <span class="text-red-500">*</span></label>
+            <input id="type-form-quota" type="number" min="0" required value="10" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">บังคับแนบไฟล์เมื่อลาตั้งแต่ (วัน)</label>
+            <input id="type-form-attach-days" type="number" min="0" value="0" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+            <span class="text-[10px] text-slate-400">ระบุ 0 หากไม่บังคับ หรือเช่น 3 สำหรับลาป่วย</span>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ลำดับการแสดงผล</label>
+            <input id="type-form-sort" type="number" min="1" value="10" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">สีประจำประเภทการลา</label>
+          <div class="flex items-center gap-3">
+            <input id="type-form-color" type="color" value="#3b82f6" class="w-10 h-10 p-0.5 border border-slate-300 rounded-xl cursor-pointer">
+            <div class="flex flex-wrap gap-1.5" id="color-palette-presets">
+              <button type="button" onclick="App.selectTypeColor('#ef4444')" class="w-6 h-6 rounded-lg bg-red-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#f59e0b')" class="w-6 h-6 rounded-lg bg-amber-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#10b981')" class="w-6 h-6 rounded-lg bg-emerald-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#3b82f6')" class="w-6 h-6 rounded-lg bg-blue-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#6366f1')" class="w-6 h-6 rounded-lg bg-indigo-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#ec4899')" class="w-6 h-6 rounded-lg bg-pink-500 cursor-pointer"></button>
+              <button type="button" onclick="App.selectTypeColor('#14b8a6')" class="w-6 h-6 rounded-lg bg-teal-500 cursor-pointer"></button>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">คำอธิบาย / เงื่อนไขการลา</label>
+          <textarea id="type-form-desc" rows="2" placeholder="ระบุนโยบาย ข้อปฏิบัติ หรือเงื่อนไขของประเภทการลานี้..." class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500"></textarea>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-6 pt-1">
+          <div class="flex items-center gap-2">
+            <input id="type-form-allow-backdate" type="checkbox" class="rounded w-4 h-4 text-blue-600">
+            <label for="type-form-allow-backdate" class="font-semibold text-slate-700 cursor-pointer">อนุญาตให้ยื่นลาย้อนหลังได้</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <input id="type-form-active" type="checkbox" checked class="rounded w-4 h-4 text-blue-600">
+            <label for="type-form-active" class="font-semibold text-slate-700 cursor-pointer">เปิดใช้งานประเภทการลานี้</label>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="App.closeLeaveTypeModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold cursor-pointer">
+            ยกเลิก
+          </button>
+          <button type="submit" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer">
+            บันทึกประเภทการลา
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ADD / EDIT HOLIDAY                                -->
+  <!-- ======================================================== -->
+  <div id="modal-holiday" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h4 id="modal-holiday-title" class="text-base font-bold text-slate-900">เพิ่มวันหยุด</h4>
+        <button type="button" onclick="App.closeHolidayModal()" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">✕</button>
+      </div>
+      <form id="modal-holiday-form" onsubmit="return App.handleSaveHolidaySubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">วันที่วันหยุด <span class="text-red-500">*</span></label>
+          <input id="holiday-form-date" type="date" required class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm">
+        </div>
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ชื่อวันหยุด <span class="text-red-500">*</span></label>
+          <input id="holiday-form-name" type="text" required placeholder="เช่น วันขึ้นปีใหม่" class="w-full px-3 py-2 border border-slate-300 rounded-xl outline-none focus:border-blue-500 text-sm">
+        </div>
+        <div class="grid grid-cols-2 gap-2 pt-2">
+          <button type="button" onclick="App.closeHolidayModal()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold cursor-pointer">
+            ยกเลิก
+          </button>
+          <button type="submit" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold cursor-pointer">
+            บันทึกวันหยุด
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
@@ -1005,7 +1294,20 @@
           }
         } catch (e) {
           console.warn('Bootstrap error:', e.message);
+          await this.loadMetadata();
           this.showAuth();
+        }
+      },
+
+      async loadMetadata() {
+        try {
+          const res = await this.call('getLeaveTypesAndDepts', {});
+          if (res) {
+            if (res.departments && res.departments.length) this.state.departments = res.departments;
+            if (res.leaveTypes && res.leaveTypes.length) this.state.leaveTypes = res.leaveTypes;
+          }
+        } catch (e) {
+          console.warn('loadMetadata failed:', e.message);
         }
       },
 
@@ -1058,6 +1360,8 @@
           this.state.token = res.token;
           sessionStorage.setItem('eleave_token', res.token);
           this.state.user = res.user;
+          // Refresh metadata after login to ensure leaveTypes and departments are always loaded
+          await this.loadMetadata();
           this.showApp();
           this.navigate('dashboard');
         } catch (err) {
@@ -1201,39 +1505,109 @@
         document.getElementById('leave-request-form').reset();
         document.getElementById('req-id').value = '';
         document.getElementById('req-attachments-list').innerHTML = '';
-        document.getElementById('req-type-desc').classList.add('hidden');
         document.getElementById('req-policy-error').classList.add('hidden');
+
+        // Ensure leave types are loaded
+        if (!this.state.leaveTypes || this.state.leaveTypes.length === 0) {
+          await this.loadMetadata();
+        }
 
         // Set default dates
         const today = new Date().toISOString().slice(0, 10);
         document.getElementById('req-start-date').value = today;
         document.getElementById('req-end-date').value = today;
 
+        // Populate dropdown
+        const select = document.getElementById('req-leave-type-select');
+        if (select) {
+          if (!this.state.leaveTypes || this.state.leaveTypes.length === 0) {
+            select.innerHTML = '<option value="">-- ไม่พบประเภทการลา (กรุณาติดต่อผู้ดูแลระบบ) --</option>';
+          } else {
+            select.innerHTML = this.state.leaveTypes.map(t => `
+              <option value="${t.leaveTypeId}">${t.name} (${t.quotaDays > 0 ? 'โควตา ' + t.quotaDays + ' วัน/ปี' : 'ตามสิทธิ์กฎหมาย'})</option>
+            `).join('');
+          }
+        }
+
         // Render radio cards for types
         const rBox = document.getElementById('req-leave-types-radio');
-        rBox.innerHTML = this.state.leaveTypes.map((t, idx) => `
-          <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 cursor-pointer transition-all">
-            <input type="radio" name="req-leave-type-choice" value="${t.leaveTypeId}" ${idx === 0 ? 'checked' : ''} onchange="App.handleTypeChange('${t.leaveTypeId}')" class="text-blue-600 focus:ring-blue-500">
-            <div class="min-w-0">
-              <span class="font-bold text-xs text-slate-800 block">${t.name}</span>
-              <span class="text-[10px] text-slate-400">${t.quotaDays > 0 ? 'โควตา ' + t.quotaDays + ' วัน/ปี' : 'ตามสิทธิ์กฎหมาย'}</span>
-            </div>
-          </label>
-        `).join('');
+        if (rBox) {
+          if (!this.state.leaveTypes || this.state.leaveTypes.length === 0) {
+            rBox.innerHTML = '<p class="col-span-2 text-xs text-slate-400 py-3 text-center">ยังไม่มีประเภทการลาที่เปิดใช้งาน</p>';
+          } else {
+            rBox.innerHTML = this.state.leaveTypes.map((t, idx) => `
+              <label id="type-card-${t.leaveTypeId}" onclick="App.handleTypeChange('${t.leaveTypeId}')" class="type-card flex items-center gap-3 p-3.5 rounded-2xl border ${idx === 0 ? 'border-blue-500 bg-blue-50/50 ring-2 ring-blue-100 shadow-sm' : 'border-slate-200 bg-white'} hover:border-blue-400 cursor-pointer transition-all">
+                <input type="radio" name="req-leave-type-choice" value="${t.leaveTypeId}" ${idx === 0 ? 'checked' : ''} class="text-blue-600 focus:ring-blue-500">
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full inline-block shrink-0" style="background-color: ${t.color || '#3b82f6'}"></span>
+                    <span class="font-bold text-xs text-slate-800 truncate">${t.name}</span>
+                  </div>
+                  <div class="text-[10px] text-slate-500 mt-0.5">
+                    ${t.quotaDays > 0 ? 'โควตา ' + t.quotaDays + ' วัน/ปี' : 'ตามสิทธิ์กฎหมาย'}
+                    ${t.attachmentRequiredDays > 0 ? ` • แนบไฟล์ ≥ ${t.attachmentRequiredDays} วัน` : ''}
+                    ${t.allowBackdate ? ' • ยื่นย้อนหลังได้' : ''}
+                  </div>
+                </div>
+              </label>
+            `).join('');
+          }
+        }
 
-        if (this.state.leaveTypes.length > 0) {
+        if (this.state.leaveTypes && this.state.leaveTypes.length > 0) {
           this.handleTypeChange(this.state.leaveTypes[0].leaveTypeId);
         }
       },
 
       handleTypeChange(typeId) {
-        this.state.activeLeaveType = this.state.leaveTypes.find(t => t.leaveTypeId === typeId);
+        if (!typeId) return;
+        this.state.activeLeaveType = (this.state.leaveTypes || []).find(t => t.leaveTypeId === typeId);
+        
+        // Sync select dropdown
+        const select = document.getElementById('req-leave-type-select');
+        if (select && select.value !== typeId) select.value = typeId;
+
+        // Sync visual card styles
+        document.querySelectorAll('.type-card').forEach(card => {
+          card.classList.remove('border-blue-500', 'bg-blue-50/50', 'ring-2', 'ring-blue-100', 'shadow-sm');
+          card.classList.add('border-slate-200', 'bg-white');
+        });
+        const activeCard = document.getElementById(`type-card-${typeId}`);
+        if (activeCard) {
+          activeCard.classList.remove('border-slate-200', 'bg-white');
+          activeCard.classList.add('border-blue-500', 'bg-blue-50/50', 'ring-2', 'ring-blue-100', 'shadow-sm');
+          const radio = activeCard.querySelector('input[type="radio"]');
+          if (radio) radio.checked = true;
+        }
+
+        const banner = document.getElementById('req-type-banner');
         const descBox = document.getElementById('req-type-desc');
-        if (this.state.activeLeaveType && this.state.activeLeaveType.description) {
-          descBox.textContent = 'ℹ️ ' + this.state.activeLeaveType.description;
-          descBox.classList.remove('hidden');
-        } else {
-          descBox.classList.add('hidden');
+        if (this.state.activeLeaveType) {
+          const t = this.state.activeLeaveType;
+          if (banner) {
+            banner.innerHTML = `
+              <div class="flex flex-wrap items-center justify-between gap-2 p-3 bg-blue-50/70 border border-blue-200 rounded-xl text-xs text-blue-900">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full" style="background-color: ${t.color}"></span>
+                  <span class="font-bold text-sm text-blue-950">${t.name}</span>
+                </div>
+                <div class="flex items-center gap-3 text-[11px] font-medium text-blue-800">
+                  <span>โควตา: <b>${t.quotaDays > 0 ? t.quotaDays + ' วัน/ปี' : 'ตามสิทธิ์'}</b></span>
+                  ${t.attachmentRequiredDays > 0 ? `<span class="px-2 py-0.5 bg-amber-100 text-amber-800 rounded font-semibold">ต้องแนบไฟล์เมื่อลา ≥ ${t.attachmentRequiredDays} วัน</span>` : ''}
+                  ${t.allowBackdate ? '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded font-semibold">ยื่นย้อนหลังได้</span>' : '<span class="text-slate-400">ห้ามยื่นย้อนหลัง</span>'}
+                </div>
+              </div>
+            `;
+            banner.classList.remove('hidden');
+          }
+          if (descBox) {
+            if (t.description) {
+              descBox.innerHTML = `<b>รายละเอียดนโยบาย:</b> ${t.description}`;
+              descBox.classList.remove('hidden');
+            } else {
+              descBox.classList.add('hidden');
+            }
+          }
         }
         this.triggerPolicyPreview();
       },
@@ -1542,7 +1916,8 @@
       },
 
       async handleCancelRequest() {
-        if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกใบลาใบนี้?')) return;
+        const ok = await this.showConfirm('ยืนยันยกเลิกใบลา', 'คุณแน่ใจหรือไม่ว่าต้องการยกเลิกคำขอลาใบนี้?', 'ยกเลิกใบลา', true);
+        if (!ok) return;
         try {
           await this.call('cancelLeave', {
             requestId: this.state.currentDetailRequestId,
@@ -1754,40 +2129,138 @@
       async loadAdminUsers() {
         try {
           const users = await this.call('adminListUsers', {});
+          this.state.adminUsers = users;
           const tbody = document.getElementById('admin-users-table');
           tbody.innerHTML = users.map(u => `
-            <tr class="hover:bg-slate-50">
+            <tr class="hover:bg-slate-50 transition-colors">
               <td class="py-2.5 px-3 font-bold text-slate-900">${u.name}</td>
-              <td class="py-2.5 px-3 text-slate-500">${u.username} <span class="text-slate-400">(${u.email})</span></td>
+              <td class="py-2.5 px-3 text-slate-500 font-mono text-[11px]">${u.username} <span class="text-slate-400">(${u.email})</span></td>
               <td class="py-2.5 px-3 text-slate-600">${u.departmentName}</td>
               <td class="py-2.5 px-3 text-slate-600">${u.position || '-'}</td>
               <td class="py-2.5 px-3 font-semibold text-blue-600">${u.roleLabel}</td>
               <td class="py-2.5 px-3 text-center">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${u.active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'}">
                   ${u.active ? 'ใช้งาน' : 'ระงับ'}
                 </span>
               </td>
-              <td class="py-2.5 px-3 text-right">
-                <button type="button" onclick="App.handleResetPasswordPrompt('${u.userId}', '${u.name}')" class="text-xs text-amber-600 hover:text-amber-800 font-semibold mr-2">รีเซ็ตรหัส</button>
+              <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                <button type="button" onclick="App.openUserModal('${u.userId}')" class="px-2.5 py-1 text-xs text-blue-600 hover:text-blue-800 font-bold mr-1.5 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">
+                  ✏️ แก้ไข
+                </button>
+                <button type="button" onclick="App.openResetPasswordModal('${u.userId}', '${u.name}', '${u.username}')" class="px-2.5 py-1 text-xs text-amber-600 hover:text-amber-800 font-bold bg-amber-50 hover:bg-amber-100 rounded-lg transition-colors cursor-pointer">
+                  🔑 รีเซ็ตรหัส
+                </button>
               </td>
             </tr>
           `).join('');
         } catch (e) { console.error(e); }
       },
 
-      async handleResetPasswordPrompt(userId, name) {
-        const p = prompt(`ตั้งรหัสผ่านใหม่สำหรับ ${name}:`, 'User@1234');
-        if (!p) return;
-        try {
-          await this.call('adminResetPassword', { userId: userId, newPassword: p });
-          this.showAlert('สำเร็จ', 'รีเซ็ตรหัสผ่านเรียบร้อยแล้ว');
-        } catch (e) {
-          this.showAlert('ผิดพลาด', e.message);
+      openUserModal(userId = null) {
+        const modal = document.getElementById('modal-user');
+        const deptSelect = document.getElementById('user-form-dept');
+        deptSelect.innerHTML = (this.state.departments || []).map(d => `
+          <option value="${d.departmentId}">${d.name}</option>
+        `).join('');
+
+        if (userId && this.state.adminUsers) {
+          const u = this.state.adminUsers.find(x => x.userId === userId);
+          if (!u) return;
+          document.getElementById('modal-user-title').textContent = 'แก้ไขข้อมูลพนักงาน: ' + u.name;
+          document.getElementById('user-form-id').value = u.userId;
+          const uField = document.getElementById('user-form-username');
+          uField.value = u.username;
+          uField.disabled = true;
+          document.getElementById('user-form-name').value = u.name;
+          document.getElementById('user-form-email').value = u.email;
+          document.getElementById('user-form-dept').value = u.departmentId;
+          document.getElementById('user-form-role').value = u.role;
+          document.getElementById('user-form-position').value = u.position || '';
+          document.getElementById('user-form-phone').value = u.phone || '';
+          document.getElementById('user-form-hiredate').value = u.hireDate ? u.hireDate.slice(0, 10) : '';
+          document.getElementById('user-form-password').value = '';
+          document.getElementById('user-form-pwd-label').textContent = '(เว้นว่างหากไม่เปลี่ยน)';
+          document.getElementById('user-form-active').checked = !!u.active;
+          document.getElementById('user-form-submit-btn').textContent = 'บันทึกการแก้ไข';
+        } else {
+          document.getElementById('modal-user-title').textContent = 'เพิ่มพนักงานใหม่';
+          document.getElementById('modal-user-form').reset();
+          document.getElementById('user-form-id').value = '';
+          const uField = document.getElementById('user-form-username');
+          uField.disabled = false;
+          document.getElementById('user-form-pwd-label').textContent = '(รหัสผ่านเริ่มต้น: User@1234)';
+          document.getElementById('user-form-active').checked = true;
+          document.getElementById('user-form-submit-btn').textContent = 'สร้างพนักงานใหม่';
         }
+        modal.classList.remove('hidden');
+      },
+
+      closeUserModal() {
+        document.getElementById('modal-user').classList.add('hidden');
+      },
+
+      async handleSaveUserSubmit(e) {
+        e.preventDefault();
+        const userId = document.getElementById('user-form-id').value;
+        const payload = {
+          userId: userId,
+          username: document.getElementById('user-form-username').value.trim(),
+          name: document.getElementById('user-form-name').value.trim(),
+          email: document.getElementById('user-form-email').value.trim(),
+          departmentId: document.getElementById('user-form-dept').value,
+          role: document.getElementById('user-form-role').value,
+          position: document.getElementById('user-form-position').value.trim(),
+          phone: document.getElementById('user-form-phone').value.trim(),
+          hireDate: document.getElementById('user-form-hiredate').value,
+          active: document.getElementById('user-form-active').checked
+        };
+        const pwd = document.getElementById('user-form-password').value;
+        if (pwd) payload.password = pwd;
+        else if (!userId) payload.password = 'User@1234';
+
+        try {
+          const res = await this.call('adminSaveUser', payload);
+          this.closeUserModal();
+          this.showAlert('สำเร็จ', res.message || 'บันทึกข้อมูลเรียบร้อยแล้ว');
+          this.loadAdminUsers();
+          await this.loadMetadata();
+        } catch (err) {
+          this.showAlert('ผิดพลาด', err.message);
+        }
+        return false;
+      },
+
+      openResetPasswordModal(userId, name, username) {
+        document.getElementById('reset-pwd-user-id').value = userId;
+        document.getElementById('reset-pwd-info').innerHTML = `
+          <strong>${name}</strong><br>
+          <span class="text-slate-400 font-mono text-[11px]">@${username}</span>
+        `;
+        document.getElementById('reset-pwd-new').value = 'User@1234';
+        document.getElementById('modal-reset-pwd').classList.remove('hidden');
+      },
+
+      closeResetPasswordModal() {
+        document.getElementById('modal-reset-pwd').classList.add('hidden');
+      },
+
+      async handleResetPasswordSubmit(e) {
+        e.preventDefault();
+        const userId = document.getElementById('reset-pwd-user-id').value;
+        const newPassword = document.getElementById('reset-pwd-new').value;
+        try {
+          await this.call('adminResetPassword', { userId: userId, newPassword: newPassword });
+          this.closeResetPasswordModal();
+          this.showAlert('สำเร็จ', 'รีเซ็ตรหัสผ่านเรียบร้อยแล้ว');
+        } catch (err) {
+          this.showAlert('ผิดพลาด', err.message);
+        }
+        return false;
       },
 
       async handleSeedDemo() {
-        if (!confirm('ต้องการสร้างบัญชีทดสอบ 5 คนใช่หรือไม่?')) return;
+        const ok = await this.showConfirm('สร้างบัญชีทดสอบ', 'ต้องการสร้างบัญชีทดสอบ 5 คนสำหรับทุกบทบาทใช่หรือไม่?\n(รหัสผ่านของทุกบัญชีคือ Demo@1234)', 'สร้างทันที', false);
+        if (!ok) return;
         try {
           const res = await this.call('adminSeedDemo', {});
           this.showAlert('สำเร็จ', res.message);
@@ -1800,74 +2273,150 @@
       async loadAdminDepts() {
         try {
           const depts = await this.call('adminListDepartments', {});
+          this.state.adminDepts = depts;
           document.getElementById('admin-depts-table').innerHTML = depts.map(d => `
-            <tr class="hover:bg-slate-50">
-              <td class="py-2.5 px-3 font-mono text-slate-500">${d.departmentId}</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-2.5 px-3 font-mono text-slate-500 text-xs">${d.departmentId}</td>
               <td class="py-2.5 px-3 font-bold text-slate-900">${d.name}</td>
               <td class="py-2.5 px-3 text-center">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${d.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">${d.active ? 'เปิด' : 'ปิด'}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${d.active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'}">${d.active ? 'เปิดใช้งาน' : 'ปิด'}</span>
               </td>
               <td class="py-2.5 px-3 text-right">
-                <button type="button" onclick="App.editDeptPrompt('${d.departmentId}', '${d.name}')" class="text-xs text-blue-600 font-semibold">แก้ไข</button>
+                <button type="button" onclick="App.openDeptModal('${d.departmentId}')" class="px-3 py-1 text-xs text-blue-600 hover:text-blue-800 font-bold bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">
+                  ✏️ แก้ไข
+                </button>
               </td>
             </tr>
           `).join('');
         } catch (e) { console.error(e); }
       },
 
-      async openDeptModal() {
-        const name = prompt('ระบุชื่อแผนกใหม่:');
-        if (!name) return;
-        try {
-          await this.call('adminSaveDepartment', { name: name, active: true });
-          this.loadAdminDepts();
-        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      openDeptModal(deptId = null) {
+        if (deptId && this.state.adminDepts) {
+          const d = this.state.adminDepts.find(x => x.departmentId === deptId);
+          if (!d) return;
+          document.getElementById('modal-dept-title').textContent = 'แก้ไขแผนก: ' + d.name;
+          document.getElementById('dept-form-id').value = d.departmentId;
+          document.getElementById('dept-form-name').value = d.name;
+          document.getElementById('dept-form-active').checked = !!d.active;
+        } else {
+          document.getElementById('modal-dept-title').textContent = 'เพิ่มแผนกใหม่';
+          document.getElementById('modal-dept-form').reset();
+          document.getElementById('dept-form-id').value = '';
+          document.getElementById('dept-form-active').checked = true;
+        }
+        document.getElementById('modal-dept').classList.remove('hidden');
       },
 
-      async editDeptPrompt(id, oldName) {
-        const name = prompt('แก้ไขชื่อแผนก:', oldName);
-        if (!name) return;
+      closeDeptModal() {
+        document.getElementById('modal-dept').classList.add('hidden');
+      },
+
+      async handleSaveDeptSubmit(e) {
+        e.preventDefault();
+        const id = document.getElementById('dept-form-id').value;
+        const name = document.getElementById('dept-form-name').value.trim();
+        const active = document.getElementById('dept-form-active').checked;
         try {
-          await this.call('adminSaveDepartment', { departmentId: id, name: name, active: true });
+          const res = await this.call('adminSaveDepartment', { departmentId: id, name: name, active: active });
+          this.closeDeptModal();
+          this.showAlert('สำเร็จ', res.message || 'บันทึกข้อมูลแผนกเรียบร้อยแล้ว');
           this.loadAdminDepts();
-        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+          await this.loadMetadata();
+        } catch (err) {
+          this.showAlert('ผิดพลาด', err.message);
+        }
+        return false;
       },
 
       async loadAdminTypes() {
         try {
           const types = await this.call('adminListLeaveTypes', {});
+          this.state.adminTypes = types;
           document.getElementById('admin-types-table').innerHTML = types.map(t => `
-            <tr class="hover:bg-slate-50">
-              <td class="py-2.5 px-3 font-bold" style="color: ${t.color}">${t.name}</td>
-              <td class="py-2.5 px-3 text-center">${t.quotaDays > 0 ? t.quotaDays : 'ไม่จำกัด'}</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-2.5 px-3">
+                <div class="flex items-center gap-2">
+                  <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${t.color}"></span>
+                  <span class="font-bold text-slate-900">${t.name}</span>
+                </div>
+              </td>
+              <td class="py-2.5 px-3 text-center font-semibold text-slate-700">${t.quotaDays > 0 ? t.quotaDays + ' วัน' : 'ไม่จำกัด'}</td>
               <td class="py-2.5 px-3 text-center">${t.attachmentRequiredDays > 0 ? t.attachmentRequiredDays + ' วัน' : '-'}</td>
-              <td class="py-2.5 px-3 text-center">${t.allowBackdate ? '✓ ได้' : '✕ ไม่ได้'}</td>
-              <td class="py-2.5 px-3 text-center">${t.sortOrder}</td>
+              <td class="py-2.5 px-3 text-center">${t.allowBackdate ? '<span class="text-emerald-600 font-bold">✓ ได้</span>' : '<span class="text-slate-400">✕ ไม่ได้</span>'}</td>
+              <td class="py-2.5 px-3 text-center font-mono">${t.sortOrder}</td>
               <td class="py-2.5 px-3 text-center">
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">${t.active ? 'เปิด' : 'ปิด'}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${t.active ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'}">${t.active ? 'เปิดใช้งาน' : 'ปิด'}</span>
               </td>
               <td class="py-2.5 px-3 text-right">
-                <button type="button" onclick="App.editTypePrompt('${t.leaveTypeId}')" class="text-xs text-blue-600 font-semibold">แก้ไข</button>
+                <button type="button" onclick="App.openLeaveTypeModal('${t.leaveTypeId}')" class="px-3 py-1 text-xs text-blue-600 hover:text-blue-800 font-bold bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors cursor-pointer">
+                  ✏️ แก้ไข
+                </button>
               </td>
             </tr>
           `).join('');
         } catch (e) { console.error(e); }
       },
 
-      openLeaveTypeModal() {
-        const name = prompt('ชื่อประเภทการลา:');
-        if (!name) return;
-        const q = prompt('โควตาวันต่อปี (0 = ไม่จำกัด):', '10');
-        if (q === null) return;
-        this.call('adminSaveLeaveType', {
-          name: name,
-          quotaDays: Number(q) || 0,
-          attachmentRequiredDays: 0,
-          allowBackdate: false,
-          color: '#3b82f6',
-          sortOrder: 10,
-          active: true
-        }).then(() => this.loadAdminTypes()).catch(e => this.showAlert('ผิดพลาด', e.message));
+      openLeaveTypeModal(typeId = null) {
+        if (typeId && this.state.adminTypes) {
+          const t = this.state.adminTypes.find(x => x.leaveTypeId === typeId);
+          if (!t) return;
+          document.getElementById('modal-type-title').textContent = 'แก้ไขประเภทการลา: ' + t.name;
+          document.getElementById('type-form-id').value = t.leaveTypeId;
+          document.getElementById('type-form-name').value = t.name;
+          document.getElementById('type-form-quota').value = t.quotaDays;
+          document.getElementById('type-form-attach-days').value = t.attachmentRequiredDays;
+          document.getElementById('type-form-sort').value = t.sortOrder || 1;
+          document.getElementById('type-form-color').value = t.color || '#3b82f6';
+          document.getElementById('type-form-desc').value = t.description || '';
+          document.getElementById('type-form-allow-backdate').checked = !!t.allowBackdate;
+          document.getElementById('type-form-active').checked = !!t.active;
+        } else {
+          document.getElementById('modal-type-title').textContent = 'เพิ่มประเภทการลาใหม่';
+          document.getElementById('modal-type-form').reset();
+          document.getElementById('type-form-id').value = '';
+          document.getElementById('type-form-quota').value = 10;
+          document.getElementById('type-form-attach-days').value = 0;
+          document.getElementById('type-form-sort').value = (this.state.adminTypes ? this.state.adminTypes.length + 1 : 1);
+          document.getElementById('type-form-color').value = '#3b82f6';
+          document.getElementById('type-form-allow-backdate').checked = false;
+          document.getElementById('type-form-active').checked = true;
+        }
+        document.getElementById('modal-leave-type').classList.remove('hidden');
+      },
+
+      closeLeaveTypeModal() {
+        document.getElementById('modal-leave-type').classList.add('hidden');
+      },
+
+      selectTypeColor(hex) {
+        document.getElementById('type-form-color').value = hex;
+      },
+
+      async handleSaveLeaveTypeSubmit(e) {
+        e.preventDefault();
+        const payload = {
+          leaveTypeId: document.getElementById('type-form-id').value,
+          name: document.getElementById('type-form-name').value.trim(),
+          quotaDays: Number(document.getElementById('type-form-quota').value) || 0,
+          attachmentRequiredDays: Number(document.getElementById('type-form-attach-days').value) || 0,
+          sortOrder: Number(document.getElementById('type-form-sort').value) || 1,
+          color: document.getElementById('type-form-color').value,
+          description: document.getElementById('type-form-desc').value.trim(),
+          allowBackdate: document.getElementById('type-form-allow-backdate').checked,
+          active: document.getElementById('type-form-active').checked
+        };
+        try {
+          const res = await this.call('adminSaveLeaveType', payload);
+          this.closeLeaveTypeModal();
+          this.showAlert('สำเร็จ', res.message || 'บันทึกประเภทการลาเรียบร้อยแล้ว');
+          this.loadAdminTypes();
+          await this.loadMetadata();
+        } catch (err) {
+          this.showAlert('ผิดพลาด', err.message);
+        }
+        return false;
       },
 
       async loadAdminSteps() {
@@ -1875,19 +2424,19 @@
           const steps = await this.call('adminListApprovalSteps', {});
           const container = document.getElementById('admin-steps-container');
           container.innerHTML = steps.map((s, idx) => `
-            <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs">
-              <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">${idx + 1}</span>
-              <input type="text" value="${s.label}" class="px-3 py-1.5 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 step-label">
-              <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-role">
+            <div class="flex flex-wrap sm:flex-nowrap items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs">
+              <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center shrink-0">${idx + 1}</span>
+              <input type="text" value="${s.label}" placeholder="ชื่อขั้นตอน (เช่น หัวหน้าแผนก)" class="px-3 py-2 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 min-w-[140px] step-label">
+              <select class="px-3 py-2 border border-slate-300 rounded-xl step-role font-semibold text-slate-700 bg-white">
                 <option value="APPROVER" ${s.role === 'APPROVER' ? 'selected' : ''}>หัวหน้างาน (APPROVER)</option>
                 <option value="HR" ${s.role === 'HR' ? 'selected' : ''}>ฝ่ายบุคคล (HR)</option>
                 <option value="ADMIN" ${s.role === 'ADMIN' ? 'selected' : ''}>ผู้ดูแลระบบ (ADMIN)</option>
               </select>
-              <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-scope">
+              <select class="px-3 py-2 border border-slate-300 rounded-xl step-scope font-semibold text-slate-700 bg-white">
                 <option value="SAME" ${s.departmentId === 'SAME' ? 'selected' : ''}>แผนกเดียวกับผู้ลา</option>
-                <option value="*" ${s.departmentId === '*' || !s.departmentId ? 'selected' : ''}>ทุกแผนก</option>
+                <option value="*" ${s.departmentId === '*' || !s.departmentId ? 'selected' : ''}>ทุกแผนก (ส่วนกลาง)</option>
               </select>
-              <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">✕</button>
+              <button type="button" onclick="this.closest('.flex').remove()" class="text-red-500 hover:text-red-700 font-bold p-1.5 cursor-pointer text-sm">✕</button>
             </div>
           `).join('');
         } catch (e) { console.error(e); }
@@ -1897,20 +2446,20 @@
         const container = document.getElementById('admin-steps-container');
         const count = container.children.length + 1;
         const div = document.createElement('div');
-        div.className = 'flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs';
+        div.className = 'flex flex-wrap sm:flex-nowrap items-center gap-3 p-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs';
         div.innerHTML = `
-          <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">${count}</span>
-          <input type="text" value="ขั้นตอนที่ ${count}" class="px-3 py-1.5 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 step-label">
-          <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-role">
+          <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center shrink-0">${count}</span>
+          <input type="text" value="ขั้นตอนที่ ${count}" placeholder="ชื่อขั้นตอน" class="px-3 py-2 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 min-w-[140px] step-label">
+          <select class="px-3 py-2 border border-slate-300 rounded-xl step-role font-semibold text-slate-700 bg-white">
             <option value="APPROVER">หัวหน้างาน (APPROVER)</option>
             <option value="HR">ฝ่ายบุคคล (HR)</option>
             <option value="ADMIN">ผู้ดูแลระบบ (ADMIN)</option>
           </select>
-          <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-scope">
+          <select class="px-3 py-2 border border-slate-300 rounded-xl step-scope font-semibold text-slate-700 bg-white">
             <option value="SAME">แผนกเดียวกับผู้ลา</option>
-            <option value="*">ทุกแผนก</option>
+            <option value="*">ทุกแผนก (ส่วนกลาง)</option>
           </select>
-          <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">✕</button>
+          <button type="button" onclick="this.closest('.flex').remove()" class="text-red-500 hover:text-red-700 font-bold p-1.5 cursor-pointer text-sm">✕</button>
         `;
         container.appendChild(div);
       },
@@ -1919,12 +2468,15 @@
         const container = document.getElementById('admin-steps-container');
         const rows = [];
         container.querySelectorAll('.flex').forEach((div, idx) => {
-          rows.push({
-            step: idx + 1,
-            label: div.querySelector('.step-label').value.trim(),
-            role: div.querySelector('.step-role').value,
-            departmentId: div.querySelector('.step-scope').value
-          });
+          const labelInput = div.querySelector('.step-label');
+          if (labelInput) {
+            rows.push({
+              step: idx + 1,
+              label: labelInput.value.trim() || ('ขั้นตอนที่ ' + (idx + 1)),
+              role: div.querySelector('.step-role').value,
+              departmentId: div.querySelector('.step-scope').value
+            });
+          }
         });
 
         try {
@@ -1937,33 +2489,62 @@
       async loadAdminHolidays() {
         try {
           const holidays = await this.call('adminListHolidays', {});
+          this.state.adminHolidays = holidays;
           document.getElementById('admin-holidays-table').innerHTML = holidays.map(h => `
-            <tr class="hover:bg-slate-50">
+            <tr class="hover:bg-slate-50 transition-colors">
               <td class="py-2.5 px-3 font-mono font-bold text-slate-800">${h.date}</td>
               <td class="py-2.5 px-3 text-slate-800 font-medium">${h.name}</td>
               <td class="py-2.5 px-3 text-right">
-                <button type="button" onclick="App.deleteHoliday('${h.date}')" class="text-xs text-red-500 font-bold">ลบ</button>
+                <button type="button" onclick="App.openHolidayModal('${h.date}', '${h.name.replace(/'/g, "\\'")}')" class="px-2.5 py-1 text-xs text-blue-600 hover:text-blue-800 font-bold bg-blue-50 hover:bg-blue-100 rounded-lg mr-1 cursor-pointer">
+                  ✏️ แก้ไข
+                </button>
+                <button type="button" onclick="App.deleteHoliday('${h.date}')" class="px-2.5 py-1 text-xs text-red-600 hover:text-red-800 font-bold bg-red-50 hover:bg-red-100 rounded-lg cursor-pointer">
+                  ลบ
+                </button>
               </td>
             </tr>
           `).join('');
         } catch (e) { console.error(e); }
       },
 
-      async openHolidayModal() {
-        const d = prompt('ระบุวันที่ (yyyy-mm-dd):', new Date().toISOString().slice(0, 10));
-        if (!d) return;
-        const n = prompt('ชื่อวันหยุด:');
-        if (!n) return;
+      openHolidayModal(date = null, name = null) {
+        if (date) {
+          document.getElementById('modal-holiday-title').textContent = 'แก้ไขวันหยุด';
+          document.getElementById('holiday-form-date').value = date;
+          document.getElementById('holiday-form-name').value = name || '';
+        } else {
+          document.getElementById('modal-holiday-title').textContent = 'เพิ่มวันหยุด';
+          document.getElementById('holiday-form-date').value = new Date().toISOString().slice(0, 10);
+          document.getElementById('holiday-form-name').value = '';
+        }
+        document.getElementById('modal-holiday').classList.remove('hidden');
+      },
+
+      closeHolidayModal() {
+        document.getElementById('modal-holiday').classList.add('hidden');
+      },
+
+      async handleSaveHolidaySubmit(e) {
+        e.preventDefault();
+        const d = document.getElementById('holiday-form-date').value;
+        const n = document.getElementById('holiday-form-name').value.trim();
         try {
           await this.call('adminSaveHoliday', { date: d, name: n });
+          this.closeHolidayModal();
+          this.showAlert('สำเร็จ', 'บันทึกวันหยุดเรียบร้อยแล้ว');
           this.loadAdminHolidays();
-        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+        } catch (err) {
+          this.showAlert('ผิดพลาด', err.message);
+        }
+        return false;
       },
 
       async deleteHoliday(date) {
-        if (!confirm('ยืนยันลบวันหยุด ' + date + ' ?')) return;
+        const ok = await this.showConfirm('ยืนยันลบวันหยุด', `คุณต้องการลบวันหยุดวันที่ ${date} ใช่หรือไม่?`, 'ลบวันหยุด', true);
+        if (!ok) return;
         try {
           await this.call('adminDeleteHoliday', { date: date });
+          this.showAlert('สำเร็จ', 'ลบวันหยุดเรียบร้อยแล้ว');
           this.loadAdminHolidays();
         } catch (e) { this.showAlert('ผิดพลาด', e.message); }
       },
@@ -1992,7 +2573,7 @@
         };
         try {
           await this.call('adminSaveSettings', payload);
-          this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าเรียบร้อยแล้ว');
+          this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าระบบเรียบร้อยแล้ว');
         } catch (err) { this.showAlert('ผิดพลาด', err.message); }
         return false;
       },
@@ -2001,28 +2582,42 @@
         try {
           const logs = await this.call('adminGetLogs', { limit: 50 });
           document.getElementById('admin-logs-table').innerHTML = logs.map(l => `
-            <tr class="hover:bg-slate-50">
-              <td class="py-2 px-3 text-slate-400 font-mono">${l.timestamp}</td>
-              <td class="py-2 px-3 font-semibold text-slate-800">${l.actorName}</td>
-              <td class="py-2 px-3 font-bold text-blue-600">${l.action}</td>
-              <td class="py-2 px-3 font-mono">${l.requestId || '-'}</td>
-              <td class="py-2 px-3 text-slate-600">${l.note || '-'}</td>
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-2.5 px-3 text-slate-400 font-mono text-[11px]">${l.timestamp}</td>
+              <td class="py-2.5 px-3 font-semibold text-slate-800">${l.actorName}</td>
+              <td class="py-2.5 px-3 font-bold text-blue-600">${l.action}</td>
+              <td class="py-2.5 px-3 font-mono">${l.requestId || '-'}</td>
+              <td class="py-2.5 px-3 text-slate-600">${l.note || '-'}</td>
             </tr>
           `).join('');
         } catch (e) { console.error(e); }
       },
 
-      /* ==================== HELPERS ==================== */
-      renderStatusBadge(status, label) {
-        const styles = {
-          'PENDING': 'bg-amber-50 text-amber-700 border-amber-200',
-          'APPROVED': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-          'REJECTED': 'bg-red-50 text-red-700 border-red-200',
-          'RETURNED': 'bg-orange-50 text-orange-700 border-orange-200',
-          'CANCELLED': 'bg-slate-100 text-slate-600 border-slate-200'
-        };
-        const s = styles[status] || 'bg-slate-100 text-slate-700 border-slate-200';
-        return `<span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${s}">${label || status}</span>`;
+      /* ==================== DIALOG & IN-APP MODAL HELPERS ==================== */
+      showConfirm(title, msg, confirmText = 'ยืนยัน', isDanger = false) {
+        return new Promise((resolve) => {
+          document.getElementById('modal-confirm-title').textContent = title;
+          document.getElementById('modal-confirm-msg').textContent = msg;
+          const okBtn = document.getElementById('modal-confirm-ok-btn');
+          okBtn.textContent = confirmText;
+          if (isDanger) {
+            okBtn.className = 'w-full py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm';
+          } else {
+            okBtn.className = 'w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm';
+          }
+          const modal = document.getElementById('modal-confirm');
+          modal.classList.remove('hidden');
+
+          const cleanup = (result) => {
+            modal.classList.add('hidden');
+            okBtn.onclick = null;
+            document.getElementById('modal-confirm-cancel-btn').onclick = null;
+            resolve(result);
+          };
+
+          okBtn.onclick = () => cleanup(true);
+          document.getElementById('modal-confirm-cancel-btn').onclick = () => cleanup(false);
+        });
       },
 
       showAlert(title, msg) {

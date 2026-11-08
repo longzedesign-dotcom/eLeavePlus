@@ -201,6 +201,7 @@ const Admin = (() => {
     if (!Array.isArray(stepsList)) throwApp_('VALIDATION', 'รูปแบบข้อมูลไม่ถูกต้อง');
 
     return Db.withLock(function() {
+      Db.invalidate(SHEET.APPROVAL_STEPS);
       Db.sheet(SHEET.APPROVAL_STEPS).clearContents();
       Db.sheet(SHEET.APPROVAL_STEPS).getRange(1, 1, 1, SCHEMA.APPROVAL_STEPS.length).setValues([SCHEMA.APPROVAL_STEPS]);
 

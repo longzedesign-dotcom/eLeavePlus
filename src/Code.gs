@@ -41,7 +41,14 @@ function apiCall(action, payload, token) {
     // Public / Unauthenticated actions
     if (action === 'getBootstrap') {
       const cfg = Db.getConfig();
-      const user = token ? Auth.requireUser(token) : null;
+      let user = null;
+      if (token) {
+        try {
+          user = Auth.requireUser(token);
+        } catch (e) {
+          user = null;
+        }
+      }
       return ok_({
         app: {
           name: APP.NAME,
@@ -50,6 +57,13 @@ function apiCall(action, payload, token) {
           companyName: cfg.COMPANY_NAME || APP.NAME
         },
         user: user ? Auth.publicUser(user) : null,
+        departments: Db.readAll(SHEET.DEPARTMENTS).filter(function(d) { return d.active; }),
+        leaveTypes: Db.readAll(SHEET.LEAVE_TYPES).filter(function(t) { return t.active; }).sort(function(a, b) { return a.sortOrder - b.sortOrder; })
+      });
+    }
+
+    if (action === 'getLeaveTypesAndDepts') {
+      return ok_({
         departments: Db.readAll(SHEET.DEPARTMENTS).filter(function(d) { return d.active; }),
         leaveTypes: Db.readAll(SHEET.LEAVE_TYPES).filter(function(t) { return t.active; }).sort(function(a, b) { return a.sortOrder - b.sortOrder; })
       });
