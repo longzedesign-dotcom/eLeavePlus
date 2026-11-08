@@ -121,7 +121,7 @@ const Workflow = (() => {
 
   /* ====================== approval steps & eligibility ====================== */
   function steps() {
-    return Db.readAll(SHEET.APPROVAL_STEPS).filter(function (s) { return s.step > 0; }).sort(function (a, b) { return a.step - b.step; });
+    return Db.readAll(SHEET.APPROVAL_STEPS).filter(function (s) { return num_(s.step, 0) > 0; }).sort(function (a, b) { return num_(a.step, 0) - num_(b.step, 0); });
   }
   function matchesStep_(approver, step, requestDeptId) {
     if (!approver || !approver.active) return false;
@@ -143,28 +143,47 @@ const Workflow = (() => {
   /** Next step number after `after` that has at least one non-admin approver. 0 = none left. */
   function nextStep(request, after) {
     const all = steps();
-    const rest = all.filter(function (s) { return s.step > after; });
+    const afterNum = num_(after, 0);
+    const rest = all.filter(function (s) { return num_(s.step, 0) > afterNum; });
     for (let i = 0; i < rest.length; i++) {
-      if (eligibleApprovers(rest[i], request, false).length > 0) return rest[i].step;
+      if (eligibleApprovers(rest[i], request, false).length > 0) return num_(rest[i].step, 0);
     }
     // nobody (except admins) can approve at all → let an admin handle the first configured step
-    if (after === 0 && all.length > 0 && !all.some(function (s) { return eligibleApprovers(s, request, false).length > 0; })) return all[0].step;
+    if (afterNum === 0 && all.length > 0 && !all.some(function (s) { return eligibleApprovers(s, request, false).length > 0; })) return num_(all[0].step, 0);
     return 0;
   }
   function canAccessApprovals(user) {
-    if (!user) return false;
-    if (user.role === ROLE.ADMIN) return true;
+    if (!user || !user.active) return false;
+    if (user.role === ROLE.ADMIN || user.role === ROLE.HR) return true;
     return steps().some(function (s) { return s.role === user.role; });
   }
   function canDecide(user, request) {
-    if (!user || request.status !== STATUS.PENDING) return false;
+    if (!user || !user.active) return false;
+    if (request.status !== STATUS.PENDING) return false;
     const cfg = Db.getConfig();
-    if (request.userId === user.userId && !(user.role === ROLE.ADMIN && bool_(cfg.ALLOW_ADMIN_SELF_APPROVAL))) return false;
-    const step = steps().filter(function (s) { return s.step === request.currentStep; })[0];
-    if (!step) return user.role === ROLE.ADMIN;
+    // Requester check
+    if (request.userId === user.userId) {
+      return user.role === ROLE.ADMIN && (cfg.ALLOW_ADMIN_SELF_APPROVAL === undefined || bool_(cfg.ALLOW_ADMIN_SELF_APPROVAL));
+    }
+    // Master Admin override
+    if (user.role === ROLE.ADMIN) return true;
+
+    const reqStep = num_(request.currentStep, 1);
+    const step = steps().filter(function (s) { return num_(s.step, 0) === reqStep; })[0];
+
+    // HR authority
+    if (user.role === ROLE.HR) {
+      if (!step || step.role === ROLE.HR || reqStep >= 2) return true;
+      // Allow HR to act on behalf if requester's department has no supervisor
+      const approvers = eligibleApprovers(step, request, false);
+      if (approvers.length === 0) return true;
+    }
+
+    if (!step) return false;
     return matchesStep_(user, step, request.departmentId);
   }
   function canViewRequest(user, request) {
+    if (!user) return false;
     if (request.userId === user.userId) return true;
     if (user.role === ROLE.ADMIN || user.role === ROLE.HR) return true;
     if (user.role === ROLE.APPROVER) return !!user.departmentId && user.departmentId === request.departmentId;
@@ -181,7 +200,7 @@ const Workflow = (() => {
   }
   function enrich(r, ctx) {
     const u = ctx.users[r.userId] || {}, t = ctx.types[r.leaveTypeId] || {}, d = ctx.depts[r.departmentId] || {};
-    const step = ctx.steps.filter(function (s) { return s.step === r.currentStep; })[0];
+    const step = ctx.steps.filter(function (s) { return num_(s.step, 0) === num_(r.currentStep, 0); })[0];
     let attachments = [];
     try { attachments = r.attachmentsJson ? JSON.parse(r.attachmentsJson) : []; } catch (e) { attachments = []; }
     return {

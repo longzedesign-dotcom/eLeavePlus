@@ -123,14 +123,20 @@ function apiCall(action, payload, token) {
         return ok_(Admin.saveUser(user, payload));
       case 'adminResetPassword':
         return ok_(Admin.resetPassword(user, payload));
+      case 'adminToggleUser':
+        return ok_(Admin.toggleUserActive(user, payload.userId));
       case 'adminListDepartments':
         return ok_(Admin.listDepartments(user));
       case 'adminSaveDepartment':
         return ok_(Admin.saveDepartment(user, payload));
+      case 'adminToggleDepartment':
+        return ok_(Admin.toggleDepartmentActive(user, payload.departmentId));
       case 'adminListLeaveTypes':
         return ok_(Admin.listLeaveTypes(user));
       case 'adminSaveLeaveType':
         return ok_(Admin.saveLeaveType(user, payload));
+      case 'adminToggleLeaveType':
+        return ok_(Admin.toggleLeaveTypeActive(user, payload.leaveTypeId));
       case 'adminListApprovalSteps':
         return ok_(Admin.listApprovalSteps(user));
       case 'adminSaveApprovalSteps':

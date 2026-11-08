@@ -297,14 +297,51 @@ const Admin = (() => {
       });
   }
 
+  function toggleUserActive(user, userId) {
+    assertAdmin_(user);
+    return Db.withLock(function() {
+      const u = Db.findOne(SHEET.USERS, 'userId', requireStr_(userId, 'รหัสผู้ใช้'));
+      if (!u) throwApp_('NOT_FOUND', 'ไม่พบผู้ใช้');
+      const newActive = !bool_(u.active);
+      Db.update(SHEET.USERS, 'userId', userId, { active: newActive, updatedAt: nowIso_() });
+      log_('', user.userId, 'USER_TOGGLE', '', '', 0, (newActive ? 'เปิดใช้งาน' : 'ระงับการใช้งาน') + ' ผู้ใช้: ' + u.username);
+      return { success: true, active: newActive, message: (newActive ? 'เปิดใช้งาน' : 'ระงับการใช้งาน') + 'เรียบร้อยแล้ว' };
+    });
+  }
+
+  function toggleDepartmentActive(user, departmentId) {
+    assertAdmin_(user);
+    return Db.withLock(function() {
+      const d = Db.findOne(SHEET.DEPARTMENTS, 'departmentId', requireStr_(departmentId, 'รหัสแผนก'));
+      if (!d) throwApp_('NOT_FOUND', 'ไม่พบแผนก');
+      const newActive = !bool_(d.active);
+      Db.update(SHEET.DEPARTMENTS, 'departmentId', departmentId, { active: newActive });
+      return { success: true, active: newActive, message: (newActive ? 'เปิดใช้งาน' : 'ปิดการใช้งาน') + 'เรียบร้อยแล้ว' };
+    });
+  }
+
+  function toggleLeaveTypeActive(user, leaveTypeId) {
+    assertAdmin_(user);
+    return Db.withLock(function() {
+      const t = Db.findOne(SHEET.LEAVE_TYPES, 'leaveTypeId', requireStr_(leaveTypeId, 'รหัสประเภทการลา'));
+      if (!t) throwApp_('NOT_FOUND', 'ไม่พบประเภทการลา');
+      const newActive = !bool_(t.active);
+      Db.update(SHEET.LEAVE_TYPES, 'leaveTypeId', leaveTypeId, { active: newActive });
+      return { success: true, active: newActive, message: (newActive ? 'เปิดใช้งาน' : 'ปิดการใช้งาน') + 'เรียบร้อยแล้ว' };
+    });
+  }
+
   return Object.freeze({
     listUsers,
     saveUser,
     resetPassword,
+    toggleUserActive,
     listDepartments,
     saveDepartment,
+    toggleDepartmentActive,
     listLeaveTypes,
     saveLeaveType,
+    toggleLeaveTypeActive,
     listApprovalSteps,
     saveApprovalSteps,
     listHolidays,
