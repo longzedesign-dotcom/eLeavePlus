@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50">
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>eLeave+ | ระบบลาออนไลน์</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Prompt', sans-serif; }
+    .hidden { display: none !important; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- ======================================================== -->
+  <!-- 1. AUTH SCREEN (LOGIN)                                   -->
+  <!-- ======================================================== -->
+  <div id="auth-screen" class="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-200/80 p-8 sm:p-10 transition-all">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-black text-2xl shadow-lg shadow-blue-500/30 mb-4">
+          eL+
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">eLeave+</h1>
+        <p class="text-sm font-medium text-slate-500 mt-1">ระบบบริหารการลาออนไลน์สำหรับองค์กร</p>
+      </div>
+
+      <form id="login-form" onsubmit="return App.handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">ชื่อผู้ใช้ หรือ อีเมล</label>
+          <div class="relative">
+            <input id="login-username" type="text" required placeholder="admin หรือ email@company.com" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 focus:bg-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
+          <div class="relative">
+            <input id="login-password" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 focus:bg-white">
+            <button type="button" onclick="App.togglePassword('login-password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs">
+              แสดง
+            </button>
+          </div>
+        </div>
+
+        <div id="login-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-medium"></div>
+
+        <button id="login-submit-btn" type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-[0.99] text-white font-bold rounded-xl shadow-lg shadow-blue-500/25 transition-all text-sm cursor-pointer mt-2">
+          เข้าสู่ระบบ (Sign In)
+        </button>
+      </form>
+
+      <!-- Quick demo accounts -->
+      <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">บัญชีทดสอบระบบ (Demo Accounts)</p>
+        <div class="flex flex-wrap justify-center gap-1.5">
+          <button type="button" onclick="App.fillLogin('admin', 'Admin@1234')" class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-medium cursor-pointer">
+            👑 Admin
+          </button>
+          <button type="button" onclick="App.fillLogin('hr.somying', 'Demo@1234')" class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-medium cursor-pointer">
+            👩‍💼 HR
+          </button>
+          <button type="button" onclick="App.fillLogin('boss.it', 'Demo@1234')" class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-medium cursor-pointer">
+            👨‍💼 หัวหน้า IT
+          </button>
+          <button type="button" onclick="App.fillLogin('emp.it', 'Demo@1234')" class="px-2.5 py-1 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors font-medium cursor-pointer">
+            🧑‍💻 พนักงาน IT
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- 2. MAIN APPLICATION SHELL                                -->
+  <!-- ======================================================== -->
+  <div id="app-shell" class="hidden flex h-screen overflow-hidden bg-slate-100">
+
+    <!-- SIDEBAR -->
+    <aside id="app-sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 transition-all duration-300 z-30">
+      <!-- Brand Header -->
+      <div class="h-16 px-6 flex items-center justify-between border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-white font-extrabold text-sm shadow-md">
+            eL+
+          </div>
+          <div>
+            <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
+            <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="flex-1 overflow-y-auto custom-scrollbar px-3 py-4 space-y-1">
+        <button type="button" onclick="App.navigate('dashboard')" data-nav="dashboard" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+          <span class="text-base">📊</span> <span>แดชบอร์ดภาพรวม</span>
+        </button>
+
+        <button type="button" onclick="App.navigate('request')" data-nav="request" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+          <span class="text-base">📝</span> <span>ยื่นใบลาใหม่</span>
+        </button>
+
+        <button type="button" onclick="App.navigate('my-leaves')" data-nav="my-leaves" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+          <span class="text-base">📋</span> <span>ประวัติการลาของฉัน</span>
+        </button>
+
+        <button type="button" onclick="App.navigate('calendar')" data-nav="calendar" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+          <span class="text-base">📅</span> <span>ปฏิทินวันลา</span>
+        </button>
+
+        <div id="approver-menu-section" class="pt-3 mt-3 border-t border-slate-800">
+          <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">สำหรับผู้อนุมัติ / ฝ่ายบุคคล</div>
+          <button type="button" onclick="App.navigate('approvals')" data-nav="approvals" class="nav-item w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+            <div class="flex items-center gap-3">
+              <span class="text-base">📥</span> <span>รายการรออนุมัติ</span>
+            </div>
+            <span id="pending-badge-sidebar" class="hidden px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-slate-900">0</span>
+          </button>
+          <button type="button" onclick="App.navigate('balance')" data-nav="balance" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+            <span class="text-base">📑</span> <span>รายงานวันลาคงเหลือ</span>
+          </button>
+        </div>
+
+        <div id="admin-menu-section" class="pt-3 mt-3 border-t border-slate-800">
+          <div class="px-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">ผู้ดูแลระบบ (Admin)</div>
+          <button type="button" onclick="App.navigate('admin-settings')" data-nav="admin-settings" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer">
+            <span class="text-base">⚙️</span> <span>ตั้งค่าและจัดการระบบ</span>
+          </button>
+        </div>
+      </nav>
+
+      <!-- User Profile Card -->
+      <div class="p-3 border-t border-slate-800">
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-800/60">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 font-bold flex items-center justify-center text-xs shrink-0" id="user-avatar-text">
+              U
+            </div>
+            <div class="min-w-0">
+              <p id="user-name-sidebar" class="text-xs font-semibold text-white truncate">-</p>
+              <p id="user-role-sidebar" class="text-[10px] text-slate-400 truncate">-</p>
+            </div>
+          </div>
+          <button type="button" onclick="App.handleLogout()" title="ออกจากระบบ" class="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors text-xs cursor-pointer">
+            🚪
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden">
+
+      <!-- TOP BAR -->
+      <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-8 flex items-center justify-between shrink-0">
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="App.toggleSidebar()" class="lg:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 cursor-pointer">
+            ☰
+          </button>
+          <div>
+            <h1 id="page-title" class="text-lg sm:text-xl font-bold text-slate-900 leading-tight">แดชบอร์ดภาพรวม</h1>
+            <p id="page-subtitle" class="text-xs text-slate-500 hidden sm:block">สรุปข้อมูลการลาและสถานะปัจจุบัน</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="App.navigate('request')" class="inline-flex items-center gap-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm transition-all cursor-pointer">
+            <span>+</span> <span>ยื่นใบลา</span>
+          </button>
+          <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-slate-200">
+            <span id="header-company-name" class="text-xs font-medium text-slate-500">eLeave+</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- SCROLLABLE CONTENT BODY -->
+      <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-8">
+
+        <!-- ========================================== -->
+        <!-- VIEW: DASHBOARD                            -->
+        <!-- ========================================== -->
+        <section id="view-dashboard" class="view-panel space-y-6">
+          <!-- Stat Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500">วันลาที่อนุมัติแล้ว (ปีนี้)</p>
+                <h3 id="stat-my-approved-days" class="text-2xl sm:text-3xl font-extrabold text-blue-600 mt-1">0</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">วันทำงาน</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl font-bold">
+                🗓️
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500">คำขอของฉันที่รออนุมัติ</p>
+                <h3 id="stat-my-pending-count" class="text-2xl sm:text-3xl font-extrabold text-amber-500 mt-1">0</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">รายการ</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+                ⏳
+              </div>
+            </div>
+
+            <div id="card-pending-approvals" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500">ใบลาที่รอฉันอนุมัติ</p>
+                <h3 id="stat-pending-approval-count" class="text-2xl sm:text-3xl font-extrabold text-purple-600 mt-1">0</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">คลิกเพื่อพิจารณา</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl font-bold">
+                📥
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+              <div>
+                <p class="text-xs font-semibold text-slate-500">พนักงานที่ลาวันนี้</p>
+                <h3 id="stat-leaves-today-count" class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1">0</h3>
+                <p class="text-[11px] text-slate-400 mt-0.5">คน</p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+                🌴
+              </div>
+            </div>
+          </div>
+
+          <!-- My Leave Quota Balances -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <span>💳</span> <span>สิทธิ์และยอดวันลาคงเหลือของฉัน (ปีงบประมาณ <span id="dash-fy-label">2026</span>)</span>
+            </h3>
+            <div id="dash-my-balances-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- 2 Columns: Who is on leave today & Recent Requests -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Leaves Today List -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <h3 class="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
+                <span>🌴</span> <span>ผู้ที่ลาหยุดวันนี้</span>
+              </h3>
+              <div id="dash-leaves-today-list" class="space-y-3">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+
+            <!-- Recent Requests -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                  <span>📋</span> <span>รายการลายื่นล่าสุดของฉัน</span>
+                </h3>
+                <button type="button" onclick="App.navigate('my-leaves')" class="text-xs font-semibold text-blue-600 hover:text-blue-800">
+                  ดูทั้งหมด →
+                </button>
+              </div>
+              <div id="dash-recent-requests-list" class="space-y-3">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: NEW LEAVE REQUEST                    -->
+        <!-- ========================================== -->
+        <section id="view-request" class="view-panel hidden max-w-3xl mx-auto space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
+            <div class="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-slate-900">แบบฟอร์มยื่นคำขอลา</h2>
+                <p class="text-xs text-slate-500 mt-1">กรอกข้อมูลการลา ระบบจะคำนวณวันและตรวจสอบนโยบายแบบ Real-time</p>
+              </div>
+              <span id="req-fiscal-badge" class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+                ปีงบประมาณ 2026
+              </span>
+            </div>
+
+            <form id="leave-request-form" onsubmit="return App.handleSaveRequest(event)" class="space-y-5">
+              <input type="hidden" id="req-id" value="">
+
+              <!-- Leave Type Selection -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">ประเภทการลา <span class="text-red-500">*</span></label>
+                <div id="req-leave-types-radio" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <!-- Rendered via JS radio cards -->
+                </div>
+                <div id="req-type-desc" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 leading-relaxed"></div>
+              </div>
+
+              <!-- Date & Period Range -->
+              <div class="p-4 bg-slate-50/70 border border-slate-200 rounded-2xl space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Start Date -->
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">วันที่เริ่มลา <span class="text-red-500">*</span></label>
+                    <input id="req-start-date" type="date" required onchange="App.handleDateChange()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:border-blue-500 outline-none">
+                    <select id="req-start-period" onchange="App.handleDateChange()" class="w-full mt-2 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-700 outline-none">
+                      <option value="0">เต็มวัน (Full Day)</option>
+                      <option value="1">ครึ่งวันเช้า (Morning)</option>
+                      <option value="2">ครึ่งวันบ่าย (Afternoon)</option>
+                    </select>
+                  </div>
+
+                  <!-- End Date -->
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1.5">วันที่สิ้นสุด <span class="text-red-500">*</span></label>
+                    <input id="req-end-date" type="date" required onchange="App.handleDateChange()" class="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:border-blue-500 outline-none">
+                    <select id="req-end-period" onchange="App.handleDateChange()" class="w-full mt-2 px-3 py-2 bg-white border border-slate-300 rounded-xl text-xs text-slate-700 outline-none">
+                      <option value="0">เต็มวัน (Full Day)</option>
+                      <option value="1">ครึ่งวันเช้า (Morning)</option>
+                      <option value="2">ครึ่งวันบ่าย (Afternoon)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Live Policy & Days Calculation Preview Box -->
+                <div id="req-policy-preview" class="p-3.5 bg-blue-50/60 border border-blue-200/60 rounded-xl flex items-center justify-between text-xs">
+                  <div class="flex items-center gap-2">
+                    <span class="text-blue-600 font-bold">จำนวนวันลาที่คำนวณได้:</span>
+                    <strong id="req-calc-days" class="text-sm font-extrabold text-blue-700">0 วัน</strong>
+                  </div>
+                  <div id="req-balance-remaining" class="text-slate-600 font-medium">
+                    (เลือกวันเพื่อตรวจสอบยอดคงเหลือ)
+                  </div>
+                </div>
+                <div id="req-policy-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-600 font-medium"></div>
+              </div>
+
+              <!-- Reason & Detail -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">เหตุผลการลา <span class="text-red-500">*</span></label>
+                <textarea id="req-reason" rows="3" required placeholder="ระบุเหตุผลความจำเป็นในการลา..." class="w-full px-4 py-3 bg-white border border-slate-300 rounded-xl text-sm focus:border-blue-500 outline-none placeholder:text-slate-400"></textarea>
+              </div>
+
+              <!-- Contact during leave -->
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">การติดต่อระหว่างลา (ถ้ามี)</label>
+                <input id="req-contact" type="text" placeholder="เบอร์โทรศัพท์ฉุกเฉิน, LINE หรือบุคคลที่ปฏิบัติงานแทน" class="w-full px-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm focus:border-blue-500 outline-none placeholder:text-slate-400">
+              </div>
+
+              <!-- Attachments Section -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                    เอกสารแนบประกอบการลา <span id="req-attach-required-badge" class="hidden text-red-500 font-bold">* จำเป็นต้องแนบ</span>
+                  </label>
+                  <span class="text-[11px] text-slate-400">รองรับ jpg, png, pdf ไม่เกิน 5MB</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <input id="req-file-input" type="file" onchange="App.handleFileUpload(event)" class="text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
+                  <span id="req-upload-spinner" class="hidden text-xs text-blue-600 font-medium">กำลังอัปโหลด...</span>
+                </div>
+                <div id="req-attachments-list" class="mt-3 space-y-2">
+                  <!-- Rendered via JS -->
+                </div>
+              </div>
+
+              <!-- Submit Buttons -->
+              <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-3">
+                <button type="button" onclick="App.navigate('my-leaves')" class="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer">
+                  ยกเลิก
+                </button>
+                <button id="req-submit-btn" type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white text-xs font-bold rounded-xl shadow-md shadow-blue-500/25 transition-all cursor-pointer">
+                  ส่งคำขอลา (Submit)
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: MY LEAVES (HISTORY & STATUS)         -->
+        <!-- ========================================== -->
+        <section id="view-my-leaves" class="view-panel hidden space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
+              <div class="flex flex-wrap items-center gap-2" id="my-leaves-filter-tabs">
+                <button type="button" onclick="App.filterMyLeaves('')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active">ทั้งหมด</button>
+                <button type="button" onclick="App.filterMyLeaves('PENDING')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">รอการอนุมัติ</button>
+                <button type="button" onclick="App.filterMyLeaves('APPROVED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">อนุมัติแล้ว</button>
+                <button type="button" onclick="App.filterMyLeaves('RETURNED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ส่งกลับแก้ไข</button>
+                <button type="button" onclick="App.filterMyLeaves('REJECTED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ปฏิเสธ</button>
+              </div>
+              <button type="button" onclick="App.navigate('request')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                + ยื่นใบลาใหม่
+              </button>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
+                    <th class="py-3 px-3">เลขที่ใบลา</th>
+                    <th class="py-3 px-3">ประเภทการลา</th>
+                    <th class="py-3 px-3">ช่วงวันลา</th>
+                    <th class="py-3 px-3 text-center">จำนวนวัน</th>
+                    <th class="py-3 px-3">สถานะ</th>
+                    <th class="py-3 px-3">ผู้อนุมัติขั้นปัจจุบัน</th>
+                    <th class="py-3 px-3 text-right">การจัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="my-leaves-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: APPROVAL INBOX                       -->
+        <!-- ========================================== -->
+        <section id="view-approvals" class="view-panel hidden space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+            <!-- Filter Bar -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="App.switchApprovalScope('inbox')" id="btn-scope-inbox" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer">
+                  รอฉันอนุมัติ (Inbox)
+                </button>
+                <button type="button" onclick="App.switchApprovalScope('all')" id="btn-scope-all" class="px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer">
+                  คำขอทั้งหมดในสิทธิ์ของฉัน
+                </button>
+              </div>
+
+              <div class="flex items-center gap-2">
+                <select id="approvals-dept-filter" onchange="App.loadApprovals()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none">
+                  <option value="">ทุกแผนก</option>
+                </select>
+                <select id="approvals-type-filter" onchange="App.loadApprovals()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none">
+                  <option value="">ทุกประเภทการลา</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
+                    <th class="py-3 px-3">เลขที่</th>
+                    <th class="py-3 px-3">ผู้ยื่นคำขอ</th>
+                    <th class="py-3 px-3">แผนก</th>
+                    <th class="py-3 px-3">ประเภทการลา</th>
+                    <th class="py-3 px-3">ช่วงวันลา</th>
+                    <th class="py-3 px-3 text-center">วัน</th>
+                    <th class="py-3 px-3">สถานะ</th>
+                    <th class="py-3 px-3 text-right">ดำเนินการ</th>
+                  </tr>
+                </thead>
+                <tbody id="approvals-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: LEAVE BALANCE REPORT                 -->
+        <!-- ========================================== -->
+        <section id="view-balance" class="view-panel hidden space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">รายงานยอดวันลาคงเหลือพนักงาน</h2>
+                <p class="text-xs text-slate-500">ตรวจสอบโควตา วันที่ใช้ไป และยอดวันลาคงเหลือ</p>
+              </div>
+
+              <!-- Filter controls -->
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="bal-dept-filter" onchange="App.loadBalanceReport()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none">
+                  <option value="">ทุกแผนก</option>
+                </select>
+                <select id="bal-type-filter" onchange="App.loadBalanceReport()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none">
+                  <option value="">ทุกประเภทลา</option>
+                </select>
+                <select id="bal-fy-filter" onchange="App.loadBalanceReport()" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold outline-none">
+                  <option value="2026">ปีงบประมาณ 2026</option>
+                  <option value="2025">ปีงบประมาณ 2025</option>
+                </select>
+                <button type="button" onclick="App.exportBalanceCsv()" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 font-bold rounded-xl text-xs hover:bg-emerald-100 cursor-pointer">
+                  📥 ส่งออก CSV
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Matrix -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold bg-slate-50/50">
+                    <th class="py-3 px-3">พนักงาน</th>
+                    <th class="py-3 px-3">แผนก</th>
+                    <th class="py-3 px-3">ประเภทการลา</th>
+                    <th class="py-3 px-3 text-center">สิทธิ์ (วัน)</th>
+                    <th class="py-3 px-3 text-center">อนุมัติแล้ว</th>
+                    <th class="py-3 px-3 text-center">รออนุมัติ</th>
+                    <th class="py-3 px-3 text-center">คงเหลือ (วัน)</th>
+                    <th class="py-3 px-3 text-center">สถานะ</th>
+                  </tr>
+                </thead>
+                <tbody id="balance-table-body" class="divide-y divide-slate-100">
+                  <!-- Rendered via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: CALENDAR                             -->
+        <!-- ========================================== -->
+        <section id="view-calendar" class="view-panel hidden space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+            <!-- Calendar Navigation Bar -->
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+              <div class="flex items-center gap-3">
+                <button type="button" onclick="App.changeCalendarMonth(-1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-700 cursor-pointer">‹</button>
+                <h3 id="cal-month-title" class="text-lg font-bold text-slate-900">-</h3>
+                <button type="button" onclick="App.changeCalendarMonth(1)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-700 cursor-pointer">›</button>
+                <button type="button" onclick="App.goTodayCalendar()" class="px-3 py-1.5 rounded-xl bg-blue-50 text-blue-600 font-bold text-xs hover:bg-blue-100 cursor-pointer">วันนี้</button>
+              </div>
+              <div class="text-xs text-slate-400">
+                คลิกที่วันเพื่อดูรายละเอียดผู้ลา
+              </div>
+            </div>
+
+            <!-- 7-Day Header (Thai + English Abbreviations) -->
+            <div class="grid grid-cols-7 text-center font-bold text-xs mb-2 py-2.5 bg-slate-50 rounded-2xl border border-slate-200/60">
+              <div class="py-1 text-red-500">
+                <span class="block text-xs sm:text-sm font-extrabold">อาทิตย์</span>
+                <span class="block text-[10px] font-bold text-red-400 tracking-wider">SUN</span>
+              </div>
+              <div class="py-1 text-slate-700">
+                <span class="block text-xs sm:text-sm font-bold">จันทร์</span>
+                <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">MON</span>
+              </div>
+              <div class="py-1 text-slate-700">
+                <span class="block text-xs sm:text-sm font-bold">อังคาร</span>
+                <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">TUE</span>
+              </div>
+              <div class="py-1 text-slate-700">
+                <span class="block text-xs sm:text-sm font-bold">พุธ</span>
+                <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">WED</span>
+              </div>
+              <div class="py-1 text-slate-700">
+                <span class="block text-xs sm:text-sm font-bold">พฤหัสบดี</span>
+                <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">THU</span>
+              </div>
+              <div class="py-1 text-slate-700">
+                <span class="block text-xs sm:text-sm font-bold">ศุกร์</span>
+                <span class="block text-[10px] font-semibold text-slate-400 tracking-wider">FRI</span>
+              </div>
+              <div class="py-1 text-blue-600">
+                <span class="block text-xs sm:text-sm font-extrabold">เสาร์</span>
+                <span class="block text-[10px] font-bold text-blue-400 tracking-wider">SAT</span>
+              </div>
+            </div>
+
+            <!-- Days Grid -->
+            <div id="calendar-grid" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+              <!-- Rendered via JS -->
+            </div>
+
+            <!-- Selected Day Drawer -->
+            <div id="calendar-day-drawer" class="mt-6 pt-6 border-t border-slate-100 hidden">
+              <h4 id="cal-drawer-title" class="text-sm font-bold text-slate-900 mb-3">-</h4>
+              <div id="cal-drawer-list" class="space-y-2">
+                <!-- Rendered via JS -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        <!-- ========================================== -->
+        <!-- VIEW: ADMIN SETTINGS                       -->
+        <!-- ========================================== -->
+        <section id="view-admin-settings" class="view-panel hidden space-y-6">
+          <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
+            <!-- Admin Navigation Tabs -->
+            <div class="flex flex-wrap items-center gap-2 pb-4 border-b border-slate-100 mb-6" id="admin-tabs">
+              <button type="button" onclick="App.switchAdminTab('users')" data-admin-tab="users" class="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer admin-tab-btn active">
+                👥 พนักงาน (Users)
+              </button>
+              <button type="button" onclick="App.switchAdminTab('depts')" data-admin-tab="depts" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                🏢 แผนก (Departments)
+              </button>
+              <button type="button" onclick="App.switchAdminTab('types')" data-admin-tab="types" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                📋 ประเภทการลา (Leave Types)
+              </button>
+              <button type="button" onclick="App.switchAdminTab('steps')" data-admin-tab="steps" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                🔀 ลำดับการอนุมัติ (Workflow)
+              </button>
+              <button type="button" onclick="App.switchAdminTab('holidays')" data-admin-tab="holidays" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                🎉 วันหยุดนักขัตฤกษ์
+              </button>
+              <button type="button" onclick="App.switchAdminTab('config')" data-admin-tab="config" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                ⚙️ ตั้งค่าระบบ (Config)
+              </button>
+              <button type="button" onclick="App.switchAdminTab('logs')" data-admin-tab="logs" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn">
+                📜 ประวัติบันทึก (Audit Logs)
+              </button>
+            </div>
+
+            <!-- Tab Content: Users -->
+            <div id="admin-tab-users" class="admin-tab-content space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800">รายชื่อพนักงานในระบบ</h3>
+                <div class="flex gap-2">
+                  <button type="button" onclick="App.handleSeedDemo()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl cursor-pointer">
+                    🌱 สร้างผู้ใช้ทดสอบ 5 คน
+                  </button>
+                  <button type="button" onclick="App.openUserModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                    + เพิ่มพนักงาน
+                  </button>
+                </div>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-slate-400 font-semibold uppercase">
+                      <th class="py-2.5 px-3">ชื่อ-นามสกุล</th>
+                      <th class="py-2.5 px-3">Username / Email</th>
+                      <th class="py-2.5 px-3">แผนก</th>
+                      <th class="py-2.5 px-3">ตำแหน่ง</th>
+                      <th class="py-2.5 px-3">สิทธิ์</th>
+                      <th class="py-2.5 px-3 text-center">สถานะ</th>
+                      <th class="py-2.5 px-3 text-right">จัดการ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-users-table" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content: Departments -->
+            <div id="admin-tab-depts" class="admin-tab-content hidden space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800">แผนก / ฝ่ายในองค์กร</h3>
+                <button type="button" onclick="App.openDeptModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                  + เพิ่มแผนก
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-slate-400 font-semibold uppercase">
+                      <th class="py-2.5 px-3">รหัสแผนก</th>
+                      <th class="py-2.5 px-3">ชื่อแผนก</th>
+                      <th class="py-2.5 px-3 text-center">สถานะ</th>
+                      <th class="py-2.5 px-3 text-right">แก้ไข</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-depts-table" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content: Leave Types -->
+            <div id="admin-tab-types" class="admin-tab-content hidden space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800">ประเภทการลาและนโยบายโควตา</h3>
+                <button type="button" onclick="App.openLeaveTypeModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                  + เพิ่มประเภทการลา
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-slate-400 font-semibold uppercase">
+                      <th class="py-2.5 px-3">ชื่อประเภทการลา</th>
+                      <th class="py-2.5 px-3 text-center">โควตาต่อปี</th>
+                      <th class="py-2.5 px-3 text-center">แนบไฟล์เมื่อลา ≥</th>
+                      <th class="py-2.5 px-3 text-center">ลาย้อนหลัง</th>
+                      <th class="py-2.5 px-3 text-center">ลำดับ</th>
+                      <th class="py-2.5 px-3 text-center">สถานะ</th>
+                      <th class="py-2.5 px-3 text-right">แก้ไข</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-types-table" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content: Approval Steps -->
+            <div id="admin-tab-steps" class="admin-tab-content hidden space-y-4">
+              <div class="flex justify-between items-center">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-800">ลำดับขั้นตอนการอนุมัติ (Multi-level Approval Workflow)</h3>
+                  <p class="text-xs text-slate-500">กำหนดว่าเมื่อพนักงานยื่นลา ใบลาจะต้องผ่านใครบ้างตามลำดับ</p>
+                </div>
+                <button type="button" onclick="App.addApprovalStepRow()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                  + เพิ่มขั้นตอน
+                </button>
+              </div>
+              <div id="admin-steps-container" class="space-y-3">
+                <!-- Rendered via JS -->
+              </div>
+              <div class="pt-4 flex justify-end">
+                <button type="button" onclick="App.handleSaveSteps()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                  บันทึกลำดับการอนุมัติ
+                </button>
+              </div>
+            </div>
+
+            <!-- Tab Content: Holidays -->
+            <div id="admin-tab-holidays" class="admin-tab-content hidden space-y-4">
+              <div class="flex justify-between items-center">
+                <h3 class="text-sm font-bold text-slate-800">วันหยุดนักขัตฤกษ์ / วันหยุดบริษัท</h3>
+                <button type="button" onclick="App.openHolidayModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+                  + เพิ่มวันหยุด
+                </button>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-slate-400 font-semibold uppercase">
+                      <th class="py-2.5 px-3">วันที่</th>
+                      <th class="py-2.5 px-3">ชื่อวันหยุด</th>
+                      <th class="py-2.5 px-3 text-right">ลบ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-holidays-table" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Tab Content: Config -->
+            <div id="admin-tab-config" class="admin-tab-content hidden space-y-4 max-w-xl">
+              <h3 class="text-sm font-bold text-slate-800">ตั้งค่าระบบส่วนกลาง (System Configuration)</h3>
+              <form id="admin-config-form" onsubmit="return App.handleSaveConfig(event)" class="space-y-4 text-xs">
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">ชื่อบริษัท / องค์กร</label>
+                  <input id="cfg-COMPANY_NAME" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">เดือนเริ่มต้นปีงบประมาณ (1 = มกราคม, 10 = ตุลาคม)</label>
+                  <input id="cfg-FISCAL_YEAR_START_MONTH" type="number" min="1" max="12" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <div class="flex items-center gap-2">
+                  <input id="cfg-EXCLUDE_WEEKENDS_HOLIDAYS" type="checkbox" class="rounded">
+                  <label for="cfg-EXCLUDE_WEEKENDS_HOLIDAYS" class="font-semibold text-slate-700">ไม่นับเสาร์-อาทิตย์และวันหยุดนักขัตฤกษ์เป็นวันลา</label>
+                </div>
+                <div class="flex items-center gap-2">
+                  <input id="cfg-NOTIFY_EMAIL" type="checkbox" class="rounded">
+                  <label for="cfg-NOTIFY_EMAIL" class="font-semibold text-slate-700">ส่งอีเมลแจ้งเตือนเมื่อมีการยื่นและอนุมัติใบลา</label>
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Telegram Bot Token (เว้นว่างหากไม่ใช้งาน)</label>
+                  <input id="cfg-TELEGRAM_BOT_TOKEN" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <div>
+                  <label class="block font-semibold text-slate-700 mb-1">Telegram Chat ID (กลุ่มส่วนกลาง)</label>
+                  <input id="cfg-TELEGRAM_CHAT_ID" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                </div>
+                <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl cursor-pointer">
+                  บันทึกการตั้งค่า
+                </button>
+              </form>
+            </div>
+
+            <!-- Tab Content: Logs -->
+            <div id="admin-tab-logs" class="admin-tab-content hidden space-y-4">
+              <h3 class="text-sm font-bold text-slate-800">ประวัติการดำเนินงานล่าสุด (Audit Logs)</h3>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs">
+                  <thead>
+                    <tr class="border-b border-slate-100 text-slate-400 font-semibold uppercase">
+                      <th class="py-2.5 px-3">เวลา</th>
+                      <th class="py-2.5 px-3">ผู้ดำเนินการ</th>
+                      <th class="py-2.5 px-3">การกระทำ</th>
+                      <th class="py-2.5 px-3">เลขที่ใบลา</th>
+                      <th class="py-2.5 px-3">รายละเอียด / หมายเหตุ</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-logs-table" class="divide-y divide-slate-100"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: LEAVE DETAIL & DECISION                           -->
+  <!-- ======================================================== -->
+  <div id="leave-detail-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <span id="mdl-request-no" class="text-xs font-bold text-blue-600 uppercase tracking-wider">LV2026-0001</span>
+          <h3 id="mdl-leave-type-title" class="text-lg font-bold text-slate-900 mt-0.5">รายละเอียดใบลา</h3>
+        </div>
+        <button type="button" onclick="App.closeDetailModal()" class="text-slate-400 hover:text-slate-600 p-2 text-base cursor-pointer">✕</button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-5 text-xs">
+        <!-- Requester Info -->
+        <div class="p-4 bg-slate-50 rounded-2xl flex items-center justify-between">
+          <div>
+            <p class="text-slate-400 text-[11px]">ผู้ยื่นคำขอ</p>
+            <p id="mdl-user-name" class="font-bold text-slate-800 text-sm mt-0.5">-</p>
+            <p id="mdl-user-dept" class="text-slate-500 mt-0.5">-</p>
+          </div>
+          <div class="text-right">
+            <span id="mdl-status-badge" class="px-3 py-1 rounded-full text-xs font-bold">-</span>
+            <p id="mdl-created-at" class="text-slate-400 text-[10px] mt-1.5">-</p>
+          </div>
+        </div>
+
+        <!-- Leave Info Table -->
+        <div class="space-y-2 border border-slate-100 rounded-2xl p-4">
+          <div class="flex justify-between py-1 border-b border-slate-50">
+            <span class="text-slate-500">ช่วงวันที่ลา:</span>
+            <strong id="mdl-period-text" class="text-slate-800">-</strong>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-50">
+            <span class="text-slate-500">จำนวนวันลา:</span>
+            <strong id="mdl-days-text" class="text-blue-600 font-extrabold text-sm">-</strong>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-50">
+            <span class="text-slate-500">ยอดคงเหลือหลังการลานี้:</span>
+            <strong id="mdl-balance-text" class="text-slate-700">-</strong>
+          </div>
+          <div class="py-1">
+            <span class="text-slate-500 block mb-1">เหตุผลการลา:</span>
+            <p id="mdl-reason-text" class="text-slate-800 bg-slate-50 p-2.5 rounded-xl leading-relaxed">-</p>
+          </div>
+          <div id="mdl-contact-box" class="py-1 hidden">
+            <span class="text-slate-500 block mb-1">ข้อมูลติดต่อระหว่างลา:</span>
+            <p id="mdl-contact-text" class="text-slate-800 font-medium">-</p>
+          </div>
+        </div>
+
+        <!-- Attachments -->
+        <div id="mdl-attachments-box" class="hidden">
+          <p class="font-semibold text-slate-700 mb-2">เอกสารแนบประกอบ:</p>
+          <div id="mdl-attachments-list" class="space-y-1.5"></div>
+        </div>
+
+        <!-- Approval Logs Timeline -->
+        <div>
+          <p class="font-semibold text-slate-700 mb-2">ประวัติการพิจารณา (Workflow Timeline):</p>
+          <div id="mdl-logs-timeline" class="space-y-2 text-[11px] border-l-2 border-slate-200 pl-3 ml-1"></div>
+        </div>
+
+        <!-- Decision Box for Approver -->
+        <div id="mdl-decision-box" class="hidden p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl space-y-3">
+          <p class="font-bold text-amber-900 text-xs">พิจารณาคำขอนี้ (ในฐานะผู้อนุมัติ):</p>
+          <textarea id="mdl-decision-note" rows="2" placeholder="ระบุเหตุผลหรือความเห็น (จำเป็นเมื่อปฏิเสธหรือส่งกลับแก้ไข)..." class="w-full p-2.5 bg-white border border-amber-300 rounded-xl text-xs outline-none"></textarea>
+          <div class="flex flex-wrap justify-end gap-2 pt-1">
+            <button type="button" onclick="App.handleDecision('RETURN')" class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs cursor-pointer">
+              ↩️ ส่งกลับเพื่อแก้ไข
+            </button>
+            <button type="button" onclick="App.handleDecision('REJECT')" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs cursor-pointer">
+              ✕ ปฏิเสธ
+            </button>
+            <button type="button" onclick="App.handleDecision('APPROVE')" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs cursor-pointer shadow-md shadow-emerald-600/20">
+              ✓ อนุมัติ (Approve)
+            </button>
+          </div>
+        </div>
+
+        <!-- Requester Action: Cancel Request -->
+        <div id="mdl-cancel-box" class="hidden pt-2 flex justify-end">
+          <button type="button" onclick="App.handleCancelRequest()" class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl text-xs cursor-pointer">
+            ยกเลิกใบลาใบนี้
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ALERT / CONFIRM                                   -->
+  <!-- ======================================================== -->
+  <div id="modal-alert" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl">
+      <div id="modal-alert-icon" class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">ℹ️</div>
+      <h4 id="modal-alert-title" class="text-base font-bold text-slate-900 mb-1.5">แจ้งเตือน</h4>
+      <p id="modal-alert-msg" class="text-xs text-slate-500 mb-5 leading-relaxed">-</p>
+      <button type="button" onclick="App.closeAlertModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer">
+        ตกลง
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- CLIENT JAVASCRIPT APP LOGIC                              -->
+  <!-- ======================================================== -->
+  <script>
+    const App = {
+      state: {
+        token: sessionStorage.getItem('eleave_token') || '',
+        user: null,
+        app: null,
+        departments: [],
+        leaveTypes: [],
+        currentView: 'dashboard',
+        myLeaves: [],
+        approvals: [],
+        approvalScope: 'inbox',
+        calendarYear: new Date().getFullYear(),
+        calendarMonth: new Date().getMonth() + 1,
+        calendarFeed: null,
+        activeLeaveType: null,
+        requestAttachments: [],
+        currentDetailRequestId: null
+      },
+
+      init() {
+        if (this.state.token) {
+          this.bootstrap();
+        } else {
+          this.showAuth();
+        }
+      },
+
+      call(action, payload) {
+        return new Promise((resolve, reject) => {
+          if (!window.google || !google.script || !google.script.run) {
+            reject(new Error('google.script.run unavailable'));
+            return;
+          }
+          google.script.run
+            .withSuccessHandler((res) => {
+              if (res && res.success) resolve(res.data);
+              else reject(new Error((res && res.error && res.error.message) || 'Request failed'));
+            })
+            .withFailureHandler(reject)
+            .apiCall(action, payload, this.state.token);
+        });
+      },
+
+      async bootstrap() {
+        try {
+          const data = await this.call('getBootstrap', {});
+          this.state.app = data.app;
+          this.state.departments = data.departments || [];
+          this.state.leaveTypes = data.leaveTypes || [];
+
+          if (data.user) {
+            this.state.user = data.user;
+            this.showApp();
+            this.navigate(this.state.currentView || 'dashboard');
+          } else {
+            this.state.token = '';
+            sessionStorage.removeItem('eleave_token');
+            this.showAuth();
+          }
+        } catch (e) {
+          console.warn('Bootstrap error:', e.message);
+          this.showAuth();
+        }
+      },
+
+      showAuth() {
+        document.getElementById('auth-screen').classList.remove('hidden');
+        document.getElementById('app-shell').classList.add('hidden');
+      },
+
+      showApp() {
+        document.getElementById('auth-screen').classList.add('hidden');
+        document.getElementById('app-shell').classList.remove('hidden');
+
+        const u = this.state.user;
+        if (u) {
+          document.getElementById('user-name-sidebar').textContent = u.name;
+          document.getElementById('user-role-sidebar').textContent = u.roleLabel + (u.departmentName ? ' · ' + u.departmentName : '');
+          document.getElementById('user-avatar-text').textContent = (u.name || 'U').charAt(0).toUpperCase();
+
+          const approverSection = document.getElementById('approver-menu-section');
+          if (approverSection) approverSection.style.display = u.canApprove ? 'block' : 'none';
+
+          const adminSection = document.getElementById('admin-menu-section');
+          if (adminSection) adminSection.style.display = (u.role === 'ADMIN' || u.role === 'HR') ? 'block' : 'none';
+        }
+      },
+
+      fillLogin(username, password) {
+        document.getElementById('login-username').value = username;
+        document.getElementById('login-password').value = password;
+      },
+
+      togglePassword(id) {
+        const el = document.getElementById(id);
+        el.type = el.type === 'password' ? 'text' : 'password';
+      },
+
+      async handleLogin(e) {
+        e.preventDefault();
+        const u = document.getElementById('login-username').value.trim();
+        const p = document.getElementById('login-password').value;
+        const errBox = document.getElementById('login-error');
+        const btn = document.getElementById('login-submit-btn');
+
+        errBox.classList.add('hidden');
+        btn.disabled = true;
+        btn.textContent = 'กำลังเข้าสู่ระบบ...';
+
+        try {
+          const res = await this.call('login', { username: u, password: p });
+          this.state.token = res.token;
+          sessionStorage.setItem('eleave_token', res.token);
+          this.state.user = res.user;
+          this.showApp();
+          this.navigate('dashboard');
+        } catch (err) {
+          errBox.textContent = err.message;
+          errBox.classList.remove('hidden');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'เข้าสู่ระบบ (Sign In)';
+        }
+        return false;
+      },
+
+      async handleLogout() {
+        try { await this.call('logout', {}); } catch (e) {}
+        this.state.token = '';
+        this.state.user = null;
+        sessionStorage.removeItem('eleave_token');
+        this.showAuth();
+      },
+
+      navigate(view) {
+        this.state.currentView = view;
+        document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
+
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+          const active = btn.dataset.nav === view;
+          btn.className = active
+            ? 'nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all bg-blue-600 text-white shadow-sm'
+            : 'nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all text-slate-300 hover:bg-slate-800 hover:text-white cursor-pointer';
+        });
+
+        const target = document.getElementById(`view-${view}`);
+        if (target) target.classList.remove('hidden');
+
+        // Titles
+        const titles = {
+          'dashboard': ['แดชบอร์ดภาพรวม', 'สรุปข้อมูลสถิติและการลา'],
+          'request': ['ยื่นคำขอลาใหม่', 'กรอกข้อมูลและตรวจสอบนโยบาย'],
+          'my-leaves': ['ประวัติการลาของฉัน', 'ตรวจสอบสถานะและประวัติการยื่น'],
+          'approvals': ['รายการรออนุมัติ', 'สำหรับหัวหน้างานและฝ่ายบุคคล'],
+          'balance': ['รายงานวันลาคงเหลือ', 'สถิติโควตาและยอดคงเหลือของพนักงาน'],
+          'calendar': ['ปฏิทินวันลา', 'มุมมองรายเดือนแสดงผู้ลาทั้งบริษัท'],
+          'admin-settings': ['การตั้งค่าระบบ', 'จัดการพนักงาน แผนก ประเภทการลา และขั้นตอน']
+        };
+        const [t, sub] = titles[view] || ['eLeave+', ''];
+        document.getElementById('page-title').textContent = t;
+        document.getElementById('page-subtitle').textContent = sub;
+
+        // View load triggers
+        if (view === 'dashboard') this.loadDashboard();
+        if (view === 'request') this.loadRequestForm();
+        if (view === 'my-leaves') this.loadMyLeaves();
+        if (view === 'approvals') this.loadApprovals();
+        if (view === 'balance') this.loadBalanceReport();
+        if (view === 'calendar') this.loadCalendar();
+        if (view === 'admin-settings') this.loadAdminUsers();
+      },
+
+      toggleSidebar() {
+        const el = document.getElementById('app-sidebar');
+        el.classList.toggle('-translate-x-full');
+      },
+
+      /* ==================== DASHBOARD ==================== */
+      async loadDashboard() {
+        try {
+          const data = await this.call('getDashboard', {});
+          document.getElementById('stat-my-approved-days').textContent = data.myApprovedDays;
+          document.getElementById('stat-my-pending-count').textContent = data.myPendingCount;
+          document.getElementById('stat-leaves-today-count').textContent = data.leavesTodayCount;
+          document.getElementById('dash-fy-label').textContent = data.fiscalYear;
+
+          const apprBadge = document.getElementById('pending-badge-sidebar');
+          if (apprBadge) {
+            apprBadge.textContent = data.pendingApprovalCount;
+            apprBadge.classList.toggle('hidden', data.pendingApprovalCount === 0);
+          }
+          document.getElementById('stat-pending-approval-count').textContent = data.pendingApprovalCount;
+
+          // Balances grid
+          const bGrid = document.getElementById('dash-my-balances-grid');
+          bGrid.innerHTML = (data.myBalances || []).map(b => `
+            <div class="p-3.5 bg-slate-50 border border-slate-100 rounded-2xl">
+              <p class="text-xs font-semibold text-slate-700 truncate">${b.leaveTypeName}</p>
+              <div class="mt-2 flex items-baseline justify-between">
+                <span class="text-xl font-black text-slate-900">${b.unlimited ? '∞' : b.remaining}</span>
+                <span class="text-[10px] text-slate-400 font-medium">${b.unlimited ? 'ไม่จำกัด' : 'จาก ' + b.quota + ' วัน'}</span>
+              </div>
+              <div class="mt-1 flex justify-between text-[10px] text-slate-400">
+                <span>ใช้แล้ว: ${b.approved}</span>
+                ${b.pending > 0 ? `<span class="text-amber-600 font-medium">รอ: ${b.pending}</span>` : ''}
+              </div>
+            </div>
+          `).join('');
+
+          // Leaves today
+          const tList = document.getElementById('dash-leaves-today-list');
+          if (!data.leavesToday || data.leavesToday.length === 0) {
+            tList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ไม่มีพนักงานลาหยุดในวันนี้</p>`;
+          } else {
+            tList.innerHTML = data.leavesToday.map(l => `
+              <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                <div>
+                  <strong class="text-slate-800">${l.userName}</strong>
+                  <p class="text-slate-400 text-[11px]">${l.departmentName || '-'}</p>
+                </div>
+                <div class="text-right">
+                  <span class="px-2.5 py-0.5 rounded-full font-bold text-[10px]" style="background-color: ${l.color}20; color: ${l.color};">${l.leaveTypeName}</span>
+                  <p class="text-slate-400 text-[10px] mt-0.5">${l.days} วัน</p>
+                </div>
+              </div>
+            `).join('');
+          }
+
+          // Recent requests
+          const rList = document.getElementById('dash-recent-requests-list');
+          if (!data.recentRequests || data.recentRequests.length === 0) {
+            rList.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">ยังไม่มีประวัติการยื่นใบลา</p>`;
+          } else {
+            rList.innerHTML = data.recentRequests.map(r => `
+              <div onclick="App.openDetailModal('${r.requestId}')" class="flex items-center justify-between p-3 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-100 text-xs cursor-pointer transition-colors">
+                <div>
+                  <strong class="text-slate-800">${r.leaveTypeName} (${r.days} วัน)</strong>
+                  <p class="text-slate-400 text-[11px]">${r.startDate} ถึง ${r.endDate}</p>
+                </div>
+                <div class="text-right">
+                  ${this.renderStatusBadge(r.status, r.statusLabel)}
+                  <p class="text-[10px] text-slate-400 mt-1">${r.requestNo}</p>
+                </div>
+              </div>
+            `).join('');
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      /* ==================== REQUEST FORM ==================== */
+      async loadRequestForm() {
+        this.state.requestAttachments = [];
+        document.getElementById('leave-request-form').reset();
+        document.getElementById('req-id').value = '';
+        document.getElementById('req-attachments-list').innerHTML = '';
+        document.getElementById('req-type-desc').classList.add('hidden');
+        document.getElementById('req-policy-error').classList.add('hidden');
+
+        // Set default dates
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('req-start-date').value = today;
+        document.getElementById('req-end-date').value = today;
+
+        // Render radio cards for types
+        const rBox = document.getElementById('req-leave-types-radio');
+        rBox.innerHTML = this.state.leaveTypes.map((t, idx) => `
+          <label class="flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 bg-white hover:border-blue-400 cursor-pointer transition-all">
+            <input type="radio" name="req-leave-type-choice" value="${t.leaveTypeId}" ${idx === 0 ? 'checked' : ''} onchange="App.handleTypeChange('${t.leaveTypeId}')" class="text-blue-600 focus:ring-blue-500">
+            <div class="min-w-0">
+              <span class="font-bold text-xs text-slate-800 block">${t.name}</span>
+              <span class="text-[10px] text-slate-400">${t.quotaDays > 0 ? 'โควตา ' + t.quotaDays + ' วัน/ปี' : 'ตามสิทธิ์กฎหมาย'}</span>
+            </div>
+          </label>
+        `).join('');
+
+        if (this.state.leaveTypes.length > 0) {
+          this.handleTypeChange(this.state.leaveTypes[0].leaveTypeId);
+        }
+      },
+
+      handleTypeChange(typeId) {
+        this.state.activeLeaveType = this.state.leaveTypes.find(t => t.leaveTypeId === typeId);
+        const descBox = document.getElementById('req-type-desc');
+        if (this.state.activeLeaveType && this.state.activeLeaveType.description) {
+          descBox.textContent = 'ℹ️ ' + this.state.activeLeaveType.description;
+          descBox.classList.remove('hidden');
+        } else {
+          descBox.classList.add('hidden');
+        }
+        this.triggerPolicyPreview();
+      },
+
+      handleDateChange() {
+        this.triggerPolicyPreview();
+      },
+
+      async triggerPolicyPreview() {
+        if (!this.state.activeLeaveType) return;
+        const payload = {
+          leaveTypeId: this.state.activeLeaveType.leaveTypeId,
+          startDate: document.getElementById('req-start-date').value,
+          startPeriod: document.getElementById('req-start-period').value,
+          endDate: document.getElementById('req-end-date').value,
+          endPeriod: document.getElementById('req-end-period').value,
+          requestId: document.getElementById('req-id').value
+        };
+
+        try {
+          const res = await this.call('policyPreview', payload);
+          document.getElementById('req-calc-days').textContent = res.days + ' วัน';
+
+          const balBox = document.getElementById('req-balance-remaining');
+          if (res.balance) {
+            balBox.textContent = res.balance.unlimited ? '(ไม่จำกัดสิทธิ์)' : `คงเหลือ: ${res.balance.remaining} วัน`;
+          }
+
+          const errBox = document.getElementById('req-policy-error');
+          if (res.errors && res.errors.length > 0) {
+            errBox.textContent = '⚠️ ' + res.errors.join(', ');
+            errBox.classList.remove('hidden');
+          } else {
+            errBox.classList.add('hidden');
+          }
+
+          const attachBadge = document.getElementById('req-attach-required-badge');
+          if (attachBadge) {
+            attachBadge.classList.toggle('hidden', !res.attachmentRequired);
+          }
+        } catch (e) {
+          console.warn('Policy preview err:', e);
+        }
+      },
+
+      async handleFileUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const spinner = document.getElementById('req-upload-spinner');
+        spinner.classList.remove('hidden');
+
+        try {
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            const base64 = event.target.result.split(',')[1];
+            try {
+              const uploaded = await App.call('uploadAttachment', {
+                name: file.name,
+                mime: file.type,
+                base64: base64
+              });
+              App.state.requestAttachments.push(uploaded);
+              App.renderAttachmentsList();
+            } catch (err) {
+              App.showAlert('เกิดข้อผิดพลาดในการอัปโหลด', err.message);
+            } finally {
+              spinner.classList.add('hidden');
+              e.target.value = '';
+            }
+          };
+          reader.readAsDataURL(file);
+        } catch (err) {
+          spinner.classList.add('hidden');
+          this.showAlert('อัปโหลดไฟล์ไม่สำเร็จ', err.message);
+        }
+      },
+
+      renderAttachmentsList() {
+        const box = document.getElementById('req-attachments-list');
+        box.innerHTML = this.state.requestAttachments.map((a, idx) => `
+          <div class="flex items-center justify-between p-2 bg-slate-100 rounded-xl text-xs">
+            <span class="truncate text-slate-700">📎 ${a.name} (${Math.round(a.size/1024)} KB)</span>
+            <button type="button" onclick="App.removeAttachment(${idx})" class="text-red-500 hover:text-red-700 text-xs font-bold px-2 cursor-pointer">ลบ</button>
+          </div>
+        `).join('');
+      },
+
+      removeAttachment(idx) {
+        this.state.requestAttachments.splice(idx, 1);
+        this.renderAttachmentsList();
+      },
+
+      async handleSaveRequest(e) {
+        e.preventDefault();
+        const btn = document.getElementById('req-submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'กำลังบันทึก...';
+
+        const payload = {
+          requestId: document.getElementById('req-id').value,
+          leaveTypeId: this.state.activeLeaveType ? this.state.activeLeaveType.leaveTypeId : '',
+          startDate: document.getElementById('req-start-date').value,
+          startPeriod: document.getElementById('req-start-period').value,
+          endDate: document.getElementById('req-end-date').value,
+          endPeriod: document.getElementById('req-end-period').value,
+          reason: document.getElementById('req-reason').value.trim(),
+          contact: document.getElementById('req-contact').value.trim(),
+          attachments: this.state.requestAttachments
+        };
+
+        try {
+          const res = await this.call('submitLeave', payload);
+          this.showAlert('บันทึกสำเร็จ', `ส่งคำขอลาเลขที่ ${res.requestNo} เรียบร้อยแล้ว`);
+          this.navigate('my-leaves');
+        } catch (err) {
+          this.showAlert('ไม่สามารถส่งคำขอลาได้', err.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'ส่งคำขอลา (Submit)';
+        }
+        return false;
+      },
+
+      /* ==================== MY LEAVES ==================== */
+      async loadMyLeaves(statusFilter = '') {
+        try {
+          const leaves = await this.call('getMyLeaves', { status: statusFilter });
+          this.state.myLeaves = leaves;
+          const tbody = document.getElementById('my-leaves-table-body');
+          if (!leaves.length) {
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบรายการใบลา</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = leaves.map(r => `
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-3 font-bold text-slate-900">${r.requestNo}</td>
+              <td class="py-3 px-3 font-semibold" style="color: ${r.color}">${r.leaveTypeName}</td>
+              <td class="py-3 px-3 text-slate-600">${r.startDate} ถึง ${r.endDate}</td>
+              <td class="py-3 px-3 text-center font-bold text-slate-800">${r.days}</td>
+              <td class="py-3 px-3">${this.renderStatusBadge(r.status, r.statusLabel)}</td>
+              <td class="py-3 px-3 text-slate-500">${r.currentStepLabel || '-'}</td>
+              <td class="py-3 px-3 text-right">
+                <button type="button" onclick="App.openDetailModal('${r.requestId}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs cursor-pointer">
+                  ดูรายละเอียด
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      filterMyLeaves(status) {
+        document.querySelectorAll('#my-leaves-filter-tabs .tab-btn').forEach(btn => {
+          btn.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn';
+        });
+        event.target.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active';
+        this.loadMyLeaves(status);
+      },
+
+      /* ==================== APPROVALS ==================== */
+      async loadApprovals() {
+        const payload = {
+          scope: this.state.approvalScope,
+          departmentId: document.getElementById('approvals-dept-filter') ? document.getElementById('approvals-dept-filter').value : '',
+          leaveTypeId: document.getElementById('approvals-type-filter') ? document.getElementById('approvals-type-filter').value : ''
+        };
+        try {
+          const list = await this.call('getApprovals', payload);
+          this.state.approvals = list;
+          const tbody = document.getElementById('approvals-table-body');
+          if (!list.length) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">ไม่มีรายการใบลาในกล่องนี้</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = list.map(r => `
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="py-3 px-3 font-bold text-slate-900">${r.requestNo}</td>
+              <td class="py-3 px-3 font-semibold text-slate-800">${r.userName}</td>
+              <td class="py-3 px-3 text-slate-500">${r.departmentName}</td>
+              <td class="py-3 px-3 font-semibold" style="color: ${r.color}">${r.leaveTypeName}</td>
+              <td class="py-3 px-3 text-slate-600">${r.startDate} ถึง ${r.endDate}</td>
+              <td class="py-3 px-3 text-center font-bold text-slate-800">${r.days}</td>
+              <td class="py-3 px-3">${this.renderStatusBadge(r.status, r.statusLabel)}</td>
+              <td class="py-3 px-3 text-right">
+                <button type="button" onclick="App.openDetailModal('${r.requestId}')" class="px-3 py-1.5 ${r.canDecide ? 'bg-blue-600 hover:bg-blue-700 text-white font-bold' : 'bg-slate-100 text-slate-700 font-semibold'} rounded-xl text-xs cursor-pointer shadow-sm">
+                  ${r.canDecide ? 'พิจารณาอนุมัติ' : 'ดูรายละเอียด'}
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      switchApprovalScope(scope) {
+        this.state.approvalScope = scope;
+        document.getElementById('btn-scope-inbox').className = scope === 'inbox'
+          ? 'px-4 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer'
+          : 'px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer';
+        document.getElementById('btn-scope-all').className = scope === 'all'
+          ? 'px-4 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer'
+          : 'px-4 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer';
+        this.loadApprovals();
+      },
+
+      /* ==================== LEAVE DETAIL & DECISION MODAL ==================== */
+      async openDetailModal(requestId) {
+        this.state.currentDetailRequestId = requestId;
+        try {
+          const r = await this.call('getLeaveDetail', { requestId: requestId });
+          document.getElementById('mdl-request-no').textContent = r.requestNo;
+          document.getElementById('mdl-leave-type-title').textContent = r.leaveTypeName;
+          document.getElementById('mdl-user-name').textContent = r.userName + (r.position ? ' (' + r.position + ')' : '');
+          document.getElementById('mdl-user-dept').textContent = r.departmentName;
+          document.getElementById('mdl-created-at').textContent = 'ยื่นเมื่อ: ' + r.createdAt;
+
+          const sBadge = document.getElementById('mdl-status-badge');
+          sBadge.innerHTML = this.renderStatusBadge(r.status, r.statusLabel);
+
+          document.getElementById('mdl-period-text').textContent = `${r.startDate} (${r.startPeriodLabel}) ถึง ${r.endDate} (${r.endPeriodLabel})`;
+          document.getElementById('mdl-days-text').textContent = r.days + ' วัน';
+          document.getElementById('mdl-reason-text').textContent = r.reason;
+
+          const balBox = document.getElementById('mdl-balance-text');
+          if (r.balance) {
+            balBox.textContent = r.balance.unlimited ? 'ไม่จำกัดสิทธิ์' : `คงเหลือปัจจุบัน ${r.balance.remaining} วัน`;
+          } else {
+            balBox.textContent = '-';
+          }
+
+          const cBox = document.getElementById('mdl-contact-box');
+          if (r.contact) {
+            document.getElementById('mdl-contact-text').textContent = r.contact;
+            cBox.classList.remove('hidden');
+          } else {
+            cBox.classList.add('hidden');
+          }
+
+          // Attachments
+          const aBox = document.getElementById('mdl-attachments-box');
+          const aList = document.getElementById('mdl-attachments-list');
+          if (r.attachments && r.attachments.length) {
+            aBox.classList.remove('hidden');
+            aList.innerHTML = r.attachments.map(a => `
+              <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100">
+                <span class="truncate">📎 ${a.name}</span>
+                <a href="https://drive.google.com/file/d/${a.fileId}/view" target="_blank" class="px-2 py-1 bg-blue-50 text-blue-700 font-bold rounded text-[11px] hover:bg-blue-100">เปิดดู</a>
+              </div>
+            `).join('');
+          } else {
+            aBox.classList.add('hidden');
+          }
+
+          // Logs
+          const lBox = document.getElementById('mdl-logs-timeline');
+          lBox.innerHTML = (r.logs || []).map(l => `
+            <div class="pb-2">
+              <span class="text-slate-400">${l.timestamp}</span> · <strong>${l.actorName}</strong>: <span class="font-semibold text-slate-800">${l.action}</span>
+              ${l.note ? `<p class="text-slate-500 italic mt-0.5">"${l.note}"</p>` : ''}
+            </div>
+          `).join('');
+
+          // Decision box
+          const dBox = document.getElementById('mdl-decision-box');
+          dBox.classList.toggle('hidden', !r.canDecide);
+          document.getElementById('mdl-decision-note').value = '';
+
+          // Cancel box
+          const cBtn = document.getElementById('mdl-cancel-box');
+          cBtn.classList.toggle('hidden', !r.canCancel);
+
+          document.getElementById('leave-detail-modal').classList.remove('hidden');
+        } catch (e) {
+          this.showAlert('ไม่สามารถโหลดรายละเอียดได้', e.message);
+        }
+      },
+
+      closeDetailModal() {
+        document.getElementById('leave-detail-modal').classList.add('hidden');
+      },
+
+      async handleDecision(decision) {
+        const note = document.getElementById('mdl-decision-note').value.trim();
+        if (decision !== 'APPROVE' && !note) {
+          this.showAlert('กรุณาระบุเหตุผล', 'การส่งกลับแก้ไขหรือปฏิเสธ จำเป็นต้องระบุเหตุผลให้พนักงานทราบ');
+          return;
+        }
+
+        try {
+          await this.call('decideLeave', {
+            requestId: this.state.currentDetailRequestId,
+            decision: decision,
+            note: note
+          });
+          this.closeDetailModal();
+          this.showAlert('ดำเนินการเรียบร้อย', 'บันทึกผลการพิจารณาใบลาเรียบร้อยแล้ว');
+          this.loadApprovals();
+          this.loadDashboard();
+        } catch (e) {
+          this.showAlert('ไม่สามารถดำเนินการได้', e.message);
+        }
+      },
+
+      async handleCancelRequest() {
+        if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการยกเลิกใบลาใบนี้?')) return;
+        try {
+          await this.call('cancelLeave', {
+            requestId: this.state.currentDetailRequestId,
+            note: 'ผู้ขอยกเลิกเอง'
+          });
+          this.closeDetailModal();
+          this.showAlert('สำเร็จ', 'ยกเลิกใบลาเรียบร้อยแล้ว');
+          this.loadMyLeaves();
+          this.loadDashboard();
+        } catch (e) {
+          this.showAlert('ไม่สามารถยกเลิกได้', e.message);
+        }
+      },
+
+      /* ==================== CALENDAR ==================== */
+      async loadCalendar() {
+        const y = this.state.calendarYear;
+        const m = this.state.calendarMonth;
+        const monthNames = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        document.getElementById('cal-month-title').textContent = `${monthNames[m]} ${y + 543} (${y})`;
+
+        try {
+          const feed = await this.call('getCalendarFeed', { year: y, month: m });
+          this.state.calendarFeed = feed;
+          this.renderCalendarGrid();
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      changeCalendarMonth(delta) {
+        this.state.calendarMonth += delta;
+        if (this.state.calendarMonth > 12) {
+          this.state.calendarMonth = 1;
+          this.state.calendarYear += 1;
+        } else if (this.state.calendarMonth < 1) {
+          this.state.calendarMonth = 12;
+          this.state.calendarYear -= 1;
+        }
+        this.loadCalendar();
+      },
+
+      goTodayCalendar() {
+        const now = new Date();
+        this.state.calendarYear = now.getFullYear();
+        this.state.calendarMonth = now.getMonth() + 1;
+        this.loadCalendar();
+      },
+
+      renderCalendarGrid() {
+        const grid = document.getElementById('calendar-grid');
+        const y = this.state.calendarYear, m = this.state.calendarMonth;
+        const firstDay = new Date(y, m - 1, 1).getDay(); // 0 is Sunday
+        const daysInMonth = new Date(y, m, 0).getDate();
+        const prevDays = new Date(y, m - 1, 0).getDate();
+        const todayStr = new Date().toISOString().slice(0, 10);
+
+        const holidaysMap = {};
+        (this.state.calendarFeed.holidays || []).forEach(h => { holidaysMap[h.date] = h.name; });
+
+        let html = '';
+
+        // Previous month days
+        for (let i = 0; i < firstDay; i++) {
+          const d = prevDays - (firstDay - 1 - i);
+          html += `<div class="min-h-[105px] p-2 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-300 text-xs">${d}</div>`;
+        }
+
+        // Current month days
+        for (let day = 1; day <= daysInMonth; day++) {
+          const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+          const isToday = dateStr === todayStr;
+          const dayOfWeek = (firstDay + day - 1) % 7;
+          const isSun = dayOfWeek === 0;
+          const isSat = dayOfWeek === 6;
+          const holidayName = holidaysMap[dateStr];
+
+          // Leaves on this date
+          const leavesOnDate = (this.state.calendarFeed.requests || []).filter(r => r.startDate <= dateStr && r.endDate >= dateStr);
+
+          html += `
+            <div onclick="App.selectCalendarDate('${dateStr}')" class="min-h-[105px] p-2 bg-white hover:border-blue-400 rounded-2xl border ${isToday ? 'border-blue-500 bg-blue-50/20 shadow-sm' : 'border-slate-200'} text-xs flex flex-col justify-between cursor-pointer transition-all">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="font-extrabold ${isToday ? 'w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs' : (isSun ? 'text-red-500' : (isSat ? 'text-blue-600' : 'text-slate-800'))}">${day}</span>
+                  ${holidayName ? `<span class="text-[10px] text-red-500 font-bold truncate max-w-[70px]" title="${holidayName}">★ ${holidayName}</span>` : ''}
+                </div>
+                <div class="space-y-1">
+                  ${leavesOnDate.slice(0, 2).map(l => `
+                    <div class="p-1 rounded text-[10px] font-semibold truncate" style="background-color: ${l.color}20; color: ${l.color};">
+                      ${l.userName} (${l.leaveTypeName})
+                    </div>
+                  `).join('')}
+                  ${leavesOnDate.length > 2 ? `<p class="text-[9px] text-slate-400 font-semibold">+ อีก ${leavesOnDate.length - 2} คน</p>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        // Trailing next month days
+        const total = firstDay + daysInMonth;
+        const remain = (7 - (total % 7)) % 7;
+        for (let i = 1; i <= remain; i++) {
+          html += `<div class="min-h-[105px] p-2 bg-slate-50/50 rounded-2xl border border-slate-100 text-slate-300 text-xs">${i}</div>`;
+        }
+
+        grid.innerHTML = html;
+      },
+
+      selectCalendarDate(dateStr) {
+        const drawer = document.getElementById('calendar-day-drawer');
+        const listEl = document.getElementById('cal-drawer-list');
+        const titleEl = document.getElementById('cal-drawer-title');
+
+        const leaves = (this.state.calendarFeed.requests || []).filter(r => r.startDate <= dateStr && r.endDate >= dateStr);
+        drawer.classList.remove('hidden');
+        titleEl.textContent = `พนักงานที่ลาหยุดในวันที่ ${dateStr} (${leaves.length} คน)`;
+
+        if (!leaves.length) {
+          listEl.innerHTML = `<p class="text-xs text-slate-400 py-2">ไม่มีพนักงานลาหยุดในวันนี้</p>`;
+          return;
+        }
+
+        listEl.innerHTML = leaves.map(l => `
+          <div onclick="App.openDetailModal('${l.requestId}')" class="p-3 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl flex items-center justify-between text-xs cursor-pointer">
+            <div>
+              <strong class="text-slate-900">${l.userName}</strong> · <span class="text-slate-500">${l.departmentName}</span>
+              <p class="text-slate-500 text-[11px] mt-0.5">เหตุผล: ${l.reason}</p>
+            </div>
+            <div class="text-right">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold" style="background-color: ${l.color}20; color: ${l.color};">${l.leaveTypeName}</span>
+              <p class="text-[10px] text-slate-400 mt-1">${l.days} วัน</p>
+            </div>
+          </div>
+        `).join('');
+      },
+
+      /* ==================== BALANCE REPORT ==================== */
+      async loadBalanceReport() {
+        const payload = {
+          fiscalYear: document.getElementById('bal-fy-filter').value,
+          departmentId: document.getElementById('bal-dept-filter').value,
+          leaveTypeId: document.getElementById('bal-type-filter').value
+        };
+
+        try {
+          const res = await this.call('getBalanceReport', payload);
+          const tbody = document.getElementById('balance-table-body');
+          if (!res.rows.length) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">ไม่พบข้อมูล</td></tr>`;
+            return;
+          }
+          tbody.innerHTML = res.rows.map(r => `
+            <tr class="hover:bg-slate-50 transition-colors ${r.isOver ? 'bg-red-50/50' : ''}">
+              <td class="py-2.5 px-3 font-bold text-slate-900">${r.userName}</td>
+              <td class="py-2.5 px-3 text-slate-500">${r.departmentName}</td>
+              <td class="py-2.5 px-3 font-semibold" style="color: ${r.color}">${r.leaveTypeName}</td>
+              <td class="py-2.5 px-3 text-center font-medium">${r.unlimited ? '∞' : r.quota}</td>
+              <td class="py-2.5 px-3 text-center font-medium text-emerald-600">${r.approved}</td>
+              <td class="py-2.5 px-3 text-center font-medium text-amber-600">${r.pending}</td>
+              <td class="py-2.5 px-3 text-center font-black ${r.isOver ? 'text-red-600' : 'text-slate-800'}">${r.unlimited ? '∞' : r.remaining}</td>
+              <td class="py-2.5 px-3 text-center">
+                ${r.isOver ? `<span class="px-2 py-0.5 bg-red-100 text-red-700 font-bold text-[10px] rounded-full">เกินสิทธิ์</span>` : `<span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 font-bold text-[10px] rounded-full">ปกติ</span>`}
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) {
+          console.error(e);
+        }
+      },
+
+      exportBalanceCsv() {
+        const rows = [];
+        const table = document.querySelector('#view-balance table');
+        table.querySelectorAll('tr').forEach(tr => {
+          const line = [];
+          tr.querySelectorAll('th, td').forEach(cell => line.push('"' + cell.innerText.replace(/"/g, '""').trim() + '"'));
+          rows.push(line.join(','));
+        });
+        const csv = "\uFEFF" + rows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `eLeave_Balance_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+      },
+
+      /* ==================== ADMIN SETTINGS ==================== */
+      switchAdminTab(tab) {
+        document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+          btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer admin-tab-btn';
+        });
+        document.querySelector(`[data-admin-tab="${tab}"]`).className = 'px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer admin-tab-btn active';
+
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(`admin-tab-${tab}`).classList.remove('hidden');
+
+        if (tab === 'users') this.loadAdminUsers();
+        if (tab === 'depts') this.loadAdminDepts();
+        if (tab === 'types') this.loadAdminTypes();
+        if (tab === 'steps') this.loadAdminSteps();
+        if (tab === 'holidays') this.loadAdminHolidays();
+        if (tab === 'config') this.loadAdminConfig();
+        if (tab === 'logs') this.loadAdminLogs();
+      },
+
+      async loadAdminUsers() {
+        try {
+          const users = await this.call('adminListUsers', {});
+          const tbody = document.getElementById('admin-users-table');
+          tbody.innerHTML = users.map(u => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2.5 px-3 font-bold text-slate-900">${u.name}</td>
+              <td class="py-2.5 px-3 text-slate-500">${u.username} <span class="text-slate-400">(${u.email})</span></td>
+              <td class="py-2.5 px-3 text-slate-600">${u.departmentName}</td>
+              <td class="py-2.5 px-3 text-slate-600">${u.position || '-'}</td>
+              <td class="py-2.5 px-3 font-semibold text-blue-600">${u.roleLabel}</td>
+              <td class="py-2.5 px-3 text-center">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${u.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">
+                  ${u.active ? 'ใช้งาน' : 'ระงับ'}
+                </span>
+              </td>
+              <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="App.handleResetPasswordPrompt('${u.userId}', '${u.name}')" class="text-xs text-amber-600 hover:text-amber-800 font-semibold mr-2">รีเซ็ตรหัส</button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      async handleResetPasswordPrompt(userId, name) {
+        const p = prompt(`ตั้งรหัสผ่านใหม่สำหรับ ${name}:`, 'User@1234');
+        if (!p) return;
+        try {
+          await this.call('adminResetPassword', { userId: userId, newPassword: p });
+          this.showAlert('สำเร็จ', 'รีเซ็ตรหัสผ่านเรียบร้อยแล้ว');
+        } catch (e) {
+          this.showAlert('ผิดพลาด', e.message);
+        }
+      },
+
+      async handleSeedDemo() {
+        if (!confirm('ต้องการสร้างบัญชีทดสอบ 5 คนใช่หรือไม่?')) return;
+        try {
+          const res = await this.call('adminSeedDemo', {});
+          this.showAlert('สำเร็จ', res.message);
+          this.loadAdminUsers();
+        } catch (e) {
+          this.showAlert('ผิดพลาด', e.message);
+        }
+      },
+
+      async loadAdminDepts() {
+        try {
+          const depts = await this.call('adminListDepartments', {});
+          document.getElementById('admin-depts-table').innerHTML = depts.map(d => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2.5 px-3 font-mono text-slate-500">${d.departmentId}</td>
+              <td class="py-2.5 px-3 font-bold text-slate-900">${d.name}</td>
+              <td class="py-2.5 px-3 text-center">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${d.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">${d.active ? 'เปิด' : 'ปิด'}</span>
+              </td>
+              <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="App.editDeptPrompt('${d.departmentId}', '${d.name}')" class="text-xs text-blue-600 font-semibold">แก้ไข</button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      async openDeptModal() {
+        const name = prompt('ระบุชื่อแผนกใหม่:');
+        if (!name) return;
+        try {
+          await this.call('adminSaveDepartment', { name: name, active: true });
+          this.loadAdminDepts();
+        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async editDeptPrompt(id, oldName) {
+        const name = prompt('แก้ไขชื่อแผนก:', oldName);
+        if (!name) return;
+        try {
+          await this.call('adminSaveDepartment', { departmentId: id, name: name, active: true });
+          this.loadAdminDepts();
+        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async loadAdminTypes() {
+        try {
+          const types = await this.call('adminListLeaveTypes', {});
+          document.getElementById('admin-types-table').innerHTML = types.map(t => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2.5 px-3 font-bold" style="color: ${t.color}">${t.name}</td>
+              <td class="py-2.5 px-3 text-center">${t.quotaDays > 0 ? t.quotaDays : 'ไม่จำกัด'}</td>
+              <td class="py-2.5 px-3 text-center">${t.attachmentRequiredDays > 0 ? t.attachmentRequiredDays + ' วัน' : '-'}</td>
+              <td class="py-2.5 px-3 text-center">${t.allowBackdate ? '✓ ได้' : '✕ ไม่ได้'}</td>
+              <td class="py-2.5 px-3 text-center">${t.sortOrder}</td>
+              <td class="py-2.5 px-3 text-center">
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${t.active ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-600'}">${t.active ? 'เปิด' : 'ปิด'}</span>
+              </td>
+              <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="App.editTypePrompt('${t.leaveTypeId}')" class="text-xs text-blue-600 font-semibold">แก้ไข</button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      openLeaveTypeModal() {
+        const name = prompt('ชื่อประเภทการลา:');
+        if (!name) return;
+        const q = prompt('โควตาวันต่อปี (0 = ไม่จำกัด):', '10');
+        if (q === null) return;
+        this.call('adminSaveLeaveType', {
+          name: name,
+          quotaDays: Number(q) || 0,
+          attachmentRequiredDays: 0,
+          allowBackdate: false,
+          color: '#3b82f6',
+          sortOrder: 10,
+          active: true
+        }).then(() => this.loadAdminTypes()).catch(e => this.showAlert('ผิดพลาด', e.message));
+      },
+
+      async loadAdminSteps() {
+        try {
+          const steps = await this.call('adminListApprovalSteps', {});
+          const container = document.getElementById('admin-steps-container');
+          container.innerHTML = steps.map((s, idx) => `
+            <div class="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs">
+              <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">${idx + 1}</span>
+              <input type="text" value="${s.label}" class="px-3 py-1.5 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 step-label">
+              <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-role">
+                <option value="APPROVER" ${s.role === 'APPROVER' ? 'selected' : ''}>หัวหน้างาน (APPROVER)</option>
+                <option value="HR" ${s.role === 'HR' ? 'selected' : ''}>ฝ่ายบุคคล (HR)</option>
+                <option value="ADMIN" ${s.role === 'ADMIN' ? 'selected' : ''}>ผู้ดูแลระบบ (ADMIN)</option>
+              </select>
+              <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-scope">
+                <option value="SAME" ${s.departmentId === 'SAME' ? 'selected' : ''}>แผนกเดียวกับผู้ลา</option>
+                <option value="*" ${s.departmentId === '*' || !s.departmentId ? 'selected' : ''}>ทุกแผนก</option>
+              </select>
+              <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">✕</button>
+            </div>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      addApprovalStepRow() {
+        const container = document.getElementById('admin-steps-container');
+        const count = container.children.length + 1;
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs';
+        div.innerHTML = `
+          <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center">${count}</span>
+          <input type="text" value="ขั้นตอนที่ ${count}" class="px-3 py-1.5 border border-slate-300 rounded-xl font-bold text-slate-800 flex-1 step-label">
+          <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-role">
+            <option value="APPROVER">หัวหน้างาน (APPROVER)</option>
+            <option value="HR">ฝ่ายบุคคล (HR)</option>
+            <option value="ADMIN">ผู้ดูแลระบบ (ADMIN)</option>
+          </select>
+          <select class="px-3 py-1.5 border border-slate-300 rounded-xl step-scope">
+            <option value="SAME">แผนกเดียวกับผู้ลา</option>
+            <option value="*">ทุกแผนก</option>
+          </select>
+          <button type="button" onclick="this.parentElement.remove()" class="text-red-500 font-bold px-2">✕</button>
+        `;
+        container.appendChild(div);
+      },
+
+      async handleSaveSteps() {
+        const container = document.getElementById('admin-steps-container');
+        const rows = [];
+        container.querySelectorAll('.flex').forEach((div, idx) => {
+          rows.push({
+            step: idx + 1,
+            label: div.querySelector('.step-label').value.trim(),
+            role: div.querySelector('.step-role').value,
+            departmentId: div.querySelector('.step-scope').value
+          });
+        });
+
+        try {
+          await this.call('adminSaveApprovalSteps', { steps: rows });
+          this.showAlert('สำเร็จ', 'บันทึกลำดับขั้นตอนเรียบร้อยแล้ว');
+          this.loadAdminSteps();
+        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async loadAdminHolidays() {
+        try {
+          const holidays = await this.call('adminListHolidays', {});
+          document.getElementById('admin-holidays-table').innerHTML = holidays.map(h => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2.5 px-3 font-mono font-bold text-slate-800">${h.date}</td>
+              <td class="py-2.5 px-3 text-slate-800 font-medium">${h.name}</td>
+              <td class="py-2.5 px-3 text-right">
+                <button type="button" onclick="App.deleteHoliday('${h.date}')" class="text-xs text-red-500 font-bold">ลบ</button>
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      async openHolidayModal() {
+        const d = prompt('ระบุวันที่ (yyyy-mm-dd):', new Date().toISOString().slice(0, 10));
+        if (!d) return;
+        const n = prompt('ชื่อวันหยุด:');
+        if (!n) return;
+        try {
+          await this.call('adminSaveHoliday', { date: d, name: n });
+          this.loadAdminHolidays();
+        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async deleteHoliday(date) {
+        if (!confirm('ยืนยันลบวันหยุด ' + date + ' ?')) return;
+        try {
+          await this.call('adminDeleteHoliday', { date: date });
+          this.loadAdminHolidays();
+        } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async loadAdminConfig() {
+        try {
+          const cfg = await this.call('adminGetSettings', {});
+          document.getElementById('cfg-COMPANY_NAME').value = cfg.COMPANY_NAME || '';
+          document.getElementById('cfg-FISCAL_YEAR_START_MONTH').value = cfg.FISCAL_YEAR_START_MONTH || '1';
+          document.getElementById('cfg-EXCLUDE_WEEKENDS_HOLIDAYS').checked = cfg.EXCLUDE_WEEKENDS_HOLIDAYS === 'TRUE';
+          document.getElementById('cfg-NOTIFY_EMAIL').checked = cfg.NOTIFY_EMAIL === 'TRUE';
+          document.getElementById('cfg-TELEGRAM_BOT_TOKEN').value = cfg.TELEGRAM_BOT_TOKEN || '';
+          document.getElementById('cfg-TELEGRAM_CHAT_ID').value = cfg.TELEGRAM_CHAT_ID || '';
+        } catch (e) { console.error(e); }
+      },
+
+      async handleSaveConfig(e) {
+        e.preventDefault();
+        const payload = {
+          COMPANY_NAME: document.getElementById('cfg-COMPANY_NAME').value.trim(),
+          FISCAL_YEAR_START_MONTH: document.getElementById('cfg-FISCAL_YEAR_START_MONTH').value,
+          EXCLUDE_WEEKENDS_HOLIDAYS: document.getElementById('cfg-EXCLUDE_WEEKENDS_HOLIDAYS').checked ? 'TRUE' : 'FALSE',
+          NOTIFY_EMAIL: document.getElementById('cfg-NOTIFY_EMAIL').checked ? 'TRUE' : 'FALSE',
+          TELEGRAM_BOT_TOKEN: document.getElementById('cfg-TELEGRAM_BOT_TOKEN').value.trim(),
+          TELEGRAM_CHAT_ID: document.getElementById('cfg-TELEGRAM_CHAT_ID').value.trim()
+        };
+        try {
+          await this.call('adminSaveSettings', payload);
+          this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าเรียบร้อยแล้ว');
+        } catch (err) { this.showAlert('ผิดพลาด', err.message); }
+        return false;
+      },
+
+      async loadAdminLogs() {
+        try {
+          const logs = await this.call('adminGetLogs', { limit: 50 });
+          document.getElementById('admin-logs-table').innerHTML = logs.map(l => `
+            <tr class="hover:bg-slate-50">
+              <td class="py-2 px-3 text-slate-400 font-mono">${l.timestamp}</td>
+              <td class="py-2 px-3 font-semibold text-slate-800">${l.actorName}</td>
+              <td class="py-2 px-3 font-bold text-blue-600">${l.action}</td>
+              <td class="py-2 px-3 font-mono">${l.requestId || '-'}</td>
+              <td class="py-2 px-3 text-slate-600">${l.note || '-'}</td>
+            </tr>
+          `).join('');
+        } catch (e) { console.error(e); }
+      },
+
+      /* ==================== HELPERS ==================== */
+      renderStatusBadge(status, label) {
+        const styles = {
+          'PENDING': 'bg-amber-50 text-amber-700 border-amber-200',
+          'APPROVED': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          'REJECTED': 'bg-red-50 text-red-700 border-red-200',
+          'RETURNED': 'bg-orange-50 text-orange-700 border-orange-200',
+          'CANCELLED': 'bg-slate-100 text-slate-600 border-slate-200'
+        };
+        const s = styles[status] || 'bg-slate-100 text-slate-700 border-slate-200';
+        return `<span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${s}">${label || status}</span>`;
+      },
+
+      showAlert(title, msg) {
+        document.getElementById('modal-alert-title').textContent = title;
+        document.getElementById('modal-alert-msg').textContent = msg;
+        document.getElementById('modal-alert').classList.remove('hidden');
+      },
+
+      closeAlertModal() {
+        document.getElementById('modal-alert').classList.add('hidden');
+      }
+    };
+
+    // Auto-boot on DOM ready
+    window.addEventListener('DOMContentLoaded', () => { App.init(); });
+  </script>
+</body>
+</html>
