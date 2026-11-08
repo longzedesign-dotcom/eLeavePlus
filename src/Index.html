@@ -492,14 +492,26 @@
           <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
             <!-- Filter Bar -->
             <div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-100 mb-4">
-              <div class="flex flex-wrap items-center gap-2" id="my-leaves-filter-tabs">
-                <button type="button" onclick="App.filterMyLeaves('')" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active">ทั้งหมด</button>
-                <button type="button" onclick="App.filterMyLeaves('PENDING')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">รอการอนุมัติ</button>
-                <button type="button" onclick="App.filterMyLeaves('APPROVED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">อนุมัติแล้ว</button>
-                <button type="button" onclick="App.filterMyLeaves('RETURNED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ส่งกลับแก้ไข</button>
-                <button type="button" onclick="App.filterMyLeaves('REJECTED')" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ปฏิเสธ</button>
+              <div class="flex flex-wrap items-center gap-3">
+                <!-- Scope toggle for Admin/HR -->
+                <div id="myleaves-scope-toggle" class="hidden inline-flex p-1 bg-slate-100 rounded-2xl border border-slate-200 text-xs shadow-inner">
+                  <button type="button" onclick="App.switchMyLeavesScope('mine')" id="btn-myleaves-mine" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm cursor-pointer transition-all">
+                    ใบลาของฉัน
+                  </button>
+                  <button type="button" onclick="App.switchMyLeavesScope('all')" id="btn-myleaves-all" class="px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-all">
+                    คำขอทั้งหมดในระบบ
+                  </button>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1.5" id="my-leaves-filter-tabs">
+                  <button type="button" onclick="App.filterMyLeaves(this, '')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active">ทั้งหมด</button>
+                  <button type="button" onclick="App.filterMyLeaves(this, 'PENDING')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">รอการอนุมัติ</button>
+                  <button type="button" onclick="App.filterMyLeaves(this, 'APPROVED')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">อนุมัติแล้ว</button>
+                  <button type="button" onclick="App.filterMyLeaves(this, 'RETURNED')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ส่งกลับแก้ไข</button>
+                  <button type="button" onclick="App.filterMyLeaves(this, 'REJECTED')" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn">ปฏิเสธ</button>
+                </div>
               </div>
-              <button type="button" onclick="App.navigate('request')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
+              <button type="button" onclick="App.navigate('request')" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer shadow-sm">
                 + ยื่นใบลาใหม่
               </button>
             </div>
@@ -510,6 +522,7 @@
                 <thead>
                   <tr class="border-b border-slate-100 text-slate-400 uppercase tracking-wider font-semibold">
                     <th class="py-3 px-3">เลขที่ใบลา</th>
+                    <th id="my-leaves-th-user" class="py-3 px-3 hidden">ผู้ยื่นคำขอ</th>
                     <th class="py-3 px-3">ประเภทการลา</th>
                     <th class="py-3 px-3">ช่วงวันลา</th>
                     <th class="py-3 px-3 text-center">จำนวนวัน</th>
@@ -1852,26 +1865,59 @@
         return false;
       },
 
+      /* ==================== BADGE RENDERER ==================== */
+      renderStatusBadge(status, label) {
+        const s = status || 'PENDING';
+        const lbl = label || s;
+        const styles = {
+          'PENDING': 'bg-amber-50 text-amber-700 border-amber-200',
+          'APPROVED': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          'REJECTED': 'bg-red-50 text-red-700 border-red-200',
+          'RETURNED': 'bg-purple-50 text-purple-700 border-purple-200',
+          'CANCELLED': 'bg-slate-100 text-slate-500 border-slate-200'
+        };
+        const cls = styles[s] || 'bg-slate-100 text-slate-700 border-slate-200';
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${cls}">${lbl}</span>`;
+      },
+
       /* ==================== MY LEAVES ==================== */
       async loadMyLeaves(statusFilter = '') {
+        if (statusFilter !== undefined && statusFilter !== null) {
+          this.state.myLeavesStatusFilter = statusFilter;
+        }
+        const st = this.state.myLeavesStatusFilter || '';
+        const scope = this.state.myLeavesScope || 'mine';
+
+        // Toggle visibility of scope switch for Admin/HR
+        const scopeToggle = document.getElementById('myleaves-scope-toggle');
+        const userHeader = document.getElementById('my-leaves-th-user');
+        const isAdminOrHr = this.state.user && (this.state.user.role === 'ADMIN' || this.state.user.role === 'HR');
+        if (scopeToggle) {
+          scopeToggle.classList.toggle('hidden', !isAdminOrHr);
+        }
+        if (userHeader) {
+          userHeader.classList.toggle('hidden', scope !== 'all');
+        }
+
         try {
-          const leaves = await this.call('getMyLeaves', { status: statusFilter });
+          const leaves = await this.call('getMyLeaves', { status: st, scope: scope });
           this.state.myLeaves = leaves;
           const tbody = document.getElementById('my-leaves-table-body');
-          if (!leaves.length) {
-            tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">ไม่พบรายการใบลา</td></tr>`;
+          if (!leaves || !leaves.length) {
+            tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">ไม่พบรายการใบลา</td></tr>`;
             return;
           }
           tbody.innerHTML = leaves.map(r => `
             <tr class="hover:bg-slate-50 transition-colors">
               <td class="py-3 px-3 font-bold text-slate-900">${r.requestNo}</td>
+              ${scope === 'all' ? `<td class="py-3 px-3 font-semibold text-slate-800">${r.userName} <span class="text-slate-400 text-[10px]">(${r.departmentName})</span></td>` : ''}
               <td class="py-3 px-3 font-semibold" style="color: ${r.color}">${r.leaveTypeName}</td>
               <td class="py-3 px-3 text-slate-600">${r.startDate} ถึง ${r.endDate}</td>
               <td class="py-3 px-3 text-center font-bold text-slate-800">${r.days}</td>
               <td class="py-3 px-3">${this.renderStatusBadge(r.status, r.statusLabel)}</td>
               <td class="py-3 px-3 text-slate-500">${r.currentStepLabel || '-'}</td>
               <td class="py-3 px-3 text-right">
-                <button type="button" onclick="App.openDetailModal('${r.requestId}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs cursor-pointer">
+                <button type="button" onclick="App.openDetailModal('${r.requestId}')" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-xs cursor-pointer shadow-xs">
                   ดูรายละเอียด
                 </button>
               </td>
@@ -1882,12 +1928,29 @@
         }
       },
 
-      filterMyLeaves(status) {
+      filterMyLeaves(btnEl, status) {
         document.querySelectorAll('#my-leaves-filter-tabs .tab-btn').forEach(btn => {
-          btn.className = 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn';
+          btn.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer tab-btn';
         });
-        event.target.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active';
+        if (btnEl) {
+          btnEl.className = 'px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white cursor-pointer tab-btn active';
+        }
         this.loadMyLeaves(status);
+      },
+
+      switchMyLeavesScope(scope) {
+        this.state.myLeavesScope = scope;
+        const btnMine = document.getElementById('btn-myleaves-mine');
+        const btnAll = document.getElementById('btn-myleaves-all');
+        if (btnMine && btnAll) {
+          btnMine.className = scope === 'mine'
+            ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm cursor-pointer transition-all'
+            : 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-all';
+          btnAll.className = scope === 'all'
+            ? 'px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-600 text-white shadow-sm cursor-pointer transition-all'
+            : 'px-3.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer transition-all';
+        }
+        this.loadMyLeaves();
       },
 
       /* ==================== APPROVALS ==================== */

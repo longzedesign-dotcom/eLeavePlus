@@ -173,10 +173,7 @@ const Workflow = (() => {
 
     // HR authority
     if (user.role === ROLE.HR) {
-      if (!step || step.role === ROLE.HR || reqStep >= 2) return true;
-      // Allow HR to act on behalf if requester's department has no supervisor
-      const approvers = eligibleApprovers(step, request, false);
-      if (approvers.length === 0) return true;
+      return true; // HR has company-wide authority to approve or act on any request
     }
 
     if (!step) return false;
@@ -409,11 +406,14 @@ const Workflow = (() => {
 
   function myLeaves(user, f) {
     const ctx = context();
+    f = f || {};
+    const showAll = f.scope === 'all' && (user.role === ROLE.ADMIN || user.role === ROLE.HR);
     return Db.readAll(SHEET.LEAVE_REQUESTS)
       .filter(function (r) {
-        if (r.userId !== user.userId) return false;
+        if (!showAll && r.userId !== user.userId) return false;
+        if (showAll && !canViewRequest(user, r)) return false;
         if (f.status && r.status !== f.status) return false;
-        if (f.fiscalYear && r.fiscalYear !== Number(f.fiscalYear)) return false;
+        if (f.fiscalYear && Number(r.fiscalYear) !== Number(f.fiscalYear)) return false;
         if (f.leaveTypeId && r.leaveTypeId !== f.leaveTypeId) return false;
         return true;
       })
