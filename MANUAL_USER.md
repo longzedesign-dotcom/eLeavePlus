@@ -225,28 +225,28 @@
 
 ```mermaid
 flowchart TD
-    Start([พนักงานยื่นใบลา]) --> CheckQuota{ตรวจสอบโควตา & เงื่อนไข}
-    CheckQuota -- เกินโควตา / ผิดเงื่อนไข --> RejectForm[แจ้งเตือนข้อผิดพลาดบนฟอร์ม]
-    CheckQuota -- ถูกต้องครบถ้วน --> SavePending[บันทึกลงระบบ: สถานะ PENDING]
+    Start(["พนักงานยื่นใบลา"]) --> CheckQuota{"ตรวจสอบโควตา & เงื่อนไข"}
+    CheckQuota -->|"เกินโควตา / ผิดเงื่อนไข"| RejectForm["แจ้งเตือนข้อผิดพลาดบนฟอร์ม"]
+    CheckQuota -->|"ถูกต้องครบถ้วน"| SavePending["บันทึกลงระบบ: สถานะ PENDING"]
     
-    SavePending --> NotifyStep1[แจ้งเตือนหัวหน้างาน ผ่าน Email / Telegram]
-    NotifyStep1 --> ApproverDecision{หัวหน้างานพิจารณา}
+    SavePending --> NotifyStep1["แจ้งเตือนหัวหน้างาน ผ่าน Email / Telegram"]
+    NotifyStep1 --> ApproverDecision{"หัวหน้างานพิจารณา"}
     
-    ApproverDecision -- ส่งกลับแก้ไข --> Returned[สถานะ: RETURNED]
-    Returned --> EmployeeEdit[พนักงานแก้ไขข้อมูล] --> SavePending
+    ApproverDecision -->|"ส่งกลับแก้ไข"| Returned["สถานะ: RETURNED"]
+    Returned --> EmployeeEdit["พนักงานแก้ไขข้อมูล"] --> SavePending
     
-    ApproverDecision -- ไม่อนุมัติ --> Rejected[สถานะ: REJECTED\nแจ้งเตือนพนักงาน]
+    ApproverDecision -->|"ไม่อนุมัติ"| Rejected["สถานะ: REJECTED<br/>แจ้งเตือนพนักงาน"]
     
-    ApproverDecision -- อนุมัติ --> CheckNextStep{มีขั้นตอนถัดไปหรือไม่?}
+    ApproverDecision -->|"อนุมัติ"| CheckNextStep{"มีขั้นตอนถัดไปหรือไม่?"}
     
-    CheckNextStep -- มี (ฝ่ายบุคคล HR) --> NotifyHR[แจ้งเตือน HR]
-    NotifyHR --> HRDecision{HR พิจารณา}
-    HRDecision -- ไม่อนุมัติ --> Rejected
-    HRDecision -- อนุมัติ --> Approved[สถานะ: APPROVED\nตัดยอดโควตาจริง & บันทึกลงปฏิทิน]
+    CheckNextStep -->|"มี (ฝ่ายบุคคล HR)"| NotifyHR["แจ้งเตือน HR"]
+    NotifyHR --> HRDecision{"HR พิจารณา"}
+    HRDecision -->|"ไม่อนุมัติ"| Rejected
+    HRDecision -->|"อนุมัติ"| Approved["สถานะ: APPROVED<br/>ตัดยอดโควตาจริง & บันทึกลงปฏิทิน"]
     
-    CheckNextStep -- ไม่มี --> Approved
+    CheckNextStep -->|"ไม่มี"| Approved
     
-    Approved --> NotifyComplete[แจ้งเตือนพนักงานทราบผลสำเร็จ]
+    Approved --> NotifyComplete["แจ้งเตือนพนักงานทราบผลสำเร็จ"]
 ```
 
 ---
