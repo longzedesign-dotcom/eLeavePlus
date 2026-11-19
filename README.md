@@ -9,8 +9,8 @@
 [![Serverless](https://img.shields.io/badge/Architecture-100%25%20Serverless-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-**🌐 Web App Production URL (v1.0.3):**  
-[https://script.google.com/macros/s/AKfycbyseN62xHD_53v1NUmmHljeJDQYAyZ7kdv7TMZ9vRcBxBi_b1pfj0sOvTAdDH1dz4z-9g/exec](https://script.google.com/macros/s/AKfycbyseN62xHD_53v1NUmmHljeJDQYAyZ7kdv7TMZ9vRcBxBi_b1pfj0sOvTAdDH1dz4z-9g/exec)
+**🌐 Web App Production URL (v1.0.4):**  
+[https://script.google.com/macros/s/AKfycbycheMRuzf9_06ojUqonxyT2Em7f7Ay77Rdr-J4mGtOOtXf8xUG1LSrwVelF3a-w97_EQ/exec](https://script.google.com/macros/s/AKfycbycheMRuzf9_06ojUqonxyT2Em7f7Ay77Rdr-J4mGtOOtXf8xUG1LSrwVelF3a-w97_EQ/exec)
 
 ---
 

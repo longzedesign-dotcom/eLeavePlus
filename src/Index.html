@@ -219,9 +219,9 @@
 
       <!-- User Profile Card -->
       <div class="p-3 border-t border-slate-800">
-        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-800/60">
+        <button type="button" onclick="App.openProfileModal()" title="ดูข้อมูลผู้ใช้งานและจัดการบัญชี" class="w-full flex items-center justify-between p-2.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition-all text-left cursor-pointer group border border-slate-700/50 shadow-xs">
           <div class="flex items-center gap-2.5 min-w-0">
-            <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 font-bold flex items-center justify-center text-xs shrink-0" id="user-avatar-text">
+            <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 font-bold flex items-center justify-center text-xs shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-xs" id="user-avatar-text">
               U
             </div>
             <div class="min-w-0">
@@ -229,10 +229,8 @@
               <p id="user-role-sidebar" class="text-[10px] text-slate-400 truncate">-</p>
             </div>
           </div>
-          <button type="button" onclick="App.handleLogout()" title="ออกจากระบบ" class="text-slate-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-slate-700/50 transition-colors text-xs cursor-pointer">
-            🚪
-          </button>
-        </div>
+          <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
       </div>
     </aside>
 
@@ -258,6 +256,12 @@
           <div class="hidden sm:flex items-center gap-2 pl-3 border-l border-slate-200">
             <span id="header-company-name" class="text-xs font-medium text-slate-500">eLeave+</span>
           </div>
+          <button type="button" onclick="App.openProfileModal()" title="ข้อมูลผู้ใช้งานและออกจากระบบ" class="flex items-center gap-2 py-1 px-1.5 sm:px-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer border border-slate-200">
+            <div id="header-avatar-text" class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-xs">
+              U
+            </div>
+            <span id="header-user-name" class="text-xs font-semibold text-slate-700 hidden md:inline-block max-w-[130px] truncate">-</span>
+          </button>
         </div>
       </header>
 
@@ -1115,6 +1119,111 @@
   </div>
 
   <!-- ======================================================== -->
+  <!-- MODAL: USER PROFILE & SIGN OUT                           -->
+  <!-- ======================================================== -->
+  <div id="modal-user-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden animate-scale-in">
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">👤</span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
+            <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
+          </div>
+        </div>
+        <button type="button" onclick="App.closeProfileModal()" class="text-slate-400 hover:text-slate-600 p-2 text-base cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+        <!-- Identity Card -->
+        <div class="flex items-center gap-3.5 p-3.5 bg-blue-50/60 rounded-2xl border border-blue-100">
+          <div id="profile-modal-avatar" class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-xs shrink-0">
+            U
+          </div>
+          <div class="min-w-0 flex-1">
+            <h4 id="profile-modal-name" class="text-sm font-bold text-slate-900 truncate">-</h4>
+            <div class="flex items-center gap-2 mt-0.5">
+              <span id="profile-modal-role" class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded-md text-[10px]">-</span>
+              <span id="profile-modal-username" class="text-slate-500 font-mono text-[11px]">-</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Information Grid -->
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">ตำแหน่ง</span>
+            <span id="profile-modal-position" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">แผนก / ฝ่าย</span>
+            <span id="profile-modal-dept" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">อีเมล</span>
+            <span id="profile-modal-email" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">เบอร์โทรศัพท์</span>
+            <span id="profile-modal-phone" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">Telegram ID</span>
+            <span id="profile-modal-telegram" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-0.5">วันที่เริ่มงาน</span>
+            <span id="profile-modal-hiredate" class="font-semibold text-slate-800 block truncate">-</span>
+          </div>
+        </div>
+
+        <!-- Change Password Toggle -->
+        <div class="border-t border-slate-100 pt-3">
+          <button type="button" onclick="App.toggleChangePasswordSection()" class="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-slate-50 text-slate-700 font-semibold cursor-pointer transition-colors border border-dashed border-slate-200">
+            <div class="flex items-center gap-2">
+              <span>🔒</span>
+              <span>เปลี่ยนรหัสผ่านส่วนตัว</span>
+            </div>
+            <span class="text-slate-400 text-xs">▼</span>
+          </button>
+
+          <!-- Change Password Sub-form -->
+          <form id="profile-change-pwd-form" onsubmit="return App.handleChangePasswordSubmit(event)" class="hidden mt-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">รหัสผ่านปัจจุบัน <span class="text-red-500">*</span></label>
+              <input id="profile-pwd-current" type="password" required class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs bg-white outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">รหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร มีตัวเลข) <span class="text-red-500">*</span></label>
+              <input id="profile-pwd-new" type="password" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs bg-white outline-none focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-600 mb-1">ยืนยันรหัสผ่านใหม่ <span class="text-red-500">*</span></label>
+              <input id="profile-pwd-confirm" type="password" required minlength="8" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs bg-white outline-none focus:border-blue-500">
+            </div>
+            <button id="btn-save-profile-pwd" type="submit" class="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs cursor-pointer shadow-xs transition-all">
+              บันทึกรหัสผ่านใหม่
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Modal Footer with Sign Out Button -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between gap-3">
+        <button type="button" onclick="App.handleProfileLogout()" class="px-4 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold rounded-xl text-xs cursor-pointer transition-all flex items-center gap-1.5 border border-red-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+          <span>ออกจากระบบ (Sign Out)</span>
+        </button>
+        <button type="button" onclick="App.closeProfileModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs cursor-pointer transition-all">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
   <!-- MODAL: ADD / EDIT USER                                   -->
   <!-- ======================================================== -->
   <div id="modal-user" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
@@ -1494,6 +1603,11 @@
           document.getElementById('user-role-sidebar').textContent = u.roleLabel + (u.departmentName ? ' · ' + u.departmentName : '');
           document.getElementById('user-avatar-text').textContent = (u.name || 'U').charAt(0).toUpperCase();
 
+          const headerAvatar = document.getElementById('header-avatar-text');
+          if (headerAvatar) headerAvatar.textContent = (u.name || 'U').charAt(0).toUpperCase();
+          const headerName = document.getElementById('header-user-name');
+          if (headerName) headerName.textContent = u.name || '';
+
           const approverSection = document.getElementById('approver-menu-section');
           if (approverSection) approverSection.style.display = u.canApprove ? 'block' : 'none';
 
@@ -1548,6 +1662,78 @@
         this.state.user = null;
         sessionStorage.removeItem('eleave_token');
         this.showAuth();
+      },
+
+      openProfileModal() {
+        const u = this.state.user;
+        if (!u) return;
+
+        document.getElementById('profile-modal-avatar').textContent = (u.name || 'U').charAt(0).toUpperCase();
+        document.getElementById('profile-modal-name').textContent = u.name || '-';
+        document.getElementById('profile-modal-role').textContent = u.roleLabel || u.role;
+        document.getElementById('profile-modal-username').textContent = '@' + (u.username || u.userId || '-');
+        document.getElementById('profile-modal-email').textContent = u.email || '-';
+        document.getElementById('profile-modal-dept').textContent = u.departmentName || '-';
+        document.getElementById('profile-modal-position').textContent = u.position || '-';
+        document.getElementById('profile-modal-phone').textContent = u.phone || '-';
+        document.getElementById('profile-modal-telegram').textContent = u.telegramId ? '@' + u.telegramId : '-';
+        document.getElementById('profile-modal-hiredate').textContent = u.hireDate || '-';
+
+        const pwdForm = document.getElementById('profile-change-pwd-form');
+        if (pwdForm) {
+          pwdForm.reset();
+          pwdForm.classList.add('hidden');
+        }
+
+        const modal = document.getElementById('modal-user-profile');
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
+      },
+
+      closeProfileModal() {
+        const modal = document.getElementById('modal-user-profile');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
+      },
+
+      toggleChangePasswordSection() {
+        const form = document.getElementById('profile-change-pwd-form');
+        if (form) form.classList.toggle('hidden');
+      },
+
+      async handleChangePasswordSubmit(e) {
+        e.preventDefault();
+        const current = document.getElementById('profile-pwd-current').value;
+        const next = document.getElementById('profile-pwd-new').value;
+        const confirm = document.getElementById('profile-pwd-confirm').value;
+
+        if (next !== confirm) {
+          this.showAlert('รหัสผ่านไม่ตรงกัน', 'รหัสผ่านใหม่และการยืนยันรหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
+          return false;
+        }
+
+        const btn = document.getElementById('btn-save-profile-pwd');
+        btn.disabled = true;
+        btn.textContent = 'กำลังเปลี่ยนรหัสผ่าน...';
+
+        try {
+          await this.call('changePassword', { currentPassword: current, newPassword: next });
+          this.showAlert('สำเร็จ', 'เปลี่ยนรหัสผ่านส่วนตัวเรียบร้อยแล้ว');
+          this.toggleChangePasswordSection();
+        } catch (err) {
+          this.showAlert('ไม่สามารถเปลี่ยนรหัสผ่านได้', err.message);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'บันทึกรหัสผ่านใหม่';
+        }
+        return false;
+      },
+
+      async handleProfileLogout() {
+        const ok = await this.showConfirm('ยืนยันออกจากระบบ', 'คุณต้องการออกจากระบบ eLeave+ ใช่หรือไม่?', 'ออกจากระบบ', true);
+        if (!ok) return;
+        this.closeProfileModal();
+        this.handleLogout();
       },
 
       navigate(view) {
