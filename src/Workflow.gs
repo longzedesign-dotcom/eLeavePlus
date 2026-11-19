@@ -211,7 +211,9 @@ const Workflow = (() => {
     try { attachments = r.attachmentsJson ? JSON.parse(r.attachmentsJson) : []; } catch (e) { attachments = []; }
     return {
       requestId: r.requestId, requestNo: r.requestNo, userId: r.userId, userName: u.name || '-', position: u.position || '',
+      employeeCode: u.username || u.userId || '',
       departmentId: r.departmentId, departmentName: d.name || '-',
+      divisionName: d.name || '-',
       leaveTypeId: r.leaveTypeId, leaveTypeName: t.name || '-', color: t.color || '#64748b',
       startDate: r.startDate, startPeriod: r.startPeriod, startPeriodLabel: PERIOD_LABEL[r.startPeriod] || '',
       endDate: r.endDate, endPeriod: r.endPeriod, endPeriodLabel: PERIOD_LABEL[r.endPeriod] || '',
@@ -477,6 +479,32 @@ const Workflow = (() => {
     e.canDecide = canDecide(user, r);
     e.steps = ctx.steps.map(function (s) { return { step: s.step, label: s.label, role: s.role }; });
     e.typeDescription = type ? type.description : '';
+
+    // Summarize days taken in this fiscal year per leave type (excluding current request)
+    const yearLeaveSummary = {};
+    Db.readAll(SHEET.LEAVE_REQUESTS).forEach(function (other) {
+      if (other.userId === r.userId && other.fiscalYear === r.fiscalYear && other.status === STATUS.APPROVED && other.requestId !== r.requestId) {
+        const t = ctx.types[other.leaveTypeId];
+        const key = t ? t.name : other.leaveTypeId;
+        yearLeaveSummary[key] = (yearLeaveSummary[key] || 0) + Number(other.days || 0);
+      }
+    });
+    e.yearLeaveSummary = yearLeaveSummary;
+
+    // Approver details from logs if decided
+    const approveLog = logs.filter(function (l) { return l.toStatus === STATUS.APPROVED; }).pop();
+    const rejectLog = logs.filter(function (l) { return l.toStatus === STATUS.REJECTED; }).pop();
+    if (approveLog) {
+      e.approverName = approveLog.actorName;
+      e.approverDate = (approveLog.timestamp || '').slice(0, 10);
+      e.approverStatus = STATUS.APPROVED;
+    } else if (rejectLog) {
+      e.approverName = rejectLog.actorName;
+      e.approverDate = (rejectLog.timestamp || '').slice(0, 10);
+      e.approverStatus = STATUS.REJECTED;
+      e.approverNote = rejectLog.note || r.decisionNote;
+    }
+
     return e;
   }
 

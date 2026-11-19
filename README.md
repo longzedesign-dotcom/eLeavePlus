@@ -10,7 +10,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
 **🌐 Web App Production URL (v1.0.2):**  
-[https://script.google.com/macros/s/AKfycbx-WjSAodLr1TwzG9tVMd1Sp6YfKwG3kpyJ8URIwokV2Wr2wukpwSQECnKWOdCzVHQQFQ/exec](https://script.google.com/macros/s/AKfycbx-WjSAodLr1TwzG9tVMd1Sp6YfKwG3kpyJ8URIwokV2Wr2wukpwSQECnKWOdCzVHQQFQ/exec)
+[https://script.google.com/macros/s/AKfycbyClW_nqO1KdLl6FkIfUePaR1nuJd64ikEFkXl6pL4k6cv-m_q4z6_CJyE-o6ohw4qCrw/exec](https://script.google.com/macros/s/AKfycbyClW_nqO1KdLl6FkIfUePaR1nuJd64ikEFkXl6pL4k6cv-m_q4z6_CJyE-o6ohw4qCrw/exec)
 
 ---
 
