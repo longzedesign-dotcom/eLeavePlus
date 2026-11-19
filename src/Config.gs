@@ -1,7 +1,14 @@
 /**
- * eLeave+ : ระบบลาออนไลน์ (Google Apps Script)
- * File: Config.gs
- * Purpose: Constants, schema contract, default settings.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Config.gs
+ * Description  : System constants, spreadsheet schema definitions, and default settings.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const APP = Object.freeze({
   NAME: 'eLeave+',

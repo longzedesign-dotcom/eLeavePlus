@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Reports.gs
- * Purpose: Dashboard stats, leave balance matrix, calendar feed, and analytics.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Reports.gs
+ * Description  : Reporting services: Dashboard KPIs, Leave Balance Matrix,
+ *                Department analytics, and Leave Calendar data feed.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Reports = (() => {
 

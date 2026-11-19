@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Notify.gs
- * Purpose: Email & Telegram notifications for leave lifecycle events.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Notify.gs
+ * Description  : Notification services via Email (MailApp) and Telegram Bot
+ *                for leave lifecycle events and approval alerts.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Notify = (() => {
 

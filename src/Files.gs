@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Files.gs
- * Purpose: Drive file storage for leave attachments (certificates, documents).
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Files.gs
+ * Description  : Google Drive file storage management for leave attachments,
+ *                MIME validation, and secure domain access permissions.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Files = (() => {
 

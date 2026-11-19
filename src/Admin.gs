@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Admin.gs
- * Purpose: Administrative operations (User management, Leave Types, Steps, Holidays, Settings).
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Admin.gs
+ * Description  : Administrative operations (User management, Leave Types, Steps,
+ *                Holidays, Settings, and Audit Logs).
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Admin = (() => {
 

@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Utils.gs
- * Purpose: Pure helpers (dates, ids, hashing, validation, API envelopes).
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Utils.gs
+ * Description  : Utility helper functions (Date parsing, ID generation,
+ *                cryptographic hashing, input sanitization, and API responses).
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const TZ = 'Asia/Bangkok';
 

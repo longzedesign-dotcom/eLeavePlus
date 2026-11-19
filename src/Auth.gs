@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Auth.gs
- * Purpose: Login, sessions, password management, role helpers.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Auth.gs
+ * Description  : Authentication, session management, secure password hashing,
+ *                rate limiting, and role-based access control (RBAC).
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Auth = (() => {
   const MAX_ATTEMPTS = 5;

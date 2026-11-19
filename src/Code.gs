@@ -1,7 +1,14 @@
 /**
- * eLeave+ : ระบบลาออนไลน์
- * File: Code.gs
- * Purpose: Web App entry point & client-server RPC bridge.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Code.gs
+ * Description  : Web App entry point (doGet) & client-server RPC API bridge.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 
 function doGet(e) {

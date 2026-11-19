@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Db.gs
- * Purpose: The only layer that touches Google Sheets. Per-execution cache + script lock for writes.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Db.gs
+ * Description  : Database access abstraction layer for Google Sheets with
+ *                per-execution memory caching and write locks.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Db = (() => {
   let ss_ = null;

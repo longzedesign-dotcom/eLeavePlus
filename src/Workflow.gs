@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Workflow.gs
- * Purpose: Leave rules engine — day calculation, policy/balance, approval workflow, request lifecycle.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Workflow.gs
+ * Description  : Core leave workflow engine: leave duration calculation,
+ *                quota balances, multi-tier approval routing, and status transitions.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const Workflow = (() => {
 

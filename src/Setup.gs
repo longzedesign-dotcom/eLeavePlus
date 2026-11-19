@@ -1,6 +1,15 @@
 /**
- * eLeave+ : File: Setup.gs
- * Purpose: Create database structure & seed defaults (idempotent), demo data.
+ * ==============================================================================
+ * Project      : eLeave+ (ระบบลาออนไลน์)
+ * File         : Setup.gs
+ * Description  : Database schema initialization, table migrations, and idempotent
+ *                seeding of default master data and demo fixtures.
+ * Author       : Longze Design / eLeave+ Team
+ * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
+ * Version      : 1.0.2
+ * License      : MIT License
+ * Updated      : 2026-11-19
+ * ==============================================================================
  */
 const SCHEMA_VERSION = '1.0.0';
 
