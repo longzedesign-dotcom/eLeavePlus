@@ -6,9 +6,9 @@
  *                Holidays, Settings, and Audit Logs).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.2
+ * Version      : 1.0.5
  * License      : MIT License
- * Updated      : 2026-11-19
+ * Updated      : 2026-11-20
  * ==============================================================================
  */
 const Admin = (() => {

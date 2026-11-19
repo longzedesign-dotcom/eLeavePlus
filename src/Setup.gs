@@ -6,9 +6,9 @@
  *                seeding of default master data and demo fixtures.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.2
+ * Version      : 1.0.5
  * License      : MIT License
- * Updated      : 2026-11-19
+ * Updated      : 2026-11-20
  * ==============================================================================
  */
 const SCHEMA_VERSION = '1.0.0';
