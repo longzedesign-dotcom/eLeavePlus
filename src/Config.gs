@@ -6,7 +6,7 @@
 const APP = Object.freeze({
   NAME: 'eLeave+',
   NAME_TH: 'ระบบลาออนไลน์',
-  VERSION: '1.0.0',
+  VERSION: '1.0.2',
   // Fallback spreadsheet id. Can be overridden by Script Property SPREADSHEET_ID.
   DEFAULT_SPREADSHEET_ID: '1KggnNTB-eNaUN-YIBjEwbsYviIo_EcyIRGoM1VzqmaA'
 });

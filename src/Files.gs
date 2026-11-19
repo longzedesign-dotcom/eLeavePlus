@@ -53,11 +53,15 @@ const Files = (() => {
       originalName: name
     }));
 
-    // Grant viewer access to anyone with link for easy preview in corporate iframe/modal
+    // Grant viewer access (prefer organization domain if available, fallback safely)
     try {
-      file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      try {
+        file.setSharing(DriveApp.Access.DOMAIN_WITH_LINK, DriveApp.Permission.VIEW);
+      } catch (domainErr) {
+        file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      }
     } catch (e) {
-      console.warn('Could not set file sharing to ANYONE_WITH_LINK: ' + e);
+      console.warn('Could not set file sharing permissions: ' + e);
     }
 
     return {
