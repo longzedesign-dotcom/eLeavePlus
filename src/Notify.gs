@@ -6,7 +6,7 @@
  *                for leave lifecycle events and approval alerts.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.16
+ * Version      : 1.0.17
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================

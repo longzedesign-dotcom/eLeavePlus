@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.16
+ Version      : 1.0.17
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.16</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.17</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.16</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.17</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -858,10 +858,6 @@
                   <h3 class="text-sm font-bold text-slate-800">📄 ตั้งค่าแบบฟอร์มใบลา (Official Leave Requisition Form)</h3>
                   <p class="text-xs text-slate-500 mt-0.5">กำหนดหัวเอกสาร ชื่อบริษัท/องค์กร และโลโก้ที่จะแสดงบนใบลาแบบ A4 และ PDF ทางการ</p>
                 </div>
-                <button type="button" onclick="App.printCurrentRequestForm()" class="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
-                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                  <span>🖨️ ทดลองพิมพ์แบบฟอร์มตัวอย่าง (Preview)</span>
-                </button>
               </div>
 
               <form id="admin-formset-form" onsubmit="return App.handleSaveAdminFormSettings(event)" class="space-y-5 text-xs">
@@ -1065,13 +1061,19 @@
                 </div>
 
                 <!-- Save Buttons -->
-                <div class="pt-4 flex items-center justify-between border-t border-slate-100">
+                <div class="pt-4 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
                   <button type="button" onclick="App.resetAdminFormSettings()" class="px-4 py-2 text-slate-500 hover:text-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-100 cursor-pointer transition-all">
                     คืนค่าเริ่มต้น (Default)
                   </button>
-                  <button type="submit" id="btn-save-admin-formset" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5">
-                    <span>💾 บันทึกการตั้งค่าหัวใบลาลงระบบ</span>
-                  </button>
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    <button type="button" onclick="App.printCurrentRequestForm()" class="px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
+                      <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                      <span>🖨️ ทดลองพิมพ์แบบฟอร์มตัวอย่าง (Preview)</span>
+                    </button>
+                    <button type="submit" id="btn-save-admin-formset" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all shadow-md shadow-blue-500/25 flex items-center gap-1.5">
+                      <span>💾 บันทึกการตั้งค่าหัวใบลาลงระบบ</span>
+                    </button>
+                  </div>
                 </div>
               </form>
             </div>
@@ -1381,7 +1383,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.16</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.17</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
