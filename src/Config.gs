@@ -5,7 +5,7 @@
  * Description  : System constants, spreadsheet schema definitions, and default settings.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.12
+ * Version      : 1.0.13
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -13,7 +13,7 @@
 const APP = Object.freeze({
   NAME: 'eLeave+',
   NAME_TH: 'ระบบลาออนไลน์',
-  VERSION: '1.0.12',
+  VERSION: '1.0.13',
   // Fallback spreadsheet id. Can be overridden by Script Property SPREADSHEET_ID.
   DEFAULT_SPREADSHEET_ID: '1KggnNTB-eNaUN-YIBjEwbsYviIo_EcyIRGoM1VzqmaA'
 });
