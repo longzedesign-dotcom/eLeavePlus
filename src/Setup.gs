@@ -6,7 +6,7 @@
  *                seeding of default master data and demo fixtures.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.13
+ * Version      : 1.0.14
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -136,3 +136,29 @@ function seedDemoUsers_() {
 
 /** Manual entry points (Run from the Apps Script editor if desired). */
 function setupDatabase() { ensureSchema_(true); return 'OK: ' + Db.spreadsheetId(); }
+
+/**
+ * Emergency helper to reset the Admin password to Admin@1234.
+ * Can be run manually from the Apps Script editor if locked out.
+ */
+function resetAdminPassword() {
+  const admin = Db.findOne(SHEET.USERS, 'username', 'admin');
+  if (admin) {
+    const salt = randomSalt_();
+    Db.update(SHEET.USERS, 'userId', admin.userId, {
+      passwordHash: hashPassword_('Admin@1234', salt),
+      salt: salt,
+      active: true,
+      updatedAt: nowIso_()
+    });
+    Logger.log('Admin password reset successfully to: Admin@1234');
+    return 'Admin password reset to Admin@1234';
+  } else {
+    createUserRecord_({
+      username: 'admin', email: 'c.thakot@gmail.com', password: 'Admin@1234', name: 'ผู้ดูแลระบบ',
+      role: ROLE.ADMIN, departmentId: 'DEP001', position: 'System Administrator', mustChangePassword: false
+    });
+    Logger.log('Admin created successfully with password: Admin@1234');
+    return 'Admin created with password Admin@1234';
+  }
+}

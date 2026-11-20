@@ -3,13 +3,13 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-1.0.13-blue?style=flat-square)](https://github.com/longzedesign-dotcom/eLeavePlus)
+[![Version](https://img.shields.io/badge/Version-1.0.14-blue?style=flat-square)](https://github.com/longzedesign-dotcom/eLeavePlus)
 [![Platform](https://img.shields.io/badge/Platform-Google%20Apps%20Script%20%7C%20Web%20App-34A853?style=flat-square&logo=google)](https://script.google.com/)
 [![Database](https://img.shields.io/badge/Database-Google%20Sheets%20(9%20Sheets)-0F9D58?style=flat-square&logo=googlesheets)](https://www.google.com/sheets/about/)
 [![Serverless](https://img.shields.io/badge/Architecture-100%25%20Serverless-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-**🌐 Web App Production URL (v1.0.13):**  
+**🌐 Web App Production URL (v1.0.14):**  
 [https://script.google.com/macros/s/AKfycbx4UDrwCQP3OgO_skGcyaikVC2eQsYbTMSw1HzoO9Pl4zWYLSNkH0LMS5ePfB4UHOj7tw/exec](https://script.google.com/macros/s/AKfycbx4UDrwCQP3OgO_skGcyaikVC2eQsYbTMSw1HzoO9Pl4zWYLSNkH0LMS5ePfB4UHOj7tw/exec)
 
 ---
@@ -145,13 +145,24 @@ eLeavePlus/
 
 ---
 
-## 👤 บัญชีผู้ดูแลระบบเริ่มต้น (Default Super Admin)
+## 👤 บัญชีผู้ใช้งานสำหรับเข้าสู่ระบบ (System Credentials)
 
 เมื่อติดตั้งระบบครั้งแรก สามารถเข้าใช้งานด้วยบัญชีผู้ดูแลระบบเริ่มต้น:
 
 | บัญชี (Username / Email) | รหัสผ่าน (Password) | บทบาท (Role) | แผนก (Department) | สิทธิ์การใช้งาน |
 |---|---|:---:|---|---|
-| `admin` หรือ `c.thakot@gmail.com` | `12345` หรือ `Admin@1234` | **ADMIN** | ฝ่ายบริหาร | ผู้ดูแลระบบสูงสุด จัดการได้ครบทุกส่วน |
+| `admin` หรือ `c.thakot@gmail.com` | `Admin@1234` | **ADMIN** | ฝ่ายบริหาร | ผู้ดูแลระบบสูงสุด จัดการได้ครบทุกส่วน |
+
+> 🔑 **หมายเหตุรหัสผ่าน:** รหัสผ่านเริ่มต้นคือ `Admin@1234` (ตัว A พิมพ์ใหญ่ ตามด้วยตัวอักษรและตัวเลขตามนโยบายความปลอดภัยขั้นต่ำ 8 ตัวอักษร)  
+> 💡 หากลืมรหัสผ่านหรือติดปัญหา สามารถสั่งรันฟังก์ชัน `resetAdminPassword()` ใน Apps Script Editor เพื่อรีเซ็ตรหัสผ่านแอดมินกลับมาเป็น `Admin@1234` ได้ทันที
+
+### 👥 บัญชีทดสอบสำหรับทดลอง Workflow การอนุมัติ (Demo Accounts)
+หากสั่งรันปุ่มสร้างข้อมูลทดสอบ (Seed Demo) ในเมนูผู้ดูแลระบบ จะมีบัญชีทดสอบเพิ่มเติมดังนี้ (รหัสผ่านทุกบัญชีคือ `Demo@1234`):
+* **ฝ่ายบุคคล (HR):** `hr.somying` (somying.hr@example.com) — รหัสผ่าน: `Demo@1234`
+* **ผู้อนุมัติ IT (Approver):** `boss.it` (boss.it@example.com) — รหัสผ่าน: `Demo@1234`
+* **พนักงาน IT (Employee):** `emp.it` (emp.it@example.com) — รหัสผ่าน: `Demo@1234`
+* **ผู้อนุมัติฝ่ายขาย (Approver):** `boss.sales` (boss.sales@example.com) — รหัสผ่าน: `Demo@1234`
+* **พนักงานฝ่ายขาย (Employee):** `emp.sales` (emp.sales@example.com) — รหัสผ่าน: `Demo@1234`
 
 > 🔒 **ข้อแนะนำ:** หลังเข้าสู่ระบบครั้งแรก แนะนำให้ไปที่เมนู **"การตั้งค่าระบบ" > "จัดการพนักงาน"** แล้วเปลี่ยนรหัสผ่านเพื่อความปลอดภัยสูงสุด
 
