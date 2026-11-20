@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.17
+ Version      : 1.0.18
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.17</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.18</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.17</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.18</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -375,22 +375,24 @@
         <!-- ========================================== -->
         <section id="view-request" class="view-panel hidden max-w-3xl mx-auto space-y-6">
           <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 sm:p-8">
-            <div class="flex items-center justify-between pb-6 border-b border-slate-100 mb-6">
+            <div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-slate-100 mb-6">
               <div>
                 <h2 class="text-xl font-bold text-slate-900">แบบฟอร์มยื่นคำขอลา</h2>
                 <p class="text-xs text-slate-500 mt-1">กรอกข้อมูลการลา ระบบจะคำนวณวันและตรวจสอบนโยบายแบบ Real-time</p>
               </div>
-              <div class="flex items-center gap-2">
-                <button type="button" onclick="App.printCurrentRequestForm()" title="พิมพ์แบบฟอร์มใบลาเปล่า หรือพิมพ์ข้อมูลที่กรอกไว้เป็นเอกสารทางการ" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
-                  <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                  <span>พิมพ์แบบฟอร์มใบลา (PDF)</span>
-                </button>
-                <button type="button" onclick="App.openFormSettingsModal()" title="ตั้งค่าแบบฟอร์มใบลา (เปลี่ยนชื่อบริษัท / โลโก้)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
-                  <span>⚙️ ตั้งค่าหัวใบลา</span>
-                </button>
-                <span id="req-fiscal-badge" class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full">
-                  ปีงบประมาณ 2026
-                </span>
+              <!-- กล่องข้อความ วันที่ และ เวลา ปัจจุบัน -->
+              <div class="flex items-center gap-3 bg-slate-50 border border-slate-200/90 rounded-2xl px-4 py-2.5 shadow-xs">
+                <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-lg shrink-0">
+                  🕒
+                </div>
+                <div class="text-left sm:text-right">
+                  <div class="text-[10px] font-semibold text-slate-400">วันที่และเวลาปัจจุบัน</div>
+                  <div class="flex items-center gap-2 mt-0.5">
+                    <span id="req-live-date" class="text-xs font-bold text-slate-800">-</span>
+                    <span class="text-slate-300">|</span>
+                    <span id="req-live-time" class="text-xs font-mono font-bold text-blue-600">-</span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -1383,7 +1385,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.17</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.18</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -1926,11 +1928,37 @@
       },
 
       init() {
+        this.startLiveClock();
         if (this.state.token) {
           this.bootstrap();
         } else {
           this.showAuth();
         }
+      },
+
+      startLiveClock() {
+        if (this._clockTimer) clearInterval(this._clockTimer);
+        const update = () => {
+          const dateEl = document.getElementById('req-live-date');
+          const timeEl = document.getElementById('req-live-time');
+          if (!dateEl && !timeEl) return;
+          const now = new Date();
+          const thDays = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+          const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+          const dayName = thDays[now.getDay()];
+          const d = now.getDate();
+          const m = thMonths[now.getMonth()];
+          const y = now.getFullYear() + 543;
+          if (dateEl) dateEl.textContent = `${dayName} ${d} ${m} ${y}`;
+          if (timeEl) {
+            const hh = String(now.getHours()).padStart(2, '0');
+            const mm = String(now.getMinutes()).padStart(2, '0');
+            const ss = String(now.getSeconds()).padStart(2, '0');
+            timeEl.textContent = `${hh}:${mm}:${ss} น.`;
+          }
+        };
+        update();
+        this._clockTimer = setInterval(update, 1000);
       },
 
       call(action, payload) {
