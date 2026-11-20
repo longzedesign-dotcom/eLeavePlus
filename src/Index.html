@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.15
+ Version      : 1.0.16
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.15</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.16</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.15</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.16</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -1345,35 +1345,6 @@
   </div>
 
 
-  <!-- ======================================================== -->
-  <!-- MODAL: ALERT & IN-APP CONFIRMATION                       -->
-  <!-- ======================================================== -->
-  <div id="modal-alert" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in">
-      <div id="modal-alert-icon" class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">ℹ️</div>
-      <h4 id="modal-alert-title" class="text-base font-bold text-slate-900 mb-1.5">แจ้งเตือน</h4>
-      <p id="modal-alert-msg" class="text-xs text-slate-500 mb-5 leading-relaxed whitespace-pre-line">-</p>
-      <button type="button" onclick="App.closeAlertModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
-        ตกลง
-      </button>
-    </div>
-  </div>
-
-  <div id="modal-confirm" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in">
-      <div id="modal-confirm-icon" class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">⚠️</div>
-      <h4 id="modal-confirm-title" class="text-base font-bold text-slate-900 mb-1.5">ยืนยันการดำเนินการ</h4>
-      <p id="modal-confirm-msg" class="text-xs text-slate-500 mb-6 leading-relaxed whitespace-pre-line">-</p>
-      <div class="grid grid-cols-2 gap-3">
-        <button id="modal-confirm-cancel-btn" type="button" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-all">
-          ยกเลิก
-        </button>
-        <button id="modal-confirm-ok-btn" type="button" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
-          ยืนยัน
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- ======================================================== -->
   <!-- MODAL: LEAVE SUBMISSION SUCCESS & DIRECT PRINT           -->
@@ -1410,7 +1381,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.15</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.16</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -1894,6 +1865,37 @@
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ALERT & IN-APP CONFIRMATION (GLOBAL TOP LAYER)    -->
+  <!-- ======================================================== -->
+  <div id="modal-alert" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4" style="z-index: 99999; display: none;">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in relative" style="z-index: 100000;">
+      <div id="modal-alert-icon" class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">ℹ️</div>
+      <h4 id="modal-alert-title" class="text-base font-bold text-slate-900 mb-1.5">แจ้งเตือน</h4>
+      <p id="modal-alert-msg" class="text-xs text-slate-500 mb-5 leading-relaxed whitespace-pre-line">-</p>
+      <button type="button" onclick="App.closeAlertModal()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
+        ตกลง
+      </button>
+    </div>
+  </div>
+
+  <div id="modal-confirm" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[9999] hidden flex items-center justify-center p-4" style="z-index: 99999; display: none;">
+    <div class="bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl animate-scale-in relative" style="z-index: 100000;">
+      <div id="modal-confirm-icon" class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-3 text-xl font-bold">⚠️</div>
+      <h4 id="modal-confirm-title" class="text-base font-bold text-slate-900 mb-1.5">ยืนยันการดำเนินการ</h4>
+      <p id="modal-confirm-msg" class="text-xs text-slate-500 mb-6 leading-relaxed whitespace-pre-line">-</p>
+      <div class="grid grid-cols-2 gap-3">
+        <button id="modal-confirm-cancel-btn" type="button" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer transition-all">
+          ยกเลิก
+        </button>
+        <button id="modal-confirm-ok-btn" type="button" class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm">
+          ยืนยัน
+        </button>
+      </div>
     </div>
   </div>
 
@@ -4359,9 +4361,11 @@
           }
           const modal = document.getElementById('modal-confirm');
           modal.classList.remove('hidden');
+          modal.style.display = 'flex';
 
           const cleanup = (result) => {
             modal.classList.add('hidden');
+            modal.style.display = 'none';
             okBtn.onclick = null;
             document.getElementById('modal-confirm-cancel-btn').onclick = null;
             resolve(result);
@@ -4375,11 +4379,15 @@
       showAlert(title, msg) {
         document.getElementById('modal-alert-title').textContent = title;
         document.getElementById('modal-alert-msg').textContent = msg;
-        document.getElementById('modal-alert').classList.remove('hidden');
+        const modal = document.getElementById('modal-alert');
+        modal.classList.remove('hidden');
+        modal.style.display = 'flex';
       },
 
       closeAlertModal() {
-        document.getElementById('modal-alert').classList.add('hidden');
+        const modal = document.getElementById('modal-alert');
+        modal.classList.add('hidden');
+        modal.style.display = 'none';
       }
     };
 
