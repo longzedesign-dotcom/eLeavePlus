@@ -5,7 +5,7 @@
  * Description  : Web App entry point (doGet) & client-server RPC API bridge.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.5
+ * Version      : 1.0.6
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -61,7 +61,14 @@ function apiCall(action, payload, token) {
           name: APP.NAME,
           nameTH: APP.NAME_TH,
           version: APP.VERSION,
-          companyName: cfg.COMPANY_NAME || APP.NAME
+          companyName: cfg.COMPANY_NAME || APP.NAME,
+          formSettings: {
+            companyName: cfg.FORM_COMPANY_NAME || cfg.COMPANY_NAME || 'Open Technology Public Co.,Ltd.',
+            logoType: cfg.FORM_LOGO_TYPE || 'DEFAULT_SVG',
+            logoUrl: cfg.FORM_LOGO_URL || '',
+            documentTitle: cfg.FORM_DOCUMENT_TITLE || 'ใบอนุญาตลาหยุด',
+            documentSubtitle: cfg.FORM_DOCUMENT_SUBTITLE || '(LEAVE REQUISITION)'
+          }
         },
         user: user ? Auth.publicUser(user) : null,
         departments: Db.readAll(SHEET.DEPARTMENTS).filter(function(d) { return d.active; }),
@@ -158,6 +165,10 @@ function apiCall(action, payload, token) {
         return ok_(Admin.getSettings(user));
       case 'adminSaveSettings':
         return ok_(Admin.saveSettings(user, payload));
+      case 'getFormSettings':
+        return ok_(Admin.getFormSettings(user));
+      case 'saveFormSettings':
+        return ok_(Admin.saveFormSettings(user, payload));
       case 'adminSeedDemo':
         return ok_(Admin.seedDemoUsers(user));
       case 'adminGetLogs':

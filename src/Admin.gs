@@ -6,7 +6,7 @@
  *                Holidays, Settings, and Audit Logs).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.5
+ * Version      : 1.0.6
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -267,6 +267,30 @@ const Admin = (() => {
     return Db.getConfig();
   }
 
+  function getFormSettings(user) {
+    const cfg = Db.getConfig();
+    return {
+      companyName: cfg.FORM_COMPANY_NAME || cfg.COMPANY_NAME || 'Open Technology Public Co.,Ltd.',
+      logoType: cfg.FORM_LOGO_TYPE || 'DEFAULT_SVG',
+      logoUrl: cfg.FORM_LOGO_URL || '',
+      documentTitle: cfg.FORM_DOCUMENT_TITLE || 'ใบอนุญาตลาหยุด',
+      documentSubtitle: cfg.FORM_DOCUMENT_SUBTITLE || '(LEAVE REQUISITION)'
+    };
+  }
+
+  function saveFormSettings(user, payload) {
+    assertAdmin_(user);
+    return Db.withLock(function() {
+      if (payload.companyName !== undefined) Db.setConfig('FORM_COMPANY_NAME', str_(payload.companyName));
+      if (payload.logoType !== undefined) Db.setConfig('FORM_LOGO_TYPE', str_(payload.logoType));
+      if (payload.logoUrl !== undefined) Db.setConfig('FORM_LOGO_URL', str_(payload.logoUrl));
+      if (payload.documentTitle !== undefined) Db.setConfig('FORM_DOCUMENT_TITLE', str_(payload.documentTitle));
+      if (payload.documentSubtitle !== undefined) Db.setConfig('FORM_DOCUMENT_SUBTITLE', str_(payload.documentSubtitle));
+      log_('', user.userId, 'FORM_CONFIG_UPDATE', '', '', 0, 'อัปเดตการตั้งค่าหัวแบบฟอร์มใบลา');
+      return { success: true, message: 'บันทึกการตั้งค่าหัวแบบฟอร์มใบลาเรียบร้อยแล้ว' };
+    });
+  }
+
   function saveSettings(user, payload) {
     assertAdmin_(user);
     return Db.withLock(function() {
@@ -358,6 +382,8 @@ const Admin = (() => {
     deleteHoliday,
     getSettings,
     saveSettings,
+    getFormSettings,
+    saveFormSettings,
     seedDemoUsers,
     getAuditLogs
   });

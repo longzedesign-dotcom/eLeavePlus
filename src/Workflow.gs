@@ -6,7 +6,7 @@
  *                quota balances, multi-tier approval routing, and status transitions.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.5
+ * Version      : 1.0.6
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -505,6 +505,15 @@ const Workflow = (() => {
       e.approverNote = rejectLog.note || r.decisionNote;
     }
 
+    const cfg = Db.getConfig();
+    e.formSettings = {
+      companyName: cfg.FORM_COMPANY_NAME || cfg.COMPANY_NAME || 'Open Technology Public Co.,Ltd.',
+      logoType: cfg.FORM_LOGO_TYPE || 'DEFAULT_SVG',
+      logoUrl: cfg.FORM_LOGO_URL || '',
+      documentTitle: cfg.FORM_DOCUMENT_TITLE || 'ใบอนุญาตลาหยุด',
+      documentSubtitle: cfg.FORM_DOCUMENT_SUBTITLE || '(LEAVE REQUISITION)'
+    };
+
     return e;
   }
 
@@ -519,7 +528,14 @@ const Workflow = (() => {
       request = enrich(r, context());
     }
     const cfg = Db.getConfig();
-    return { types: types, request: request, attach: { maxMb: num_(cfg.ATTACH_MAX_MB, 5), types: csv_(cfg.ATTACH_FILE_TYPES) } };
+    const formSettings = {
+      companyName: cfg.FORM_COMPANY_NAME || cfg.COMPANY_NAME || 'Open Technology Public Co.,Ltd.',
+      logoType: cfg.FORM_LOGO_TYPE || 'DEFAULT_SVG',
+      logoUrl: cfg.FORM_LOGO_URL || '',
+      documentTitle: cfg.FORM_DOCUMENT_TITLE || 'ใบอนุญาตลาหยุด',
+      documentSubtitle: cfg.FORM_DOCUMENT_SUBTITLE || '(LEAVE REQUISITION)'
+    };
+    return { types: types, request: request, attach: { maxMb: num_(cfg.ATTACH_MAX_MB, 5), types: csv_(cfg.ATTACH_FILE_TYPES) }, formSettings: formSettings };
   }
 
   return Object.freeze({

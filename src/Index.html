@@ -6,7 +6,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.5
+ Version      : 1.0.6
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -128,7 +128,7 @@
         </div>
         <div class="flex items-center justify-center gap-2">
           <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">eLeave+</h1>
-          <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">v1.0.5</span>
+          <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-700">v1.0.6</span>
         </div>
         <p class="text-sm font-medium text-slate-500 mt-1">ระบบบริหารการลาออนไลน์สำหรับองค์กร</p>
       </div>
@@ -177,7 +177,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.5</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.6</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -375,10 +375,13 @@
                 <h2 class="text-xl font-bold text-slate-900">แบบฟอร์มยื่นคำขอลา</h2>
                 <p class="text-xs text-slate-500 mt-1">กรอกข้อมูลการลา ระบบจะคำนวณวันและตรวจสอบนโยบายแบบ Real-time</p>
               </div>
-              <div class="flex items-center gap-2.5">
-                <button type="button" onclick="App.printCurrentRequestForm()" title="พิมพ์แบบฟอร์มใบลาเปล่า หรือพิมพ์ข้อมูลที่กรอกไว้เป็นเอกสารทางการ" class="px-3.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="App.printCurrentRequestForm()" title="พิมพ์แบบฟอร์มใบลาเปล่า หรือพิมพ์ข้อมูลที่กรอกไว้เป็นเอกสารทางการ" class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-xl border border-blue-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
                   <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                   <span>พิมพ์แบบฟอร์มใบลา (PDF)</span>
+                </button>
+                <button type="button" onclick="App.openFormSettingsModal()" title="ตั้งค่าแบบฟอร์มใบลา (เปลี่ยนชื่อบริษัท / โลโก้)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-200 cursor-pointer transition-all flex items-center gap-1.5 shadow-xs">
+                  <span>⚙️ ตั้งค่าหัวใบลา</span>
                 </button>
                 <span id="req-fiscal-badge" class="px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full">
                   ปีงบประมาณ 2026
@@ -482,11 +485,16 @@
               </div>
 
               <!-- Submit Buttons -->
-              <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <button type="button" onclick="App.printCurrentRequestForm()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 border border-slate-200">
-                  <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                  <span>พิมพ์แบบฟอร์มใบลา / ตัวอย่าง (Print Preview)</span>
-                </button>
+              <div class="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="App.printCurrentRequestForm()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 border border-slate-200">
+                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    <span>พิมพ์แบบฟอร์มใบลา / ตัวอย่าง (Print Preview)</span>
+                  </button>
+                  <button type="button" onclick="App.openFormSettingsModal()" class="px-3.5 py-2.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-xl transition-all cursor-pointer flex items-center gap-1.5 border border-slate-300">
+                    <span>⚙️ ตั้งค่าหัวใบลา</span>
+                  </button>
+                </div>
                 <div class="flex items-center gap-3">
                   <button type="button" onclick="App.navigate('my-leaves')" class="px-5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer">
                     ยกเลิก
@@ -930,6 +938,39 @@
                   <label class="block font-semibold text-slate-700 mb-1">Telegram Chat ID (กลุ่มส่วนกลาง)</label>
                   <input id="cfg-TELEGRAM_CHAT_ID" type="text" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
                 </div>
+
+                <!-- Section: Leave Form Header Settings -->
+                <div class="pt-4 border-t border-slate-200 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h4 class="font-bold text-slate-800 text-xs">📑 ตั้งค่าหัวแบบฟอร์มใบลา (LEAVE REQUISITION)</h4>
+                      <p class="text-[11px] text-slate-500">กำหนดชื่อบริษัท/หน่วยงาน และโลโก้ที่จะพิมพ์บนหัวเอกสาร</p>
+                    </div>
+                    <button type="button" onclick="App.openFormSettingsModal()" class="px-3 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg border border-blue-200 cursor-pointer transition-all">
+                      ⚙️ เปิดหน้าต่างปรับแต่ง & พรีวิว
+                    </button>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1">ชื่อบริษัท / องค์กร บนหัวแบบฟอร์ม</label>
+                    <input id="cfg-FORM_COMPANY_NAME" type="text" placeholder="เช่น Open Technology Public Co.,Ltd." class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1">รูปแบบโลโก้บนแบบฟอร์ม</label>
+                    <select id="cfg-FORM_LOGO_TYPE" class="w-full px-3 py-2 border border-slate-300 rounded-xl bg-white font-medium">
+                      <option value="DEFAULT_SVG">โลโก้มาตรฐาน Open Technology (SVG)</option>
+                      <option value="IMAGE_URL">ใช้รูปภาพโลโก้ของบริษัท (Image URL / Data URI)</option>
+                      <option value="NONE">ไม่แสดงโลโก้ (แสดงเฉพาะชื่อบริษัท)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block font-semibold text-slate-700 mb-1">URL รูปภาพโลโก้ หรือ อัปโหลด</label>
+                    <input id="cfg-FORM_LOGO_URL" type="text" placeholder="https://... หรืออัปโหลดผ่านหน้าต่างปรับแต่ง" class="w-full px-3 py-2 border border-slate-300 rounded-xl">
+                  </div>
+                </div>
+
                 <button type="submit" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl cursor-pointer">
                   บันทึกการตั้งค่า
                 </button>
@@ -1136,7 +1177,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.5</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.6</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -1228,6 +1269,109 @@
         <button type="button" onclick="App.closeProfileModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs cursor-pointer transition-all">
           ปิดหน้าต่าง
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: LEAVE FORM HEADER & LOGO SETTINGS                 -->
+  <!-- ======================================================== -->
+  <div id="modal-form-settings" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" style="display: none;">
+    <div class="bg-white rounded-3xl shadow-2xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden animate-scale-in">
+      <!-- Modal Header -->
+      <div class="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div class="flex items-center gap-2.5">
+          <span class="text-xl">⚙️</span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 leading-tight">ตั้งค่าแบบฟอร์มใบลา</h3>
+            <p class="text-[11px] text-slate-500">ปรับเปลี่ยนชื่อบริษัทและโลโก้บนหัวเอกสารใบอนุญาตลาหยุด (A4 / PDF)</p>
+          </div>
+        </div>
+        <button type="button" onclick="App.closeFormSettingsModal()" class="text-slate-400 hover:text-slate-600 p-2 text-base cursor-pointer">✕</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
+        <!-- Company Name -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            ชื่อบริษัท / องค์กร บนหัวเอกสาร <span class="text-red-500">*</span>
+          </label>
+          <input id="formset-company-name" type="text" oninput="App.updateFormPreview()" placeholder="เช่น Open Technology Public Co.,Ltd." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold focus:border-blue-500 outline-none">
+          <p class="text-[11px] text-slate-400 mt-1">แสดงเป็นชื่อบริษัทขนาดใหญ่ที่มุมบนซ้ายของใบลาทางการ</p>
+        </div>
+
+        <!-- Logo Selection -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+            รูปแบบโลโก้บริษัท
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all font-medium">
+              <input type="radio" name="formset-logo-type" value="DEFAULT_SVG" onchange="App.handleFormLogoTypeChange(this.value)" class="text-blue-600 focus:ring-0">
+              <span>โลโก้ Open Technology (SVG)</span>
+            </label>
+            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all font-medium">
+              <input type="radio" name="formset-logo-type" value="IMAGE_URL" onchange="App.handleFormLogoTypeChange(this.value)" class="text-blue-600 focus:ring-0">
+              <span>ใช้รูปภาพโลโก้</span>
+            </label>
+            <label class="flex items-center gap-2 p-3 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-50 transition-all font-medium">
+              <input type="radio" name="formset-logo-type" value="NONE" onchange="App.handleFormLogoTypeChange(this.value)" class="text-blue-600 focus:ring-0">
+              <span>ซ่อนโลโก้</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Image Logo Options (URL or File) -->
+        <div id="formset-image-controls" class="space-y-3 p-4 bg-slate-50 rounded-2xl border border-slate-200 hidden">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">URL รูปภาพโลโก้ (PNG, JPG, SVG, WebP)</label>
+            <input id="formset-logo-url" type="text" oninput="App.updateFormPreview()" placeholder="https://example.com/logo.png" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-xs focus:border-blue-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-700 mb-1">หรือ อัปโหลดรูปโลโก้จากเครื่องคอมพิวเตอร์</label>
+            <input id="formset-logo-file" type="file" accept="image/*" onchange="App.handleFormLogoFileUpload(event)" class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+            <p class="text-[10px] text-slate-400 mt-1">ระบบจะแปลงรูปภาพเป็น Data URI พร้อมใช้งานทันทีโดยไม่ต้องพึ่งพาเซิร์ฟเวอร์ภายนอก</p>
+          </div>
+        </div>
+
+        <!-- Live Header Preview -->
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+            ตัวอย่างหัวเอกสารจริง (Live Preview)
+          </label>
+          <div class="p-4 bg-white border-2 border-dashed border-slate-300 rounded-2xl shadow-inner">
+            <div id="formset-preview-container" class="flex justify-between items-end pb-3 border-b border-slate-200 min-h-[60px]">
+              <div id="formset-preview-company" class="text-base sm:text-lg font-medium text-black">
+                Open Technology Public Co.,Ltd.
+              </div>
+              <div id="formset-preview-logo" class="flex items-center">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+            <div class="mt-2 text-center text-xs font-bold text-slate-500">
+              ใบอนุญาตลาหยุด (LEAVE REQUISITION)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-wrap items-center justify-between gap-2.5">
+        <button type="button" onclick="App.resetFormSettingsToDefault()" class="px-3.5 py-2 text-slate-500 hover:text-slate-800 text-xs font-semibold rounded-xl hover:bg-slate-200/50 cursor-pointer transition-all">
+          คืนค่าเริ่มต้น
+        </button>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="App.closeFormSettingsModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs cursor-pointer transition-all">
+            ปิด
+          </button>
+          <button type="button" onclick="App.saveFormSettingsLocally()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl text-xs cursor-pointer transition-all shadow-xs">
+            บันทึกในเครื่องนี้
+          </button>
+          <button id="btn-save-formset-server" type="button" onclick="App.saveFormSettingsToServer()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs cursor-pointer transition-all shadow-md shadow-blue-500/25">
+            💾 บันทึกลงระบบส่วนกลาง
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -1743,6 +1887,157 @@
         if (!ok) return;
         this.closeProfileModal();
         this.handleLogout();
+      },
+
+      /* ==================== LEAVE FORM SETTINGS HELPERS ==================== */
+      getLocalFormSettings() {
+        try {
+          const raw = localStorage.getItem('eleave_form_settings');
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      },
+
+      getEffectiveFormSettings() {
+        const local = this.getLocalFormSettings();
+        if (local && local.companyName) return local;
+        if (this.state.formSettings && this.state.formSettings.companyName) return this.state.formSettings;
+        return {
+          companyName: (this.state.app && this.state.app.companyName) || 'Open Technology Public Co.,Ltd.',
+          logoType: 'DEFAULT_SVG',
+          logoUrl: ''
+        };
+      },
+
+      openFormSettingsModal() {
+        const fs = this.getEffectiveFormSettings();
+        document.getElementById('formset-company-name').value = fs.companyName || '';
+        const radios = document.getElementsByName('formset-logo-type');
+        radios.forEach(r => { r.checked = r.value === (fs.logoType || 'DEFAULT_SVG'); });
+        document.getElementById('formset-logo-url').value = fs.logoUrl || '';
+        document.getElementById('formset-logo-file').value = '';
+        this.handleFormLogoTypeChange(fs.logoType || 'DEFAULT_SVG');
+        
+        // Admin save button visibility
+        const isAdmin = this.state.user && (this.state.user.role === 'ADMIN' || this.state.user.role === 'HR');
+        const saveServerBtn = document.getElementById('btn-save-formset-server');
+        if (saveServerBtn) {
+          saveServerBtn.style.display = isAdmin ? 'inline-flex' : 'none';
+        }
+
+        document.getElementById('modal-form-settings').style.display = 'flex';
+        this.updateFormPreview();
+      },
+
+      closeFormSettingsModal() {
+        document.getElementById('modal-form-settings').style.display = 'none';
+      },
+
+      handleFormLogoTypeChange(type) {
+        const imgControls = document.getElementById('formset-image-controls');
+        if (type === 'IMAGE_URL') {
+          imgControls.classList.remove('hidden');
+        } else {
+          imgControls.classList.add('hidden');
+        }
+        this.updateFormPreview();
+      },
+
+      handleFormLogoFileUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          document.getElementById('formset-logo-url').value = e.target.result;
+          this.updateFormPreview();
+        };
+        reader.readAsDataURL(file);
+      },
+
+      updateFormPreview() {
+        const cName = document.getElementById('formset-company-name').value.trim() || 'Open Technology Public Co.,Ltd.';
+        document.getElementById('formset-preview-company').textContent = cName;
+
+        let selectedType = 'DEFAULT_SVG';
+        const radios = document.getElementsByName('formset-logo-type');
+        for (let i = 0; i < radios.length; i++) {
+          if (radios[i].checked) { selectedType = radios[i].value; break; }
+        }
+
+        const logoContainer = document.getElementById('formset-preview-logo');
+        if (selectedType === 'NONE') {
+          logoContainer.innerHTML = '';
+        } else if (selectedType === 'IMAGE_URL') {
+          const url = document.getElementById('formset-logo-url').value.trim();
+          if (url) {
+            logoContainer.innerHTML = `<img src="${url}" style="max-height: 48px; max-width: 180px; object-fit: contain;" alt="Logo" />`;
+          } else {
+            logoContainer.innerHTML = `<span class="text-[10px] text-slate-400 italic">(ใส่ URL หรือเลือกไฟล์ภาพ)</span>`;
+          }
+        } else {
+          // Default SVG
+          logoContainer.innerHTML = `<svg width="150" height="45" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M 22 28 C 12 16, 28 6, 52 14 C 68 20, 62 38, 42 46 C 26 52, 12 42, 22 28" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <circle cx="38" cy="27" r="16" fill="url(#sphereGradPreview)"/>
+            <defs>
+              <radialGradient id="sphereGradPreview" cx="35%" cy="30%" r="70%">
+                <stop offset="0%" stop-color="#bbf2f6"/>
+                <stop offset="45%" stop-color="#38bdf8"/>
+                <stop offset="90%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#0369a1"/>
+              </radialGradient>
+            </defs>
+            <path d="M 23 37 C 30 44, 48 42, 57 32" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
+            <text x="66" y="32" font-family="'Arial', 'Helvetica', sans-serif" font-weight="900" font-size="28" fill="#1e293b" letter-spacing="0.5">PEN</text>
+            <text x="68" y="47" font-family="'Arial', 'Helvetica', sans-serif" font-weight="500" font-size="14" fill="#1e293b" letter-spacing="0.3">Technology</text>
+          </svg>`;
+        }
+      },
+
+      saveFormSettingsLocally() {
+        const cName = document.getElementById('formset-company-name').value.trim() || 'Open Technology Public Co.,Ltd.';
+        let selectedType = 'DEFAULT_SVG';
+        const radios = document.getElementsByName('formset-logo-type');
+        for (let i = 0; i < radios.length; i++) {
+          if (radios[i].checked) { selectedType = radios[i].value; break; }
+        }
+        const logoUrl = document.getElementById('formset-logo-url').value.trim();
+        const settings = { companyName: cName, logoType: selectedType, logoUrl: logoUrl };
+        localStorage.setItem('eleave_form_settings', JSON.stringify(settings));
+        this.state.formSettings = settings;
+        this.closeFormSettingsModal();
+        this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าหัวแบบฟอร์มในเครื่องเรียบร้อยแล้ว');
+      },
+
+      async saveFormSettingsToServer() {
+        const cName = document.getElementById('formset-company-name').value.trim() || 'Open Technology Public Co.,Ltd.';
+        let selectedType = 'DEFAULT_SVG';
+        const radios = document.getElementsByName('formset-logo-type');
+        for (let i = 0; i < radios.length; i++) {
+          if (radios[i].checked) { selectedType = radios[i].value; break; }
+        }
+        const logoUrl = document.getElementById('formset-logo-url').value.trim();
+        const settings = { companyName: cName, logoType: selectedType, logoUrl: logoUrl };
+
+        try {
+          await this.call('saveFormSettings', settings);
+          localStorage.setItem('eleave_form_settings', JSON.stringify(settings));
+          this.state.formSettings = settings;
+          this.closeFormSettingsModal();
+          this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าหัวแบบฟอร์มลงระบบส่วนกลางเรียบร้อยแล้ว พนักงานทุกคนจะเห็นหัวเอกสารตามนี้');
+        } catch (e) {
+          this.showAlert('ผิดพลาด', 'ไม่สามารถบันทึกไปยังเซิร์ฟเวอร์ได้: ' + e.message);
+        }
+      },
+
+      resetFormSettingsToDefault() {
+        document.getElementById('formset-company-name').value = 'Open Technology Public Co.,Ltd.';
+        const radios = document.getElementsByName('formset-logo-type');
+        radios.forEach(r => { r.checked = r.value === 'DEFAULT_SVG'; });
+        document.getElementById('formset-logo-url').value = '';
+        document.getElementById('formset-logo-file').value = '';
+        this.handleFormLogoTypeChange('DEFAULT_SVG');
       },
 
       navigate(view) {
@@ -2506,6 +2801,36 @@
           else if (lk.includes('ทหาร') || lk.includes('ราชการ')) militaryDays += Number(summary[k] || 0);
         });
 
+        const fs = r.formSettings || this.getEffectiveFormSettings();
+        const companyName = fs.companyName || 'Open Technology Public Co.,Ltd.';
+        const logoType = fs.logoType || 'DEFAULT_SVG';
+        const logoUrl = fs.logoUrl || '';
+
+        const defaultSvgLogo = `<svg width="175" height="52" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M 22 28 C 12 16, 28 6, 52 14 C 68 20, 62 38, 42 46 C 26 52, 12 42, 22 28" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <circle cx="38" cy="27" r="16" fill="url(#sphereGrad)"/>
+          <defs>
+            <radialGradient id="sphereGrad" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#bbf2f6"/>
+              <stop offset="45%" stop-color="#38bdf8"/>
+              <stop offset="90%" stop-color="#0284c7"/>
+              <stop offset="100%" stop-color="#0369a1"/>
+            </radialGradient>
+          </defs>
+          <path d="M 23 37 C 30 44, 48 42, 57 32" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <text x="66" y="32" font-family="'Arial', 'Helvetica', sans-serif" font-weight="900" font-size="28" fill="#1e293b" letter-spacing="0.5">PEN</text>
+          <text x="68" y="47" font-family="'Arial', 'Helvetica', sans-serif" font-weight="500" font-size="14" fill="#1e293b" letter-spacing="0.3">Technology</text>
+        </svg>`;
+
+        let logoHtml = '';
+        if (logoType === 'NONE') {
+          logoHtml = '';
+        } else if (logoType === 'IMAGE_URL' && logoUrl) {
+          logoHtml = `<img id="preview-logo-img" src="${logoUrl}" style="max-height: 52px; max-width: 200px; object-fit: contain;" alt="Logo" />`;
+        } else {
+          logoHtml = defaultSvgLogo;
+        }
+
         const html = `<!DOCTYPE html>
 <html lang="th">
 <head>
@@ -2620,32 +2945,54 @@
         <strong>คำแนะนำ:</strong> สามารถสั่งพิมพ์ลงกระดาษ A4 หรือเลือก <strong>Save as PDF</strong> ในหน้าต่างพิมพ์
       </div>
       <div style="display: flex; gap: 8px;">
+        <button class="btn" onclick="toggleFormSettingsDrawer()" id="btn-toggle-settings" style="background: #ffffff; color: #1e293b; border: 1.5px solid #cbd5e1;">⚙️ ตั้งค่าหัวเอกสาร & โลโก้</button>
         <button class="btn btn-primary" onclick="window.print()">🖨️ สั่งพิมพ์เอกสาร / บันทึก PDF</button>
         <button class="btn btn-secondary" onclick="window.close()">✕ ปิดหน้าต่าง</button>
       </div>
     </div>
 
+    <!-- Live Settings Drawer (no-print) -->
+    <div id="settings-drawer" class="no-print" style="display: none; background: #f8fafc; border: 1.5px solid #93c5fd; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 4px 12px rgba(37,99,235,0.08);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <span style="font-weight: 700; color: #1e40af; font-size: 13px;">⚙️ ปรับแต่งหัวเอกสาร & โลโก้ (Live Edit)</span>
+        <button onclick="toggleFormSettingsDrawer()" style="background: none; border: none; font-size: 14px; cursor: pointer; color: #64748b;">✕ ปิดแถบนี้</button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 4px; color: #334155;">ชื่อบริษัท / องค์กร</label>
+          <input id="input-company-name" type="text" value="${companyName.replace(/"/g, '&quot;')}" oninput="updateLiveCompanyName(this.value)" style="width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px;" />
+        </div>
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 4px; color: #334155;">รูปแบบโลโก้</label>
+          <select id="select-logo-type" onchange="updateLiveLogoType(this.value)" style="width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; background: #fff;">
+            <option value="DEFAULT_SVG" ${logoType === 'DEFAULT_SVG' ? 'selected' : ''}>โลโก้มาตรฐาน Open Technology (SVG)</option>
+            <option value="IMAGE_URL" ${logoType === 'IMAGE_URL' ? 'selected' : ''}>ใช้รูปภาพโลโก้</option>
+            <option value="NONE" ${logoType === 'NONE' ? 'selected' : ''}>ซ่อนโลโก้ (แสดงเฉพาะชื่อบริษัท)</option>
+          </select>
+        </div>
+      </div>
+      <div id="image-logo-row" style="margin-top: 10px; display: ${logoType === 'IMAGE_URL' ? 'grid' : 'none'}; grid-template-columns: 1.2fr 0.8fr; gap: 12px; font-size: 12px;">
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 4px; color: #334155;">URL รูปภาพโลโก้</label>
+          <input id="input-logo-url" type="text" value="${logoUrl.replace(/"/g, '&quot;')}" oninput="updateLiveLogoUrl(this.value)" placeholder="https://example.com/logo.png" style="width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 12px;" />
+        </div>
+        <div>
+          <label style="display: block; font-weight: 600; margin-bottom: 4px; color: #334155;">หรือ เลือกไฟล์ภาพจากเครื่อง</label>
+          <input id="file-logo" type="file" accept="image/*" onchange="handleLiveFileUpload(event)" style="font-size: 11px; width: 100%;" />
+        </div>
+      </div>
+      <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
+        <button onclick="savePrintSettingsLocally()" style="padding: 6px 14px; background: #2563eb; color: #fff; border: none; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer;">💾 บันทึกเป็นค่าเริ่มต้นในเครื่องนี้</button>
+      </div>
+    </div>
+
     <!-- Header: Company Name & Logo -->
     <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; padding: 0 2px;">
-      <div style="font-size: 21px; font-weight: 500; font-family: 'Arial', 'Sarabun', sans-serif; color: #000;">
-        Open Technology Public Co.,Ltd.
+      <div id="header-company-name" style="font-size: 21px; font-weight: 500; font-family: 'Arial', 'Sarabun', sans-serif; color: #000;">
+        ${companyName}
       </div>
-      <div style="display: flex; align-items: center;">
-        <svg width="175" height="52" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 22 28 C 12 16, 28 6, 52 14 C 68 20, 62 38, 42 46 C 26 52, 12 42, 22 28" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
-          <circle cx="38" cy="27" r="16" fill="url(#sphereGrad)"/>
-          <defs>
-            <radialGradient id="sphereGrad" cx="35%" cy="30%" r="70%">
-              <stop offset="0%" stop-color="#bbf2f6"/>
-              <stop offset="45%" stop-color="#38bdf8"/>
-              <stop offset="90%" stop-color="#0284c7"/>
-              <stop offset="100%" stop-color="#0369a1"/>
-            </radialGradient>
-          </defs>
-          <path d="M 23 37 C 30 44, 48 42, 57 32" stroke="#f58220" stroke-width="4" stroke-linecap="round" fill="none"/>
-          <text x="66" y="32" font-family="'Arial', 'Helvetica', sans-serif" font-weight="900" font-size="28" fill="#1e293b" letter-spacing="0.5">PEN</text>
-          <text x="68" y="47" font-family="'Arial', 'Helvetica', sans-serif" font-weight="500" font-size="14" fill="#1e293b" letter-spacing="0.3">Technology</text>
-        </svg>
+      <div id="header-company-logo" style="display: flex; align-items: center;">
+        ${logoHtml}
       </div>
     </div>
 
@@ -2758,6 +3105,75 @@
       เลขที่อ้างอิง: ${r.requestNo} | eLeave+ System
     </div>
   </div>
+
+  <script>
+    const defaultSvg = \`${defaultSvgLogo}\`;
+    let currentLogoUrl = '${logoUrl.replace(/'/g, "\\'")}';
+
+    function toggleFormSettingsDrawer() {
+      const d = document.getElementById('settings-drawer');
+      d.style.display = d.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function updateLiveCompanyName(val) {
+      document.getElementById('header-company-name').textContent = val || '';
+    }
+
+    function updateLiveLogoType(type) {
+      const imgRow = document.getElementById('image-logo-row');
+      const logoContainer = document.getElementById('header-company-logo');
+      imgRow.style.display = type === 'IMAGE_URL' ? 'grid' : 'none';
+      if (type === 'NONE') {
+        logoContainer.innerHTML = '';
+      } else if (type === 'IMAGE_URL') {
+        if (currentLogoUrl) {
+          logoContainer.innerHTML = '<img src="' + currentLogoUrl + '" style="max-height: 52px; max-width: 200px; object-fit: contain;" alt="Logo" />';
+        } else {
+          logoContainer.innerHTML = '<span style="font-size: 11px; color: #94a3b8;">(กรุณาระบุ URL หรือเลือกไฟล์ภาพ)</span>';
+        }
+      } else {
+        logoContainer.innerHTML = defaultSvg;
+      }
+    }
+
+    function updateLiveLogoUrl(url) {
+      currentLogoUrl = url.trim();
+      const type = document.getElementById('select-logo-type').value;
+      if (type === 'IMAGE_URL') {
+        const logoContainer = document.getElementById('header-company-logo');
+        if (currentLogoUrl) {
+          logoContainer.innerHTML = '<img src="' + currentLogoUrl + '" style="max-height: 52px; max-width: 200px; object-fit: contain;" alt="Logo" />';
+        } else {
+          logoContainer.innerHTML = '<span style="font-size: 11px; color: #94a3b8;">(กรุณาระบุ URL หรือเลือกไฟล์ภาพ)</span>';
+        }
+      }
+    }
+
+    function handleLiveFileUpload(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        currentLogoUrl = evt.target.result;
+        document.getElementById('input-logo-url').value = currentLogoUrl;
+        document.getElementById('select-logo-type').value = 'IMAGE_URL';
+        updateLiveLogoType('IMAGE_URL');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function savePrintSettingsLocally() {
+      const cName = document.getElementById('input-company-name').value.trim() || 'Open Technology Public Co.,Ltd.';
+      const lType = document.getElementById('select-logo-type').value;
+      const lUrl = currentLogoUrl;
+      const settings = { companyName: cName, logoType: lType, logoUrl: lUrl };
+      localStorage.setItem('eleave_form_settings', JSON.stringify(settings));
+      if (window.opener && window.opener.App) {
+        window.opener.App.state.formSettings = settings;
+      }
+      alert('บันทึกการตั้งค่าหัวเอกสารในเครื่องเรียบร้อยแล้ว');
+    }
+  </script>
 </body>
 </html>`;
 
@@ -3473,6 +3889,15 @@
           }
           document.getElementById('cfg-TELEGRAM_BOT_TOKEN').value = cfg.TELEGRAM_BOT_TOKEN || '';
           document.getElementById('cfg-TELEGRAM_CHAT_ID').value = cfg.TELEGRAM_CHAT_ID || '';
+          if (document.getElementById('cfg-FORM_COMPANY_NAME')) {
+            document.getElementById('cfg-FORM_COMPANY_NAME').value = cfg.FORM_COMPANY_NAME || '';
+          }
+          if (document.getElementById('cfg-FORM_LOGO_TYPE')) {
+            document.getElementById('cfg-FORM_LOGO_TYPE').value = cfg.FORM_LOGO_TYPE || 'DEFAULT_SVG';
+          }
+          if (document.getElementById('cfg-FORM_LOGO_URL')) {
+            document.getElementById('cfg-FORM_LOGO_URL').value = cfg.FORM_LOGO_URL || '';
+          }
         } catch (e) { console.error(e); }
       },
 
@@ -3485,10 +3910,18 @@
           NOTIFY_EMAIL: document.getElementById('cfg-NOTIFY_EMAIL').checked ? 'TRUE' : 'FALSE',
           ALLOW_ADMIN_SELF_APPROVAL: document.getElementById('cfg-ALLOW_ADMIN_SELF_APPROVAL') && document.getElementById('cfg-ALLOW_ADMIN_SELF_APPROVAL').checked ? 'TRUE' : 'FALSE',
           TELEGRAM_BOT_TOKEN: document.getElementById('cfg-TELEGRAM_BOT_TOKEN').value.trim(),
-          TELEGRAM_CHAT_ID: document.getElementById('cfg-TELEGRAM_CHAT_ID').value.trim()
+          TELEGRAM_CHAT_ID: document.getElementById('cfg-TELEGRAM_CHAT_ID').value.trim(),
+          FORM_COMPANY_NAME: (document.getElementById('cfg-FORM_COMPANY_NAME') ? document.getElementById('cfg-FORM_COMPANY_NAME').value.trim() : ''),
+          FORM_LOGO_TYPE: (document.getElementById('cfg-FORM_LOGO_TYPE') ? document.getElementById('cfg-FORM_LOGO_TYPE').value : 'DEFAULT_SVG'),
+          FORM_LOGO_URL: (document.getElementById('cfg-FORM_LOGO_URL') ? document.getElementById('cfg-FORM_LOGO_URL').value.trim() : '')
         };
         try {
           await this.call('adminSaveSettings', payload);
+          this.state.formSettings = {
+            companyName: payload.FORM_COMPANY_NAME,
+            logoType: payload.FORM_LOGO_TYPE,
+            logoUrl: payload.FORM_LOGO_URL
+          };
           this.showAlert('สำเร็จ', 'บันทึกการตั้งค่าระบบเรียบร้อยแล้ว');
         } catch (err) { this.showAlert('ผิดพลาด', err.message); }
         return false;

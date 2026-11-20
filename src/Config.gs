@@ -5,7 +5,7 @@
  * Description  : System constants, spreadsheet schema definitions, and default settings.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.5
+ * Version      : 1.0.6
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -13,7 +13,7 @@
 const APP = Object.freeze({
   NAME: 'eLeave+',
   NAME_TH: 'ระบบลาออนไลน์',
-  VERSION: '1.0.5',
+  VERSION: '1.0.6',
   // Fallback spreadsheet id. Can be overridden by Script Property SPREADSHEET_ID.
   DEFAULT_SPREADSHEET_ID: '1KggnNTB-eNaUN-YIBjEwbsYviIo_EcyIRGoM1VzqmaA'
 });
@@ -93,7 +93,12 @@ const DEFAULT_CONFIG = Object.freeze([
   ['ATTACH_FILE_TYPES', 'jpg,jpeg,png,pdf', 'ประเภทไฟล์แนบที่อนุญาต'],
   ['ATTACH_FOLDER_ID', '', 'โฟลเดอร์ Google Drive เก็บไฟล์แนบ (สร้างอัตโนมัติ)'],
   ['SESSION_HOURS', '12', 'อายุ Session (ชั่วโมง)'],
-  ['CALENDAR_SCOPE', 'ALL', 'ขอบเขตปฏิทินการลา: ALL = ทั้งบริษัท, DEPARTMENT = เฉพาะแผนกตนเอง']
+  ['CALENDAR_SCOPE', 'ALL', 'ขอบเขตปฏิทินการลา: ALL = ทั้งบริษัท, DEPARTMENT = เฉพาะแผนกตนเอง'],
+  ['FORM_COMPANY_NAME', 'Open Technology Public Co.,Ltd.', 'ชื่อบริษัท/หน่วยงานสำหรับแสดงบนหัวแบบฟอร์มใบลา'],
+  ['FORM_LOGO_TYPE', 'DEFAULT_SVG', 'รูปแบบโลโก้แบบฟอร์ม: DEFAULT_SVG, IMAGE_URL, NONE'],
+  ['FORM_LOGO_URL', '', 'URL หรือ Data URI ของรูปภาพโลโก้บนแบบฟอร์มใบลา'],
+  ['FORM_DOCUMENT_TITLE', 'ใบอนุญาตลาหยุด', 'หัวข้อเอกสารภาษาไทย'],
+  ['FORM_DOCUMENT_SUBTITLE', '(LEAVE REQUISITION)', 'หัวข้อย่อยเอกสารภาษาอังกฤษ']
 ]);
 
 const DEFAULT_DEPARTMENTS = Object.freeze([
