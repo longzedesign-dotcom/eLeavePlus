@@ -6,7 +6,7 @@
  *                rate limiting, and role-based access control (RBAC).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.10
+ * Version      : 1.0.12
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================

@@ -3,14 +3,14 @@
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/Version-1.0.10-blue?style=flat-square)](https://github.com/longzedesign-dotcom/eLeavePlus)
+[![Version](https://img.shields.io/badge/Version-1.0.12-blue?style=flat-square)](https://github.com/longzedesign-dotcom/eLeavePlus)
 [![Platform](https://img.shields.io/badge/Platform-Google%20Apps%20Script%20%7C%20Web%20App-34A853?style=flat-square&logo=google)](https://script.google.com/)
 [![Database](https://img.shields.io/badge/Database-Google%20Sheets%20(9%20Sheets)-0F9D58?style=flat-square&logo=googlesheets)](https://www.google.com/sheets/about/)
 [![Serverless](https://img.shields.io/badge/Architecture-100%25%20Serverless-orange?style=flat-square)](#)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](LICENSE)
 
-**🌐 Web App Production URL (v1.0.10):**  
-[https://script.google.com/macros/s/AKfycbysSU5UcHgRRnCokW1NIycVkBrbo6J6L1k4pbplMwnkD7cYpu9SRYhdvLcCI_L64X6Jvg/exec](https://script.google.com/macros/s/AKfycbysSU5UcHgRRnCokW1NIycVkBrbo6J6L1k4pbplMwnkD7cYpu9SRYhdvLcCI_L64X6Jvg/exec)
+**🌐 Web App Production URL (v1.0.12):**  
+[https://script.google.com/macros/s/AKfycbx4UDrwCQP3OgO_skGcyaikVC2eQsYbTMSw1HzoO9Pl4zWYLSNkH0LMS5ePfB4UHOj7tw/exec](https://script.google.com/macros/s/AKfycbx4UDrwCQP3OgO_skGcyaikVC2eQsYbTMSw1HzoO9Pl4zWYLSNkH0LMS5ePfB4UHOj7tw/exec)
 
 ---
 
