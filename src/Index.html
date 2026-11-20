@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.18
+ Version      : 1.0.19
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.18</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.19</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.18</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.19</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -1385,7 +1385,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.18</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.19</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -2575,7 +2575,49 @@
         this.triggerPolicyPreview();
       },
 
+      calcWorkingDaysClient(startDate, startPeriod, endDate, endPeriod) {
+        if (!startDate) return 0;
+        const end = endDate || startDate;
+        if (end < startDate) return 0;
+        const sp = Number(startPeriod) || 0;
+        const ep = Number(endPeriod) || 0;
+        const same = startDate === end;
+
+        let cur = new Date(startDate + 'T00:00:00');
+        const last = new Date(end + 'T00:00:00');
+        let total = 0;
+
+        while (cur <= last) {
+          const day = cur.getDay(); // 0 = Sun, 6 = Sat
+          if (day !== 0 && day !== 6) {
+            const dateStr = cur.toISOString().slice(0, 10);
+            let w = 1;
+            if (same) {
+              w = sp === 0 ? 1 : 0.5;
+            } else if (dateStr === startDate && sp === 2) {
+              w = 0.5;
+            } else if (dateStr === end && ep === 1) {
+              w = 0.5;
+            }
+            total += w;
+          }
+          cur.setDate(cur.getDate() + 1);
+        }
+        return total;
+      },
+
       handleDateChange() {
+        const sDate = document.getElementById('req-start-date') ? document.getElementById('req-start-date').value : '';
+        const eDate = document.getElementById('req-end-date') ? document.getElementById('req-end-date').value : '';
+        const sPeriod = document.getElementById('req-start-period') ? document.getElementById('req-start-period').value : '0';
+        const ePeriod = document.getElementById('req-end-period') ? document.getElementById('req-end-period').value : '0';
+
+        if (sDate) {
+          const fastDays = this.calcWorkingDaysClient(sDate, sPeriod, eDate, ePeriod);
+          this.state.calculatedDays = fastDays;
+          const calcEl = document.getElementById('req-calc-days');
+          if (calcEl) calcEl.textContent = fastDays + ' วัน';
+        }
         this.triggerPolicyPreview();
       },
 
@@ -2592,6 +2634,8 @@
 
         try {
           const res = await this.call('policyPreview', payload);
+          this.state.lastPreview = res;
+          this.state.calculatedDays = res.days;
           document.getElementById('req-calc-days').textContent = res.days + ' วัน';
 
           const balBox = document.getElementById('req-balance-remaining');
@@ -2721,17 +2765,33 @@
         const u = this.state.user || {};
         const startDate = document.getElementById('req-start-date') ? document.getElementById('req-start-date').value : '';
         const endDate = document.getElementById('req-end-date') ? document.getElementById('req-end-date').value : '';
-        const startPeriod = document.getElementById('req-start-period') ? document.getElementById('req-start-period').value : 'FULL';
-        const endPeriod = document.getElementById('req-end-period') ? document.getElementById('req-end-period').value : 'FULL';
+        const startPeriod = document.getElementById('req-start-period') ? document.getElementById('req-start-period').value : '0';
+        const endPeriod = document.getElementById('req-end-period') ? document.getElementById('req-end-period').value : '0';
         const reason = document.getElementById('req-reason') ? document.getElementById('req-reason').value.trim() : '';
         const typeName = this.state.activeLeaveType ? this.state.activeLeaveType.name : '';
-        const days = (this.state.lastPreview && this.state.lastPreview.calc) ? this.state.lastPreview.calc.days : (startDate && endDate ? 1 : '');
-        const dept = (this.state.bootstrap && this.state.bootstrap.departments)
-          ? ((this.state.bootstrap.departments.find(d => d.departmentId === u.departmentId) || {}).name || '')
+
+        // Determine accurate days
+        let days = 0;
+        if (this.state.calculatedDays !== undefined && this.state.calculatedDays !== null && !isNaN(this.state.calculatedDays)) {
+          days = Number(this.state.calculatedDays);
+        } else if (this.state.lastPreview && this.state.lastPreview.days !== undefined) {
+          days = Number(this.state.lastPreview.days);
+        } else {
+          const calcText = document.getElementById('req-calc-days') ? document.getElementById('req-calc-days').textContent : '';
+          const m = calcText.match(/([\d\.]+)/);
+          if (m && parseFloat(m[1]) > 0) {
+            days = parseFloat(m[1]);
+          } else if (startDate) {
+            days = this.calcWorkingDaysClient(startDate, startPeriod, endDate, endPeriod);
+          }
+        }
+
+        const dept = (this.state.departments && u.departmentId)
+          ? ((this.state.departments.find(d => d.departmentId === u.departmentId) || {}).name || '')
           : '';
 
         const draft = {
-          requestNo: document.getElementById('req-id').value || '(แบบฟอร์มยื่นคำขอ)',
+          requestNo: document.getElementById('req-id') && document.getElementById('req-id').value ? document.getElementById('req-id').value : '(แบบฟอร์มยื่นคำขอ)',
           userName: u.name || '',
           employeeCode: u.username || u.userId || '',
           position: u.position || '',
@@ -3062,12 +3122,17 @@
         // Start / End time
         let startTime = '08:30';
         let endTime = '17:30';
-        if (r.startPeriod === 'MORNING' && r.endPeriod === 'MORNING') {
+        const sp = String(r.startPeriod);
+        const ep = String(r.endPeriod);
+        if ((sp === '1' || sp === 'MORNING') && (ep === '1' || ep === 'MORNING')) {
           startTime = '08:30';
           endTime = '12:00';
-        } else if (r.startPeriod === 'AFTERNOON' && r.endPeriod === 'AFTERNOON') {
+        } else if ((sp === '2' || sp === 'AFTERNOON') && (ep === '2' || ep === 'AFTERNOON')) {
           startTime = '13:00';
           endTime = '17:30';
+        } else {
+          startTime = (sp === '2' || sp === 'AFTERNOON') ? '13:00' : '08:30';
+          endTime = (ep === '1' || ep === 'MORNING') ? '12:00' : '17:30';
         }
 
         // Leave type match
