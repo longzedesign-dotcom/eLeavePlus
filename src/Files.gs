@@ -6,21 +6,30 @@
  *                MIME validation, and secure domain access permissions.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.14
+ * Version      : 1.0.15
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
  */
 const Files = (() => {
 
+  const DEFAULT_FOLDER_ID = '1O9ygtLiZRZXAijMAdczMEK0UXWOqZS-i';
+
   function getFolder_() {
     const cfg = Db.getConfig();
-    let folderId = str_(cfg.ATTACH_FOLDER_ID);
+    let folderId = str_(cfg.ATTACH_FOLDER_ID) || DEFAULT_FOLDER_ID;
     if (folderId) {
       try {
         return DriveApp.getFolderById(folderId);
       } catch (e) {
-        console.warn('Folder ID in config invalid, creating new one: ' + e);
+        console.warn('Folder ID invalid (' + folderId + '), trying default: ' + e);
+        if (folderId !== DEFAULT_FOLDER_ID) {
+          try {
+            return DriveApp.getFolderById(DEFAULT_FOLDER_ID);
+          } catch (de) {
+            console.warn('Default folder ID also failed: ' + de);
+          }
+        }
       }
     }
     // Create new folder in root or alongside spreadsheet
@@ -73,13 +82,16 @@ const Files = (() => {
       console.warn('Could not set file sharing permissions: ' + e);
     }
 
+    const id = file.getId();
     return {
-      fileId: file.getId(),
+      fileId: id,
       name: name,
       mime: mime,
       size: size,
-      url: 'https://drive.google.com/file/d/' + file.getId() + '/view',
-      downloadUrl: 'https://drive.google.com/uc?export=download&id=' + file.getId()
+      url: 'https://drive.google.com/file/d/' + id + '/view',
+      downloadUrl: 'https://drive.google.com/uc?export=download&id=' + id,
+      thumbnailUrl: 'https://drive.google.com/thumbnail?id=' + id + '&sz=w1000',
+      directUrl: 'https://lh3.googleusercontent.com/d/' + id
     };
   }
 

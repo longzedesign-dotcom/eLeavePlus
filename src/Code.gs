@@ -5,7 +5,7 @@
  * Description  : Web App entry point (doGet) & client-server RPC API bridge.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.14
+ * Version      : 1.0.15
  * License      : MIT License
  * Updated      : 2026-11-20
  * ==============================================================================
@@ -118,7 +118,18 @@ function apiCall(action, payload, token) {
 
       // Files
       case 'uploadAttachment':
+      case 'uploadFile':
         return ok_(Files.upload(user, payload));
+
+      case 'updateProfileAvatar': {
+        const fileRes = Files.upload(user, payload);
+        const avatarUrl = fileRes.thumbnailUrl || fileRes.directUrl || fileRes.url;
+        Db.update(SHEET.USERS, 'userId', user.userId, {
+          avatarUrl: avatarUrl,
+          updatedAt: nowIso_()
+        });
+        return ok_({ avatarUrl: avatarUrl, file: fileRes });
+      }
 
       // Reports & Dashboard
       case 'getDashboard':

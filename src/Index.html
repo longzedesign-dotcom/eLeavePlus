@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.14
+ Version      : 1.0.15
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.14</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.15</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.14</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.15</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -852,7 +852,7 @@
             </div>
 
             <!-- Tab Content: Leave Form Settings -->
-            <div id="admin-tab-form" class="admin-tab-content hidden space-y-6 max-w-3xl">
+            <div id="admin-tab-form" class="admin-tab-content hidden space-y-6 max-w-5xl mx-auto">
               <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
                 <div>
                   <h3 class="text-sm font-bold text-slate-800">📄 ตั้งค่าแบบฟอร์มใบลา (Official Leave Requisition Form)</h3>
@@ -911,29 +911,155 @@
                     <input id="admin-formset-logo-url" type="text" oninput="App.updateAdminFormPreview()" placeholder="https://example.com/logo.png" class="w-full px-3 py-2 bg-white rounded-xl border border-slate-300 text-xs focus:border-blue-500 outline-none">
                   </div>
                   <div>
-                    <label class="block text-[11px] font-semibold text-slate-700 mb-1">หรือ อัปโหลดรูปภาพโลโก้จากเครื่องคอมพิวเตอร์</label>
+                    <label class="block text-[11px] font-semibold text-slate-700 mb-1">หรือ อัปโหลดรูปภาพโลโก้เข้า Google Drive</label>
                     <input id="admin-formset-logo-file" type="file" accept="image/*" onchange="App.handleAdminFormLogoFileUpload(event)" class="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
-                    <p class="text-[10px] text-slate-400 mt-1">ไฟล์ภาพจะถูกแปลงเป็น Data URI Base64 ฝังในระบบและใบลาอัตโนมัติ พิมพ์ได้ทุกที่แบบไร้ปัญหา CORS</p>
+                    <p class="text-[10px] text-slate-400 mt-1">ไฟล์จะถูกบันทึกลงโฟลเดอร์ Google Drive (1O9ygtLiZRZXAijMAdczMEK0UXWOqZS-i) และสร้าง URL สำหรับแสดงบนใบลาอัตโนมัติ</p>
                   </div>
                 </div>
 
-                <!-- Live Header Preview -->
+                <!-- Live A4 Document Preview (ขนาด A4 เสมือนจริง จัดวางกึ่งกลางหน้าจอ) -->
                 <div>
-                  <label class="block font-bold text-slate-700 uppercase tracking-wider mb-2">
-                    ตัวอย่างหัวเอกสาร A4 จำลองจริง (Live Preview)
-                  </label>
-                  <div class="p-5 bg-white border-2 border-dashed border-slate-300 rounded-2xl shadow-sm">
-                    <div id="admin-formset-preview-container" class="flex justify-between items-end pb-3 border-b border-slate-200 min-h-[64px]">
-                      <div id="admin-formset-preview-company" class="text-lg font-medium text-black">
-                        Open Technology Public Co.,Ltd.
-                      </div>
-                      <div id="admin-formset-preview-logo" class="flex items-center">
-                        <!-- Injected via JS -->
-                      </div>
+                  <div class="flex items-center justify-between mb-2">
+                    <div>
+                      <label class="block font-bold text-slate-800 text-sm">
+                        📄 ตัวอย่างเอกสารแบบฟอร์มใบลา A4 จำลองจริง (Live A4 Preview)
+                      </label>
+                      <p class="text-[11px] text-slate-500">
+                        แสดงตัวอย่างแบบฟอร์มขนาด A4 รูปแบบเดียวกับที่จะสั่งพิมพ์หรือบันทึกเป็น PDF จริง พร้อมข้อมูลครบถ้วน จัดวางกึ่งกลางหน้าจอ
+                      </p>
                     </div>
-                    <div class="mt-3 text-center">
-                      <div class="text-sm font-bold text-slate-800">ใบอนุญาตลาหยุด</div>
-                      <div class="text-xs font-semibold text-slate-500">(LEAVE REQUISITION)</div>
+                    <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                      อัตราส่วนจำลอง A4 จริง
+                    </span>
+                  </div>
+
+                  <!-- A4 Sheet Canvas Area (Centered) -->
+                  <div class="w-full flex justify-center py-6 px-2 sm:px-4 bg-slate-100 rounded-2xl border border-slate-200 overflow-x-auto shadow-inner">
+                    <div id="admin-formset-a4-sheet" class="w-[210mm] max-w-full bg-white shadow-2xl rounded-sm p-[10mm] sm:p-[14mm] border border-slate-300 text-slate-800 font-['Prompt'] text-[11px] leading-relaxed transition-all">
+                      
+                      <!-- A4 Header: Company Name & Logo -->
+                      <div id="admin-formset-preview-container" class="flex justify-between items-end pb-3 border-b-2 border-slate-900 min-h-[56px]">
+                        <div id="admin-formset-preview-company" class="text-base sm:text-lg font-bold text-black tracking-tight max-w-[65%]">
+                          Open Technology Public Co.,Ltd.
+                        </div>
+                        <div id="admin-formset-preview-logo" class="flex items-center justify-end">
+                          <!-- Injected via JS -->
+                        </div>
+                      </div>
+
+                      <!-- Document Title -->
+                      <div class="mt-4 mb-4 text-center">
+                        <div class="text-base sm:text-lg font-bold tracking-wide text-slate-900">ใบอนุญาตลาหยุด</div>
+                        <div class="text-xs font-semibold tracking-wider text-slate-600">(LEAVE REQUISITION)</div>
+                      </div>
+
+                      <!-- Date & Requester Info -->
+                      <div class="flex justify-end mb-3 text-xs">
+                        <div><b>วันที่ยื่นคำขอ:</b> <span class="border-b border-dotted border-slate-600 px-3">20 พฤศจิกายน 2569</span></div>
+                      </div>
+
+                      <div class="p-3 bg-slate-50/70 rounded-lg border border-slate-200 space-y-2 mb-4 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div><b>ชื่อ - นามสกุล:</b> <span class="border-b border-dotted border-slate-600 px-2 font-medium">สมชาย ตั้งใจทำงาน</span></div>
+                          <div><b>รหัสพนักงาน:</b> <span class="border-b border-dotted border-slate-600 px-2">EMP001</span></div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div><b>ตำแหน่ง:</b> <span class="border-b border-dotted border-slate-600 px-2">Senior Developer</span></div>
+                          <div><b>สังกัด / ฝ่าย:</b> <span class="border-b border-dotted border-slate-600 px-2">ฝ่ายเทคโนโลยีสารสนเทศ</span></div>
+                          <div><b>เบอร์โทรศัพท์:</b> <span class="border-b border-dotted border-slate-600 px-2">081-234-5678</span></div>
+                        </div>
+                      </div>
+
+                      <!-- Leave Details -->
+                      <div class="space-y-2 mb-4 text-xs">
+                        <div>
+                          <b>มีความประสงค์ขอ:</b> <span class="inline-block px-2.5 py-0.5 font-bold bg-blue-100 text-blue-800 rounded border border-blue-200">ลาพักผ่อนประจำปี (Annual Leave)</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <div><b>ตั้งแต่วันที่:</b> <span class="border-b border-dotted border-slate-600 px-2">01/12/2026</span></div>
+                          <div><b>ถึงวันที่:</b> <span class="border-b border-dotted border-slate-600 px-2">02/12/2026</span></div>
+                          <div><b>รวมเป็นเวลา:</b> <span class="border-b border-dotted border-slate-600 px-2 font-bold text-blue-700">2 วันทำการ</span></div>
+                        </div>
+                        <div>
+                          <b>เหตุผลความจำเป็นในการลา:</b> <span class="border-b border-dotted border-slate-600 px-2">พักผ่อนประจำปีกับครอบครัว</span>
+                        </div>
+                        <div>
+                          <b>สถานที่หรือช่องทางติดต่อระหว่างลา:</b> <span class="border-b border-dotted border-slate-600 px-2">081-234-5678 / กรุงเทพมหานคร</span>
+                        </div>
+                      </div>
+
+                      <!-- Leave Statistics Table Simulation -->
+                      <div class="mb-5">
+                        <div class="font-bold text-xs mb-1.5 text-slate-800">📊 สถิติการลาประจำปี (Leave Statistics)</div>
+                        <table class="w-full border-collapse border border-slate-400 text-[10px] text-center">
+                          <thead>
+                            <tr class="bg-slate-100 font-bold">
+                              <th class="border border-slate-400 p-1.5 text-left">ประเภทการลา</th>
+                              <th class="border border-slate-400 p-1.5">สิทธิ์ทั้งปี</th>
+                              <th class="border border-slate-400 p-1.5">ลามาแล้ว</th>
+                              <th class="border border-slate-400 p-1.5">ครั้งนี้</th>
+                              <th class="border border-slate-400 p-1.5">รวมลา</th>
+                              <th class="border border-slate-400 p-1.5">คงเหลือ</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="border border-slate-400 p-1 text-left font-medium">1. ลาป่วย</td>
+                              <td class="border border-slate-400 p-1">30</td>
+                              <td class="border border-slate-400 p-1">2</td>
+                              <td class="border border-slate-400 p-1">0</td>
+                              <td class="border border-slate-400 p-1">2</td>
+                              <td class="border border-slate-400 p-1 font-bold text-emerald-700">28</td>
+                            </tr>
+                            <tr>
+                              <td class="border border-slate-400 p-1 text-left font-medium">2. ลากิจส่วนตัว</td>
+                              <td class="border border-slate-400 p-1">10</td>
+                              <td class="border border-slate-400 p-1">1</td>
+                              <td class="border border-slate-400 p-1">0</td>
+                              <td class="border border-slate-400 p-1">1</td>
+                              <td class="border border-slate-400 p-1 font-bold text-emerald-700">9</td>
+                            </tr>
+                            <tr class="bg-blue-50/50">
+                              <td class="border border-slate-400 p-1 text-left font-bold text-blue-900">3. ลาพักผ่อนประจำปี</td>
+                              <td class="border border-slate-400 p-1">10</td>
+                              <td class="border border-slate-400 p-1">3</td>
+                              <td class="border border-slate-400 p-1 font-bold text-blue-700">2</td>
+                              <td class="border border-slate-400 p-1">5</td>
+                              <td class="border border-slate-400 p-1 font-bold text-blue-700">5</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <!-- Approval Signatures -->
+                      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-center text-[10px]">
+                        <div class="border border-slate-300 rounded-lg p-2.5 bg-slate-50/40">
+                          <div class="font-bold text-slate-800 mb-6">ผู้ขอลา (Requester)</div>
+                          <div class="border-b border-dotted border-slate-400 mx-3 mb-1">สมชาย ตั้งใจทำงาน</div>
+                          <div>(นายสมชาย ตั้งใจทำงาน)</div>
+                          <div class="text-[9px] text-slate-500 mt-1">วันที่ 20/11/2026</div>
+                        </div>
+
+                        <div class="border border-slate-300 rounded-lg p-2.5 bg-slate-50/40">
+                          <div class="font-bold text-slate-800 mb-6">ผู้บังคับบัญชา (Supervisor)</div>
+                          <div class="border-b border-dotted border-slate-400 mx-3 mb-1">ธนากร เทคโนโลยี</div>
+                          <div>[ ✔ อนุมัติ / Approved ]</div>
+                          <div class="text-[9px] text-slate-500 mt-1">วันที่ 20/11/2026</div>
+                        </div>
+
+                        <div class="border border-slate-300 rounded-lg p-2.5 bg-slate-50/40">
+                          <div class="font-bold text-slate-800 mb-6">ฝ่ายบุคคล (Human Resources)</div>
+                          <div class="border-b border-dotted border-slate-400 mx-3 mb-1">สมหญิง ใจดี</div>
+                          <div>[ ✔ บันทึกสถิติแล้ว ]</div>
+                          <div class="text-[9px] text-slate-500 mt-1">วันที่ 20/11/2026</div>
+                        </div>
+                      </div>
+
+                      <div class="mt-4 pt-2 border-t border-slate-200 flex justify-between text-[9px] text-slate-400">
+                        <span>เลขที่อ้างอิง: LV2026-0001 | eLeave+ Enterprise System</span>
+                        <span>Official Requisition Document Form</span>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -1284,7 +1410,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.14</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.15</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -1296,8 +1422,14 @@
       <div class="p-6 overflow-y-auto custom-scrollbar space-y-4 text-xs">
         <!-- Identity Card -->
         <div class="flex items-center gap-3.5 p-3.5 bg-blue-50/60 rounded-2xl border border-blue-100">
-          <div id="profile-modal-avatar" class="w-12 h-12 rounded-2xl bg-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-xs shrink-0">
-            U
+          <div class="relative group shrink-0">
+            <div id="profile-modal-avatar" class="w-13 h-13 rounded-2xl bg-blue-600 text-white font-bold text-lg flex items-center justify-center shadow-xs overflow-hidden">
+              U
+            </div>
+            <button type="button" onclick="document.getElementById('profile-avatar-file-input').click()" title="เปลี่ยนรูปโปรไฟล์ (บันทึกเข้า Google Drive)" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white text-slate-700 shadow-md border border-slate-200 flex items-center justify-center text-xs hover:bg-blue-50 hover:text-blue-600 cursor-pointer transition-transform group-hover:scale-110">
+              📷
+            </button>
+            <input type="file" id="profile-avatar-file-input" accept="image/*" class="hidden" onchange="App.handleProfileAvatarUpload(event)">
           </div>
           <div class="min-w-0 flex-1">
             <h4 id="profile-modal-name" class="text-sm font-bold text-slate-900 truncate">-</h4>
@@ -1928,7 +2060,12 @@
         const u = this.state.user;
         if (!u) return;
 
-        document.getElementById('profile-modal-avatar').textContent = (u.name || 'U').charAt(0).toUpperCase();
+        const avatarEl = document.getElementById('profile-modal-avatar');
+        if (u.avatarUrl) {
+          avatarEl.innerHTML = `<img src="${u.avatarUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+        } else {
+          avatarEl.textContent = (u.name || 'U').charAt(0).toUpperCase();
+        }
         document.getElementById('profile-modal-name').textContent = u.name || '-';
         document.getElementById('profile-modal-role').textContent = u.roleLabel || u.role;
         document.getElementById('profile-modal-username').textContent = '@' + (u.username || u.userId || '-');
@@ -1948,6 +2085,35 @@
         const modal = document.getElementById('modal-user-profile');
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
+      },
+
+      async handleProfileAvatarUpload(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const dataUrl = e.target.result;
+          const avatarEl = document.getElementById('profile-modal-avatar');
+          avatarEl.innerHTML = `<img src="${dataUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+
+          try {
+            const rawBase64 = dataUrl.split(',')[1] || dataUrl;
+            const res = await this.call('updateProfileAvatar', {
+              name: 'avatar_' + (this.state.user ? this.state.user.username : 'user') + '_' + Date.now() + '_' + file.name,
+              mime: file.type || 'image/png',
+              base64: rawBase64
+            });
+            if (res && res.avatarUrl) {
+              if (this.state.user) this.state.user.avatarUrl = res.avatarUrl;
+              avatarEl.innerHTML = `<img src="${res.avatarUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+              this.showAlert('สำเร็จ', 'อัปโหลดรูปโปรไฟล์เข้า Google Drive เรียบร้อยแล้ว');
+            }
+          } catch (err) {
+            this.showAlert('อัปโหลดไม่สำเร็จ', err.message);
+          }
+        };
+        reader.readAsDataURL(file);
       },
 
       closeProfileModal() {
@@ -3544,13 +3710,32 @@
         this.updateAdminFormPreview();
       },
 
-      handleAdminFormLogoFileUpload(event) {
+      async handleAdminFormLogoFileUpload(event) {
         const file = event.target.files && event.target.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = (e) => {
-          document.getElementById('admin-formset-logo-url').value = e.target.result;
+        reader.onload = async (e) => {
+          const dataUrl = e.target.result;
+          document.getElementById('admin-formset-logo-url').value = dataUrl;
           this.updateAdminFormPreview();
+
+          // Save to Google Drive Folder 1O9ygtLiZRZXAijMAdczMEK0UXWOqZS-i
+          try {
+            const base64Data = dataUrl.split(',')[1] || dataUrl;
+            const res = await this.call('uploadAttachment', {
+              name: 'logo_' + Date.now() + '_' + file.name,
+              mime: file.type || 'image/png',
+              base64: base64Data
+            });
+            if (res && (res.thumbnailUrl || res.directUrl || res.url)) {
+              const driveUrl = res.thumbnailUrl || res.directUrl || res.url;
+              document.getElementById('admin-formset-logo-url').value = driveUrl;
+              this.updateAdminFormPreview();
+              console.log('Logo saved to Google Drive folder 1O9ygtLiZRZXAijMAdczMEK0UXWOqZS-i:', driveUrl);
+            }
+          } catch (uploadErr) {
+            console.warn('Google Drive logo upload fallback to DataURL:', uploadErr.message);
+          }
         };
         reader.readAsDataURL(file);
       },
