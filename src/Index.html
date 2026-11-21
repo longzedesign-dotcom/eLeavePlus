@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.20
+ Version      : 1.0.21
  License      : MIT License
  Updated      : 2026-11-20
  ==============================================================================
@@ -160,7 +160,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.20</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.21</p>
       </div>
     </div>
   </div>
@@ -182,7 +182,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.20</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.21</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -1380,7 +1380,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน</h3>
-              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.20</span>
+              <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.21</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชีผู้ใช้และการออกจากระบบ</p>
           </div>
@@ -3264,6 +3264,7 @@
       gap: 6px;
       border: none;
       transition: all 0.2s;
+      white-space: nowrap;
     }
     .btn-primary { background: #2563eb; color: #fff; box-shadow: 0 2px 4px rgba(37,99,235,0.25); }
     .btn-primary:hover { background: #1d4ed8; }
@@ -3310,9 +3311,8 @@
         <strong>คำแนะนำ:</strong> สามารถสั่งพิมพ์ลงกระดาษ A4 หรือเลือก <strong>Save as PDF</strong> ในหน้าต่างพิมพ์
       </div>
       <div style="display: flex; gap: 8px;">
-        <button class="btn" onclick="toggleFormSettingsDrawer()" id="btn-toggle-settings" style="background: #ffffff; color: #1e293b; border: 1.5px solid #cbd5e1;">⚙️ ตั้งค่าหัวเอกสาร & โลโก้</button>
-        <button class="btn btn-primary" onclick="window.print()">🖨️ สั่งพิมพ์เอกสาร / บันทึก PDF</button>
-        <button class="btn btn-secondary" onclick="window.close()">✕ ปิดหน้าต่าง</button>
+        <button class="btn btn-primary" onclick="window.print()">🖨️ พิมพ์คำขอใบลาหยุด</button>
+        <button class="btn btn-secondary" onclick="window.close()">ปิดหน้าต่าง</button>
       </div>
     </div>
 
