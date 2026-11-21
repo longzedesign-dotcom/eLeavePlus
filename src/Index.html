@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.23
+ Version      : 1.0.24
  License      : MIT License
  Updated      : 2026-11-21
  ==============================================================================
@@ -143,9 +143,17 @@
         <div>
           <label class="block text-xs font-semibold text-slate-600 uppercase tracking-wider mb-1.5">รหัสผ่าน</label>
           <div class="relative">
-            <input id="login-password" type="password" required placeholder="••••••••" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 focus:bg-white">
-            <button type="button" onclick="App.togglePassword('login-password')" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs">
-              แสดง
+            <input id="login-password" type="password" required placeholder="••••••••" class="w-full pl-4 pr-11 py-3 rounded-xl border border-slate-200 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all placeholder:text-slate-400 bg-slate-50/50 focus:bg-white">
+            <button type="button" onclick="App.togglePassword('login-password', this)" title="แสดง/ซ่อนรหัสผ่าน" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer transition-colors focus:outline-none">
+              <!-- Visibility Off Icon (ค่าเริ่มต้นเมื่อซ่อนรหัสผ่าน) -->
+              <svg class="w-5 h-5 icon-pwd-off" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+              </svg>
+              <!-- Visibility Icon (แสดงเมื่อเปิดเผยรหัสผ่าน) -->
+              <svg class="w-5 h-5 icon-pwd-on hidden text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
             </button>
           </div>
         </div>
@@ -160,7 +168,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.23</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.24</p>
       </div>
     </div>
   </div>
@@ -182,7 +190,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.23</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.24</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -1400,7 +1408,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน & โปรไฟล์พนักงาน</h3>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.23</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.24</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชี ข้อมูลการติดต่อ และการรักษาความปลอดภัย</p>
           </div>
@@ -2159,9 +2167,26 @@
         document.getElementById('login-password').value = password;
       },
 
-      togglePassword(id) {
+      togglePassword(id, btn) {
         const el = document.getElementById(id);
-        el.type = el.type === 'password' ? 'text' : 'password';
+        if (!el) return;
+        const isPassword = el.type === 'password';
+        el.type = isPassword ? 'text' : 'password';
+
+        const buttonEl = btn || (el.nextElementSibling && el.nextElementSibling.tagName === 'BUTTON' ? el.nextElementSibling : null);
+        if (buttonEl) {
+          const iconOff = buttonEl.querySelector('.icon-pwd-off');
+          const iconOn = buttonEl.querySelector('.icon-pwd-on');
+          if (iconOff && iconOn) {
+            if (isPassword) {
+              iconOff.classList.add('hidden');
+              iconOn.classList.remove('hidden');
+            } else {
+              iconOff.classList.remove('hidden');
+              iconOn.classList.add('hidden');
+            }
+          }
+        }
       },
 
       async handleLogin(e) {

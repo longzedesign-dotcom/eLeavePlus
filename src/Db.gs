@@ -6,7 +6,7 @@
  *                per-execution memory caching and write locks.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.23
+ * Version      : 1.0.24
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================
