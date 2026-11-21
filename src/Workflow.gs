@@ -6,7 +6,7 @@
  *                quota balances, multi-tier approval routing, and status transitions.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.22
+ * Version      : 1.0.23
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================

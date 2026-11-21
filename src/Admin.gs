@@ -6,7 +6,7 @@
  *                Holidays, Settings, and Audit Logs).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.22
+ * Version      : 1.0.23
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================
@@ -364,6 +364,40 @@ const Admin = (() => {
     });
   }
 
+  function clearAllLeaveData(user) {
+    assertAdmin_(user);
+    return Db.withLock(function () {
+      const ss = Db.ss();
+      
+      const reqSheet = ss.getSheetByName(SHEET.LEAVE_REQUESTS);
+      let reqCount = 0;
+      if (reqSheet && reqSheet.getLastRow() > 1) {
+        reqCount = reqSheet.getLastRow() - 1;
+        reqSheet.getRange(2, 1, reqCount, Math.max(reqSheet.getLastColumn(), SCHEMA.LEAVE_REQUESTS.length)).clearContent();
+      }
+      
+      const logSheet = ss.getSheetByName(SHEET.LEAVE_LOGS);
+      let logCount = 0;
+      if (logSheet && logSheet.getLastRow() > 1) {
+        logCount = logSheet.getLastRow() - 1;
+        logSheet.getRange(2, 1, logCount, Math.max(logSheet.getLastColumn(), SCHEMA.LEAVE_LOGS.length)).clearContent();
+      }
+      
+      Db.reset();
+      
+      log_('', user.userId, 'SYSTEM_RESET_LEAVE_DATA', '', '', 0, 'ล้างข้อมูลวันลาทั้งหมดเพื่อเตรียมความพร้อมใช้งานจริง (ลบคำขอ ' + reqCount + ' รายการ, บันทึก ' + logCount + ' รายการ)');
+      
+      const msg = 'ล้างข้อมูลวันลาทั้งหมดเรียบร้อยแล้ว: ลบคำขอลา ' + reqCount + ' รายการ และประวัติการลา ' + logCount + ' รายการ (ยอดวันลาคงเหลือของพนักงานทุกคนกลับสู่โควตาเริ่มต้น)';
+      Logger.log(msg);
+      return {
+        success: true,
+        clearedRequests: reqCount,
+        clearedLogs: logCount,
+        message: msg
+      };
+    });
+  }
+
   return Object.freeze({
     listUsers,
     saveUser,
@@ -385,6 +419,7 @@ const Admin = (() => {
     getFormSettings,
     saveFormSettings,
     seedDemoUsers,
-    getAuditLogs
+    getAuditLogs,
+    clearAllLeaveData
   });
 })();

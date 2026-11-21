@@ -6,7 +6,7 @@
  *                seeding of default master data and demo fixtures.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.22
+ * Version      : 1.0.23
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================
@@ -165,4 +165,48 @@ function resetAdminPassword() {
     Logger.log('Admin created successfully with password: Admin@1234');
     return 'Admin created with password Admin@1234';
   }
+}
+
+/**
+ * เคลียร์ข้อมูลการลาทั้งหมดของ User ในระบบ (LEAVE_REQUESTS และ LEAVE_LOGS)
+ * เพื่อเตรียมความพร้อมในการใช้งานจริง (Production Readiness)
+ * - ล้างรายการคำขอลาในชีต LEAVE_REQUESTS ทั้งหมด (คงแถวหัวตารางไว้)
+ * - ล้างประวัติการทำรายการในชีต LEAVE_LOGS (คงแถวหัวตารางไว้)
+ * - ยอดวันลาคงเหลือของพนักงานทุกคนจะกลับสู่โควตาเต็มเริ่มต้น
+ * สามารถรันจาก Apps Script Editor หรือผ่านหน้าจอผู้ดูแลระบบได้
+ */
+function clearAllLeaveData() {
+  return Db.withLock(function () {
+    const ss = Db.ss();
+    
+    // 1. ล้างชีต LEAVE_REQUESTS
+    const reqSheet = ss.getSheetByName(SHEET.LEAVE_REQUESTS);
+    let reqCount = 0;
+    if (reqSheet && reqSheet.getLastRow() > 1) {
+      reqCount = reqSheet.getLastRow() - 1;
+      reqSheet.getRange(2, 1, reqCount, Math.max(reqSheet.getLastColumn(), SCHEMA.LEAVE_REQUESTS.length)).clearContent();
+    }
+    
+    // 2. ล้างชีต LEAVE_LOGS
+    const logSheet = ss.getSheetByName(SHEET.LEAVE_LOGS);
+    let logCount = 0;
+    if (logSheet && logSheet.getLastRow() > 1) {
+      logCount = logSheet.getLastRow() - 1;
+      logSheet.getRange(2, 1, logCount, Math.max(logSheet.getLastColumn(), SCHEMA.LEAVE_LOGS.length)).clearContent();
+    }
+    
+    Db.reset();
+    
+    // บันทึก Log การเคลียร์ข้อมูลระบบเริ่มต้นใหม่
+    log_('', 'SYSTEM', 'SYSTEM_RESET_LEAVE_DATA', '', '', 0, 'ล้างข้อมูลวันลาทั้งหมดเพื่อเตรียมความพร้อมใช้งานจริง (ลบคำขอ ' + reqCount + ' รายการ, บันทึก ' + logCount + ' รายการ)');
+    
+    const resultMsg = 'ล้างข้อมูลวันลาทั้งหมดเรียบร้อยแล้ว: ลบคำขอลา ' + reqCount + ' รายการ และประวัติการลา ' + logCount + ' รายการ (ยอดวันลาคงเหลือของพนักงานทุกคนกลับสู่โควตาเริ่มต้น)';
+    Logger.log(resultMsg);
+    return {
+      success: true,
+      clearedRequests: reqCount,
+      clearedLogs: logCount,
+      message: resultMsg
+    };
+  });
 }
