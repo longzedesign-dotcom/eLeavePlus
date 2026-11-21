@@ -2184,6 +2184,33 @@
         this.showAuth();
       },
 
+      formatDate(iso) {
+        if (!iso) return '-';
+        try {
+          const d = new Date(iso);
+          if (isNaN(d.getTime())) return String(iso);
+          const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+          return `${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+        } catch (e) {
+          return String(iso);
+        }
+      },
+
+      formatDateTime(iso) {
+        if (!iso) return '-';
+        try {
+          const d = new Date(iso);
+          if (isNaN(d.getTime())) return String(iso);
+          const thMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+          const datePart = `${d.getDate()} ${thMonths[d.getMonth()]} ${d.getFullYear() + 543}`;
+          const pad = (n) => String(n).padStart(2, '0');
+          const timePart = `${pad(d.getHours())}:${pad(d.getMinutes())} น.`;
+          return `${datePart} ${timePart}`;
+        } catch (e) {
+          return String(iso);
+        }
+      },
+
       calcTenure(hireDateStr) {
         if (!hireDateStr) return 'ไม่ระบุ';
         const start = new Date(hireDateStr);
@@ -2235,75 +2262,78 @@
         const u = this.state.user;
         if (!u) return;
 
-        // Avatar
-        const avatarEl = document.getElementById('profile-modal-avatar');
-        if (u.avatarUrl) {
-          avatarEl.innerHTML = `<img src="${u.avatarUrl}" alt="Avatar" class="w-full h-full object-cover">`;
-        } else {
-          avatarEl.textContent = (u.name || 'U').charAt(0).toUpperCase();
-        }
-
-        // Header info
-        document.getElementById('profile-modal-name').textContent = u.name || '-';
-        document.getElementById('profile-modal-role').textContent = u.roleLabel || u.role;
-        document.getElementById('profile-modal-username').textContent = '@' + (u.username || u.userId || '-');
-        const deptText = u.departmentName || '-';
-        document.getElementById('profile-modal-dept').textContent = deptText;
-        const deptBadge = document.getElementById('profile-modal-dept-badge');
-        if (deptBadge) deptBadge.textContent = deptText;
-        document.getElementById('profile-modal-position').textContent = u.position || '-';
-        document.getElementById('profile-modal-email').textContent = u.email || '-';
-        document.getElementById('profile-modal-hiredate').textContent = u.hireDate ? this.formatDate(u.hireDate) : '-';
-        document.getElementById('profile-modal-tenure').textContent = this.calcTenure(u.hireDate);
-
-        // Role description
-        const roleDescEl = document.getElementById('profile-modal-role-desc');
-        if (roleDescEl) {
-          if (u.role === 'ADMIN') {
-            roleDescEl.textContent = 'ผู้ดูแลระบบสูงสุด (Admin) มีสิทธิ์เข้าถึง จัดการฐานข้อมูล ตั้งค่าแบบฟอร์ม และอนุมัติคำขอทุกขั้นตอน';
-          } else if (u.role === 'HR') {
-            roleDescEl.textContent = 'ฝ่ายบริหารทรัพยากรบุคคล (HR) มีสิทธิ์ตรวจสอบรายการลาพนักงาน รายงานสถิติวันลาคงเหลือ และอนุมัติใบลา';
-          } else if (u.role === 'APPROVER') {
-            roleDescEl.textContent = 'หัวหน้างาน / ผู้อนุมัติ (Supervisor) มีสิทธิ์พิจารณาอนุมัติคำขอลาของผู้ใต้บังคับบัญชาตามสายงาน';
-          } else {
-            roleDescEl.textContent = 'พนักงานทั่วไป มีสิทธิ์ยื่นคำขอลา ตรวจสอบสถิติวันลาคงเหลือ และติดตามสถานะคำขอลา';
+        try {
+          // Avatar
+          const avatarEl = document.getElementById('profile-modal-avatar');
+          if (avatarEl) {
+            if (u.avatarUrl) {
+              avatarEl.innerHTML = `<img src="${u.avatarUrl}" alt="Avatar" class="w-full h-full object-cover">`;
+            } else {
+              avatarEl.textContent = (u.name || 'U').charAt(0).toUpperCase();
+            }
           }
+
+          // Safe helper for text & values
+          const setTxt = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val || '-';
+          };
+          const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val || '';
+          };
+
+          // Header info
+          setTxt('profile-modal-name', u.name);
+          setTxt('profile-modal-role', u.roleLabel || u.role);
+          setTxt('profile-modal-username', '@' + (u.username || u.userId || '-'));
+          const deptText = u.departmentName || '-';
+          setTxt('profile-modal-dept', deptText);
+          setTxt('profile-modal-dept-badge', deptText);
+          setTxt('profile-modal-position', u.position);
+          setTxt('profile-modal-email', u.email);
+          setTxt('profile-modal-hiredate', u.hireDate ? this.formatDate(u.hireDate) : '-');
+          setTxt('profile-modal-tenure', this.calcTenure(u.hireDate));
+
+          // Role description
+          const roleDescEl = document.getElementById('profile-modal-role-desc');
+          if (roleDescEl) {
+            if (u.role === 'ADMIN') {
+              roleDescEl.textContent = 'ผู้ดูแลระบบสูงสุด (Admin) มีสิทธิ์เข้าถึง จัดการฐานข้อมูล ตั้งค่าแบบฟอร์ม และอนุมัติคำขอทุกขั้นตอน';
+            } else if (u.role === 'HR') {
+              roleDescEl.textContent = 'ฝ่ายบริหารทรัพยากรบุคคล (HR) มีสิทธิ์ตรวจสอบรายการลาพนักงาน รายงานสถิติวันลาคงเหลือ และอนุมัติใบลา';
+            } else if (u.role === 'APPROVER') {
+              roleDescEl.textContent = 'หัวหน้างาน / ผู้อนุมัติ (Supervisor) มีสิทธิ์พิจารณาอนุมัติคำขอลาของผู้ใต้บังคับบัญชาตามสายงาน';
+            } else {
+              roleDescEl.textContent = 'พนักงานทั่วไป มีสิทธิ์ยื่นคำขอลา ตรวจสอบสถิติวันลาคงเหลือ และติดตามสถานะคำขอลา';
+            }
+          }
+
+          // Contact inputs (editable)
+          setVal('profile-input-phone', u.phone);
+          setVal('profile-input-lineid', u.lineId || u.telegramId);
+          setVal('profile-input-email', u.email);
+          setVal('profile-input-address', u.address);
+          setVal('profile-input-emer-contact', u.emergencyContact);
+          setVal('profile-input-emer-phone', u.emergencyPhone);
+
+          // Security tab info
+          setTxt('profile-modal-lastlogin', u.lastLoginAt ? this.formatDateTime(u.lastLoginAt) : 'เข้าสู่ระบบครั้งแรก');
+          setTxt('profile-modal-createdat', u.createdAt ? this.formatDateTime(u.createdAt) : '-');
+
+          const pwdForm = document.getElementById('profile-change-pwd-form');
+          if (pwdForm) pwdForm.reset();
+
+          this.switchProfileTab('employment');
+        } catch (err) {
+          console.error('openProfileModal error:', err);
         }
-
-        // Contact inputs (editable)
-        const phoneInput = document.getElementById('profile-input-phone');
-        if (phoneInput) phoneInput.value = u.phone || '';
-
-        const lineInput = document.getElementById('profile-input-lineid');
-        if (lineInput) lineInput.value = u.lineId || u.telegramId || '';
-
-        const emailInput = document.getElementById('profile-input-email');
-        if (emailInput) emailInput.value = u.email || '';
-
-        const addressInput = document.getElementById('profile-input-address');
-        if (addressInput) addressInput.value = u.address || '';
-
-        const emerContactInput = document.getElementById('profile-input-emer-contact');
-        if (emerContactInput) emerContactInput.value = u.emergencyContact || '';
-
-        const emerPhoneInput = document.getElementById('profile-input-emer-phone');
-        if (emerPhoneInput) emerPhoneInput.value = u.emergencyPhone || '';
-
-        // Security tab info
-        const lastLoginEl = document.getElementById('profile-modal-lastlogin');
-        if (lastLoginEl) lastLoginEl.textContent = u.lastLoginAt ? this.formatDateTime(u.lastLoginAt) : 'เข้าสู่ระบบครั้งแรก';
-
-        const createdAtEl = document.getElementById('profile-modal-createdat');
-        if (createdAtEl) createdAtEl.textContent = u.createdAt ? this.formatDateTime(u.createdAt) : '-';
-
-        const pwdForm = document.getElementById('profile-change-pwd-form');
-        if (pwdForm) pwdForm.reset();
-
-        this.switchProfileTab('employment');
 
         const modal = document.getElementById('modal-user-profile');
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.style.display = 'flex';
+        }
       },
 
       async saveUserProfile() {
