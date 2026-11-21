@@ -6,12 +6,12 @@
  *                seeding of default master data and demo fixtures.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.21
+ * Version      : 1.0.22
  * License      : MIT License
- * Updated      : 2026-11-20
+ * Updated      : 2026-11-21
  * ==============================================================================
  */
-const SCHEMA_VERSION = '1.0.0';
+const SCHEMA_VERSION = '1.0.1';
 
 /** Called from doGet / login. Cheap after first run (guarded by a script property). */
 function ensureSchema_(force) {
@@ -105,6 +105,10 @@ function createUserRecord_(u) {
     position: str_(u.position),
     phone: str_(u.phone),
     telegramId: str_(u.telegramId),
+    lineId: str_(u.lineId || u.telegramId),
+    address: str_(u.address),
+    emergencyContact: str_(u.emergencyContact),
+    emergencyPhone: str_(u.emergencyPhone),
     hireDate: toIsoDate_(u.hireDate),
     active: u.active === undefined ? true : !!u.active,
     mustChangePassword: !!u.mustChangePassword,

@@ -6,9 +6,9 @@
  *                rate limiting, and role-based access control (RBAC).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.21
+ * Version      : 1.0.22
  * License      : MIT License
- * Updated      : 2026-11-20
+ * Updated      : 2026-11-21
  * ==============================================================================
  */
 const Auth = (() => {
@@ -118,9 +118,17 @@ const Auth = (() => {
       userId: u.userId, username: u.username, email: u.email, name: u.name,
       role: u.role, roleLabel: ROLE_LABEL[u.role] || u.role,
       departmentId: u.departmentId, departmentName: departmentName_(u.departmentId),
-      position: u.position, phone: u.phone, telegramId: u.telegramId, hireDate: u.hireDate,
+      position: u.position, phone: u.phone,
+      lineId: u.lineId || u.telegramId || '',
+      telegramId: u.telegramId || '',
+      address: u.address || '',
+      emergencyContact: u.emergencyContact || '',
+      emergencyPhone: u.emergencyPhone || '',
+      hireDate: u.hireDate,
       avatarUrl: u.avatarUrl || '',
       active: u.active, mustChangePassword: u.mustChangePassword,
+      lastLoginAt: u.lastLoginAt || '',
+      createdAt: u.createdAt || '',
       canApprove: Workflow.canAccessApprovals(u)
     };
   }
