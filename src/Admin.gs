@@ -6,7 +6,7 @@
  *                Holidays, Settings, and Audit Logs).
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.24
+ * Version      : 1.0.25
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================
@@ -261,6 +261,94 @@ const Admin = (() => {
     return { success: true, message: 'ลบวันหยุดเรียบร้อยแล้ว' };
   }
 
+  const GOV_HOLIDAYS_CATALOG = Object.freeze({
+    '2026': [
+      { date: '2026-01-01', name: 'วันขึ้นปีใหม่' },
+      { date: '2026-01-02', name: 'วันหยุดพิเศษราชการ (ตามมติ ครม.)' },
+      { date: '2026-03-03', name: 'วันมาฆบูชา' },
+      { date: '2026-04-06', name: 'วันพระบาทสมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราช และวันที่ระลึกมหาจักรีบรมราชวงศ์ (วันจักรี)' },
+      { date: '2026-04-13', name: 'วันสงกรานต์' },
+      { date: '2026-04-14', name: 'วันสงกรานต์' },
+      { date: '2026-04-15', name: 'วันสงกรานต์' },
+      { date: '2026-05-01', name: 'วันแรงงานแห่งชาติ' },
+      { date: '2026-05-04', name: 'วันฉัตรมงคล' },
+      { date: '2026-05-31', name: 'วันวิสาขบูชา' },
+      { date: '2026-06-01', name: 'วันหยุดชดเชยวันวิสาขบูชา' },
+      { date: '2026-06-03', name: 'วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี' },
+      { date: '2026-07-28', name: 'วันเฉลิมพระชนมพรรษาพระบาทสมเด็จพระเจ้าอยู่หัว' },
+      { date: '2026-07-29', name: 'วันอาสาฬหบูชา' },
+      { date: '2026-07-30', name: 'วันเข้าพรรษา' },
+      { date: '2026-08-12', name: 'วันเฉลิมพระชนมพรรษาสมเด็จพระบรมราชชนนีพันปีหลวง และวันแม่แห่งชาติ' },
+      { date: '2026-10-13', name: 'วันนวมินทรมหาราช' },
+      { date: '2026-10-23', name: 'วันปิยมหาราช' },
+      { date: '2026-12-05', name: 'วันคล้ายวันพระบรมราชสมภพ ร.9 และวันพ่อแห่งชาติ' },
+      { date: '2026-12-07', name: 'วันหยุดชดเชยวันคล้ายวันพระบรมราชสมภพ ร.9 และวันพ่อแห่งชาติ' },
+      { date: '2026-12-10', name: 'วันรัฐธรรมนูญ' },
+      { date: '2026-12-31', name: 'วันสิ้นปี' }
+    ],
+    '2027': [
+      { date: '2027-01-01', name: 'วันขึ้นปีใหม่' },
+      { date: '2027-02-21', name: 'วันมาฆบูชา' },
+      { date: '2027-02-22', name: 'วันหยุดชดเชยวันมาฆบูชา' },
+      { date: '2027-04-06', name: 'วันพระบาทสมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราช และวันที่ระลึกมหาจักรีบรมราชวงศ์ (วันจักรี)' },
+      { date: '2027-04-13', name: 'วันสงกรานต์' },
+      { date: '2027-04-14', name: 'วันสงกรานต์' },
+      { date: '2027-04-15', name: 'วันสงกรานต์' },
+      { date: '2027-05-01', name: 'วันแรงงานแห่งชาติ' },
+      { date: '2027-05-03', name: 'วันหยุดชดเชยวันแรงงานแห่งชาติ' },
+      { date: '2027-05-04', name: 'วันฉัตรมงคล' },
+      { date: '2027-05-20', name: 'วันวิสาขบูชา' },
+      { date: '2027-06-03', name: 'วันเฉลิมพระชนมพรรษาสมเด็จพระนางเจ้าฯ พระบรมราชินี' },
+      { date: '2027-07-18', name: 'วันอาสาฬหบูชา' },
+      { date: '2027-07-19', name: 'วันเข้าพรรษา / วันหยุดชดเชยวันอาสาฬหบูชา' },
+      { date: '2027-07-28', name: 'วันเฉลิมพระชนมพรรษาพระบาทสมเด็จพระเจ้าอยู่หัว' },
+      { date: '2027-08-12', name: 'วันเฉลิมพระชนมพรรษาสมเด็จพระบรมราชชนนีพันปีหลวง และวันแม่แห่งชาติ' },
+      { date: '2027-10-13', name: 'วันนวมินทรมหาราช' },
+      { date: '2027-10-23', name: 'วันปิยมหาราช' },
+      { date: '2027-10-25', name: 'วันหยุดชดเชยวันปิยมหาราช' },
+      { date: '2027-12-05', name: 'วันคล้ายวันพระบรมราชสมภพ ร.9 และวันพ่อแห่งชาติ' },
+      { date: '2027-12-06', name: 'วันหยุดชดเชยวันคล้ายวันพระบรมราชสมภพ ร.9 และวันพ่อแห่งชาติ' },
+      { date: '2027-12-10', name: 'วันรัฐธรรมนูญ' },
+      { date: '2027-12-31', name: 'วันสิ้นปี' }
+    ]
+  });
+
+  function syncGovHolidays(user, payload) {
+    assertAdmin_(user);
+    const yr = String((payload && payload.year) || new Date().getFullYear());
+    const list = GOV_HOLIDAYS_CATALOG[yr] || GOV_HOLIDAYS_CATALOG['2026'];
+    if (!list || !list.length) throwApp_('NOT_FOUND', 'ไม่พบข้อมูลวันหยุดราชการสำหรับปี ' + yr);
+
+    return Db.withLock(function() {
+      let addedCount = 0;
+      let updatedCount = 0;
+
+      list.forEach(function(h) {
+        const existing = Db.findOne(SHEET.HOLIDAYS, 'date', h.date);
+        if (existing) {
+          if (existing.name !== h.name) {
+            Db.update(SHEET.HOLIDAYS, 'date', h.date, { name: h.name });
+            updatedCount++;
+          }
+        } else {
+          Db.append(SHEET.HOLIDAYS, { date: h.date, name: h.name });
+          addedCount++;
+        }
+      });
+
+      log_('', user.userId, 'HOLIDAYS_SYNC', '', '', 0, 'ดึงข้อมูลวันหยุดนักขัตฤกษ์ตามประกาศราชการ ปี ' + yr + ' (เพิ่มใหม่ ' + addedCount + ' วัน, อัปเดต ' + updatedCount + ' วัน)');
+
+      return {
+        success: true,
+        year: yr,
+        addedCount: addedCount,
+        updatedCount: updatedCount,
+        total: list.length,
+        message: 'ดึงข้อมูลวันหยุดราชการประจำปี ' + yr + ' (พ.ศ. ' + (Number(yr) + 543) + ') สำเร็จ: เพิ่มใหม่ ' + addedCount + ' วัน, ปรับปรุง ' + updatedCount + ' วัน (รวม ' + list.length + ' วัน)'
+      };
+    });
+  }
+
   /* ====================== Settings ====================== */
   function getSettings(user) {
     assertAdmin_(user);
@@ -420,6 +508,7 @@ const Admin = (() => {
     saveFormSettings,
     seedDemoUsers,
     getAuditLogs,
-    clearAllLeaveData
+    clearAllLeaveData,
+    syncGovHolidays
   });
 })();

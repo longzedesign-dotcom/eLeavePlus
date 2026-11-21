@@ -6,7 +6,7 @@
  *                Department analytics, and Leave Calendar data feed.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.24
+ * Version      : 1.0.25
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================

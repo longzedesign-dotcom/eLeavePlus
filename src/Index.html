@@ -7,7 +7,7 @@
                 (Tailwind CSS, Vanilla JavaScript ES6+, Responsive Layout)
  Author       : Longze Design / eLeave+ Team
  Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- Version      : 1.0.24
+ Version      : 1.0.25
  License      : MIT License
  Updated      : 2026-11-21
  ==============================================================================
@@ -168,7 +168,7 @@
       <!-- พื้นที่ส่วนท้าย ต่อจากปุ่ม Sign In -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center text-xs space-y-1">
         <p class="font-medium text-slate-500">ระบบบริหารการลาออนไลน์</p>
-        <p class="font-medium text-slate-400">Longze Design : V1.0.24</p>
+        <p class="font-medium text-slate-400">Longze Design : V1.0.25</p>
       </div>
     </div>
   </div>
@@ -190,7 +190,7 @@
           <div>
             <div class="flex items-center gap-1.5">
               <h2 class="font-bold text-white text-base leading-none">eLeave+</h2>
-              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.24</span>
+              <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">v1.0.25</span>
             </div>
             <span class="text-[10px] text-slate-400 font-medium tracking-wide">Online Leave System</span>
           </div>
@@ -1106,11 +1106,16 @@
 
             <!-- Tab Content: Holidays -->
             <div id="admin-tab-holidays" class="admin-tab-content hidden space-y-4">
-              <div class="flex justify-between items-center">
+              <div class="flex flex-wrap justify-between items-center gap-2">
                 <h3 class="text-sm font-bold text-slate-800">วันหยุดนักขัตฤกษ์ / วันหยุดบริษัท</h3>
-                <button type="button" onclick="App.openHolidayModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer">
-                  + เพิ่มวันหยุด
-                </button>
+                <div class="flex items-center gap-2">
+                  <button type="button" onclick="App.handleSyncGovHolidays()" class="px-3.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-300 text-xs font-bold rounded-xl cursor-pointer transition-all flex items-center gap-1.5 shadow-2xs">
+                    <span>🏛️</span> <span>ดึงข้อมูลวันหยุดราชการ</span>
+                  </button>
+                  <button type="button" onclick="App.openHolidayModal()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl cursor-pointer transition-all">
+                    + เพิ่มวันหยุด
+                  </button>
+                </div>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
@@ -1408,7 +1413,7 @@
           <div>
             <div class="flex items-center gap-2">
               <h3 class="text-base font-bold text-slate-900 leading-tight">ข้อมูลผู้ใช้งาน & โปรไฟล์พนักงาน</h3>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.24</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200">v1.0.25</span>
             </div>
             <p class="text-[11px] text-slate-500">รายละเอียดบัญชี ข้อมูลการติดต่อ และการรักษาความปลอดภัย</p>
           </div>
@@ -4673,6 +4678,24 @@
           this.showAlert('สำเร็จ', 'ลบวันหยุดเรียบร้อยแล้ว');
           this.loadAdminHolidays();
         } catch (e) { this.showAlert('ผิดพลาด', e.message); }
+      },
+
+      async handleSyncGovHolidays() {
+        const ok = await this.showConfirm(
+          'ดึงข้อมูลวันหยุดราชการ',
+          'คุณต้องการดึงข้อมูลวันหยุดนักขัตฤกษ์ตามประกาศราชการประจำปี (พ.ศ. 2569 / 2026) เข้าสู่ระบบใช่หรือไม่?\n\n• ระบบจะเพิ่มวันหยุดราชการทางการเข้าสู่ตาราง\n• รายการที่มีอยู่แล้วจะได้รับการตรวจสอบโดยไม่เกิดข้อมูลซ้ำซ้อน',
+          'ดึงข้อมูลวันหยุด',
+          false
+        );
+        if (!ok) return;
+
+        try {
+          const res = await this.call('adminSyncGovHolidays', { year: 2026 });
+          this.showAlert('สำเร็จ', res.message || 'ดึงข้อมูลวันหยุดราชการเรียบร้อยแล้ว');
+          this.loadAdminHolidays();
+        } catch (err) {
+          this.showAlert('เกิดข้อผิดพลาด', err.message);
+        }
       },
 
       async loadAdminConfig() {

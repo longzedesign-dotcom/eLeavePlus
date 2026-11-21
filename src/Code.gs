@@ -5,7 +5,7 @@
  * Description  : Web App entry point (doGet) & client-server RPC API bridge.
  * Author       : Longze Design / eLeave+ Team
  * Repository   : https://github.com/longzedesign-dotcom/eLeavePlus
- * Version      : 1.0.24
+ * Version      : 1.0.25
  * License      : MIT License
  * Updated      : 2026-11-21
  * ==============================================================================
@@ -187,6 +187,8 @@ function apiCall(action, payload, token) {
         return ok_(Admin.saveHoliday(user, payload));
       case 'adminDeleteHoliday':
         return ok_(Admin.deleteHoliday(user, payload));
+      case 'adminSyncGovHolidays':
+        return ok_(Admin.syncGovHolidays(user, payload));
       case 'adminGetSettings':
         return ok_(Admin.getSettings(user));
       case 'adminSaveSettings':
